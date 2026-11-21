@@ -13,6 +13,7 @@ const typeorm_config_1 = require("./shared/infrastructure/persistence/typeorm.co
 const customers_module_1 = require("./modules/customers/customers.module");
 const simulations_module_1 = require("./modules/simulations/simulations.module");
 const emails_module_1 = require("./modules/emails/emails.module");
+const invoices_module_1 = require("./modules/invoices/invoices.module");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
 const database_seeder_service_1 = require("./shared/infrastructure/persistence/database-seeder.service");
@@ -26,6 +27,7 @@ exports.AppModule = AppModule = __decorate([
             customers_module_1.CustomersModule,
             simulations_module_1.SimulationsModule,
             emails_module_1.EmailsModule,
+            invoices_module_1.InvoicesModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService, database_seeder_service_1.DatabaseSeederService],

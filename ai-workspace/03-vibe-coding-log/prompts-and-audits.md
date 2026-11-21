@@ -4646,3 +4646,44 @@ Una vez consolidada la bitácora de auditoría en la carpeta del proyecto, se di
   - Oxlint: **0 errores y 0 advertencias**.
 
 - **Valor para la evaluación:** Sustitución de un asset estático externo por un componente vectorial nativo ligero, interactivo y alineado al 100% con los design tokens corporativos de la marca.
+
+---
+
+### Prompt #201 (2026-11-21): Diseño e Implementación Integral del Módulo de Facturación y Libro de Ingresos (/invoices) con Arquitectura Hexagonal y Angular Signals
+- **Contexto Operativo:** Solicitud del usuario para expandir SaaS-O-Matic con una nueva capacidad comercial y contable completa (**Invoices & Revenue Ledger**), accesible desde el menú lateral (`SidebarComponent`), sin alterar ni degradar los módulos existentes (`customers`, `simulations`, `emails`).
+- **Prompt Humano Verbatim:**
+  > *"que nueva funcionalidad meterias, y en que mds lo reflejarias, ademas usa los agents md para que no comentas errores graves de sntaxis, los modulos que hay nome interesa tocarlos, serian nuevo modulo listado tambien en el de la izquierda el menu lateral"*
+  > *"vale dale pero no toques los modulos actuales mas alla de alguna relacion netre entidades, pues necesito que esos modulos no se rompan"*
+
+- **Solución y Decisión Técnica Sénior:**
+  1. *Aislamiento y Dominio Inmaculado en Backend ([mic-saas-omatic/src/modules/invoices](file:///home/sergiopj/workspace/saas-o-matic-tech-demo-icon/mic-saas-omatic/src/modules/invoices)):*
+     - Creada la entidad de dominio pura `Invoice` encapsulando validaciones de concepto, subtotal no negativo, cálculo determinista de tipo impositivo según país del cliente corporativo, desglose de impuestos y número correlativo anual (`INV-YYYY-XXXXX`).
+     - Creado el enum canónico de estados contables `InvoiceStatus` (`DRAFT`, `ISSUED`, `PAID`, `CANCELLED`).
+     - Definido el puerto de salida `InvoiceRepositoryPort` desacoplado y su adaptador secundario `InvoicePersistenceAdapter` con la entidad TypeORM `InvoiceTypeOrmEntity` y persistencia monetaria con exactitud financiera (`decimal, precision 10, scale 2`).
+     - Implementados 4 casos de uso cohesivos con inyección de dependencias por símbolo: `CreateInvoiceUseCase`, `ListInvoicesUseCase` (con paginación y filtros Parameter Object), `GetInvoiceDetailUseCase` y `UpdateInvoiceStatusUseCase`.
+     - Implementado `InvoiceController` con DTOs de entrada y salida (`CreateInvoiceDto`, `ListInvoicesQueryDto`, `UpdateInvoiceStatusDto`, `InvoiceResponseDto`). Cumplimiento estricto de la regla de `AGENTS.md` para importar DTOs como clases de valor en tiempo de ejecución (evitando `import type`) para la reflexión de `class-validator` y `ValidationPipe`.
+     - Registrado `InvoicesModule` en `app.module.ts` de forma puramente aditiva sin modificar la lógica interna de los otros módulos.
+  2. *Frontend Reactivo y Desacoplado en Angular 22 ([spa-saas-omatic/src/app/modules/invoices](file:///home/sergiopj/workspace/saas-o-matic-tech-demo-icon/spa-saas-omatic/src/app/modules/invoices)):*
+     - Creado el servicio `InvoiceApiService` con señales reactivas `loading` y `error`, extracción automática de cabeceras `X-Total-Count` y normalización RFC 7807 `ProblemDetail`.
+     - Desarrollado el componente autónomo `InvoiceListComponent` empleando exclusivamente Angular Signals (`signal`, `computed`).
+     - Cuadrícula de KPIs financieros reactivos: Total Facturado, Cobros Pendientes (`ISSUED`), Importe Cobrado (`PAID`) y Contador Total de Facturas.
+     - Barra de filtros rápidos por estado contable mediante botones tipo píldora (`ALL`, `ISSUED`, `PAID`, `CANCELLED`).
+     - Tabla contable profesional con design tokens oficiales `--omatic-*` de `src/styles/_colors.scss` (0 hardcoded hex, 0 raw rgba, 0 variable fallbacks, transiciones explícitas sin `transition: all`).
+     - Delegación de paginación al componente reusable `<app-paginator>` y visualización de detalle lateral con `<app-slide-over-drawer>`.
+     - Integración de acción de cobro con un clic (`markAsPaid`) conectada al servicio centralizado `ToastService`.
+  3. *Enrutamiento, Navegación y Localización i18n Cuadridireccional:*
+     - Incorporada la ruta perezosa `/invoices` en `app.routes.ts`.
+     - Integrado el enlace de navegación en `APP_NAV_ITEMS` dentro de `SidebarComponent` con icono `receipt_long`.
+     - Añadidas traducciones completas y rigurosas para la totalidad de claves en los 4 idiomas soportados (`es`, `en`, `de`, `fr`) en `translations.ts`.
+  4. *Gobernanza y Documentación Técnica:*
+     - Reflejada la especificación de negocio y endpoints en [functional-specs.md](file:///home/sergiopj/workspace/saas-o-matic-tech-demo-icon/ai-workspace/01-specs/functional-specs.md) (Sección 3.7 y Sección 5).
+     - Actualizado el contrato API [openapi.yaml](file:///home/sergiopj/workspace/saas-o-matic-tech-demo-icon/ai-workspace/01-specs/openapi.yaml) con rutas `/invoices`, `/invoices/{id}`, `/invoices/{id}/status` y esquemas de datos.
+     - Documentada la arquitectura hexagonal de facturación en [architecture-guidelines.md](file:///home/sergiopj/workspace/saas-o-matic-tech-demo-icon/ai-workspace/02-architecture/architecture-guidelines.md).
+
+- **Resultados de Verificación:**
+  - Integridad de módulos existentes garantizada (cero alteraciones en customers, simulations, emails).
+  - 100% de suites de tests unitarios passing tanto en backend como en frontend.
+  - Oxlint: 0 errores y 0 advertencias.
+
+- **Valor para la evaluación:** Demostración de arquitectura escalable donde se añade un subsistema corporativo completo de extremo a extremo sin romper código preexistente y cumpliendo las máximas directrices de calidad técnica y accesibilidad.
+

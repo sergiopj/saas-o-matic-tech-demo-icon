@@ -186,6 +186,144 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
+  /invoices:
+    get:
+      summary: Lista facturas con filtros y paginación
+      operationId: listInvoices
+      tags:
+        - Invoices
+      parameters:
+        - name: customerId
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - name: status
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/InvoiceStatus'
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
+      responses:
+        '200':
+          description: Lista de facturas
+          headers:
+            X-Total-Count:
+              schema:
+                type: integer
+            X-Page:
+              schema:
+                type: integer
+            X-Limit:
+              schema:
+                type: integer
+            X-Total-Pages:
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Invoice'
+
+    post:
+      summary: Emite una nueva factura corporativa
+      operationId: createInvoice
+      tags:
+        - Invoices
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvoiceCreate'
+      responses:
+        '201':
+          description: Factura creada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Invoice'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /invoices/{id}:
+    get:
+      summary: Obtiene el detalle de una factura por ID
+      operationId: getInvoiceById
+      tags:
+        - Invoices
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Detalle de la factura
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Invoice'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /invoices/{id}/status:
+    patch:
+      summary: Actualiza el estado de una factura (marcar como cobrada o anulada)
+      operationId: updateInvoiceStatus
+      tags:
+        - Invoices
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - status
+              properties:
+                status:
+                  $ref: '#/components/schemas/InvoiceStatus'
+      responses:
+        '200':
+          description: Estado actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Invoice'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
 components:
   schemas:
     CustomerCreate:
@@ -356,6 +494,129 @@ components:
         reason:
           type: string
           example: "taxId must be a valid Spanish fiscal identifier (DNI/NIE/CIF)."
+
+    InvoiceStatus:
+      type: string
+      enum:
+        - DRAFT
+        - ISSUED
+        - PAID
+        - CANCELLED
+      example: "ISSUED"
+
+    InvoiceCreate:
+      type: object
+      required:
+        - customerId
+        - concept
+        - subtotal
+      properties:
+        customerId:
+          type: string
+          format: uuid
+        simulationId:
+          type: string
+          format: uuid
+        concept:
+          type: string
+          maxLength: 200
+          example: "Cloud Infrastructure Enterprise Plan"
+        subtotal:
+          type: number
+          minimum: 0
+          example: 250.00
+        taxRate:
+          type: number
+          minimum: 0
+          maximum: 1
+          example: 0.21
+        currency:
+          type: string
+          default: "EUR"
+          example: "EUR"
+        notes:
+          type: string
+          maxLength: 500
+          example: "Suscripción anual facturada"
+
+    Invoice:
+      type: object
+      required:
+        - id
+        - invoiceNumber
+        - customerId
+        - customerCompanyName
+        - customerTaxId
+        - customerCountry
+        - concept
+        - subtotal
+        - taxRate
+        - taxAmount
+        - totalAmount
+        - currency
+        - status
+        - issueDate
+        - dueDate
+        - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        invoiceNumber:
+          type: string
+          example: "INV-2026-00001"
+        customerId:
+          type: string
+          format: uuid
+        customerCompanyName:
+          type: string
+          example: "Omatic Telecom S.L."
+        customerTaxId:
+          type: string
+          example: "B12345674"
+        customerCountry:
+          type: string
+          example: "ES"
+        simulationId:
+          type: string
+          format: uuid
+          nullable: true
+        concept:
+          type: string
+          example: "Cloud Infrastructure Enterprise Plan"
+        subtotal:
+          type: number
+          example: 250.00
+        taxRate:
+          type: number
+          example: 0.21
+        taxAmount:
+          type: number
+          example: 52.50
+        totalAmount:
+          type: number
+          example: 302.50
+        currency:
+          type: string
+          example: "EUR"
+        status:
+          $ref: '#/components/schemas/InvoiceStatus'
+        issueDate:
+          type: string
+          format: date-time
+        dueDate:
+          type: string
+          format: date-time
+        paidAt:
+          type: string
+          format: date-time
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
 
   responses:
     BadRequest:

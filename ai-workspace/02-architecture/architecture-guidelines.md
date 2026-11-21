@@ -118,38 +118,72 @@ mic-saas-omatic/
 │   │   │   │               └── customer-persistence.mapper.ts
 │   │   │   └── customers.module.ts                          # Ensamblaje / Wiring del módulo
 │   │   │
-│   │   └── simulations/
+│   │   ├── simulations/
+│   │   │   ├── domain/                                      # DOMINIO PURO
+│   │   │   │   ├── entities/
+│   │   │   │   │   └── simulation.entity.ts
+│   │   │   │   ├── services/
+│   │   │   │   │   ├── pricing-engine.service.ts            # Tramos acumulativos
+│   │   │   │   │   └── tax-calculator.service.ts            # Matriz de impuestos y reverse charge
+│   │   │   │   └── exceptions/
+│   │   │   │       └── invalid-simulation-metric.exception.ts
+│   │   │   ├── application/                                 # APLICACIÓN
+│   │   │   │   ├── ports/
+│   │   │   │   │   ├── in/
+│   │   │   │   │   │   └── create-simulation.use-case.ts
+│   │   │   │   │   └── out/
+│   │   │   │   │       └── simulation-repository.port.ts
+│   │   │   │   └── services/
+│   │   │   │       └── simulation-application.service.ts
+│   │   │   ├── infrastructure/                              # INFRAESTRUCTURA
+│   │   │   │   └── adapters/
+│   │   │   │       ├── in/
+│   │   │   │       │   └── rest/
+│   │   │   │       │       ├── simulation.controller.ts
+│   │   │   │       │       ├── dto/
+│   │   │   │       │       │   ├── create-simulation.dto.ts
+│   │   │   │       │       │   └── simulation-response.dto.ts
+│   │   │   │       │       └── simulation-rest.mapper.ts
+│   │   │   │       └── out/
+│   │   │   │           └── persistence/
+│   │   │   │               ├── simulation.typeorm-entity.ts
+│   │   │   │               ├── simulation-persistence.adapter.ts
+│   │   │   │               └── simulation-persistence.mapper.ts
+│   │   │   └── simulations.module.ts                        # Ensamblaje / Wiring del módulo
+│   │   │
+│   │   └── invoices/                                        # NUEVO MÓDULO DE FACTURACIÓN Y COBROS
 │   │       ├── domain/                                      # DOMINIO PURO
 │   │       │   ├── entities/
-│   │       │   │   └── simulation.entity.ts
-│   │       │   ├── services/
-│   │       │   │   ├── pricing-engine.service.ts            # Tramos acumulativos
-│   │       │   │   └── tax-calculator.service.ts            # Matriz de impuestos y reverse charge
-│   │       │   └── exceptions/
-│   │       │       └── invalid-simulation-metric.exception.ts
+│   │       │   │   └── invoice.entity.ts
+│   │       │   ├── enums/
+│   │       │   │   └── invoice-status.enum.ts               # DRAFT, ISSUED, PAID, CANCELLED
+│   │       │   └── models/
+│   │       │       └── invoice-search-criteria.model.ts
 │   │       ├── application/                                 # APLICACIÓN
 │   │       │   ├── ports/
-│   │       │   │   ├── in/
-│   │       │   │   │   └── create-simulation.use-case.ts
 │   │       │   │   └── out/
-│   │       │   │       └── simulation-repository.port.ts
-│   │       │   └── services/
-│   │       │       └── simulation-application.service.ts
+│   │       │   │       └── invoice-repository.port.ts
+│   │       │   └── use-cases/
+│   │       │       ├── create-invoice.use-case.ts
+│   │       │       ├── list-invoices.use-case.ts
+│   │       │       ├── get-invoice-detail.use-case.ts
+│   │       │       └── update-invoice-status.use-case.ts
 │   │       ├── infrastructure/                              # INFRAESTRUCTURA
 │   │       │   └── adapters/
 │   │       │       ├── in/
 │   │       │       │   └── rest/
-│   │       │       │       ├── simulation.controller.ts
-│   │       │       │       ├── dto/
-│   │       │       │       │   ├── create-simulation.dto.ts
-│   │       │       │       │   └── simulation-response.dto.ts
-│   │       │       │       └── simulation-rest.mapper.ts
+│   │       │       │       ├── invoice.controller.ts
+│   │       │       │       └── dto/
+│   │       │       │           ├── create-invoice.dto.ts
+│   │       │       │           ├── list-invoices-query.dto.ts
+│   │       │       │           ├── update-invoice-status.dto.ts
+│   │       │       │           └── invoice-response.dto.ts
 │   │       │       └── out/
 │   │       │           └── persistence/
-│   │       │               ├── simulation.typeorm-entity.ts
-│   │       │               ├── simulation-persistence.adapter.ts
-│   │       │               └── simulation-persistence.mapper.ts
-│   │       └── simulations.module.ts                        # Ensamblaje / Wiring del módulo
+│   │       │               ├── invoice.typeorm-entity.ts
+│   │       │               ├── invoice-persistence.adapter.ts
+│   │       │               └── invoice-persistence.mapper.ts
+│   │       └── invoices.module.ts                           # Ensamblaje / Wiring del módulo
 │   │
 │   ├── shared/                                              # TRANSVERSAL GLOBAL
 │   │   ├── domain/

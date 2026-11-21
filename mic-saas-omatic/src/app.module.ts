@@ -4,6 +4,7 @@ import { typeOrmSqliteConfig } from './shared/infrastructure/persistence/typeorm
 import { CustomersModule } from './modules/customers/customers.module';
 import { SimulationsModule } from './modules/simulations/simulations.module';
 import { EmailsModule } from './modules/emails/emails.module';
+import { InvoicesModule } from './modules/invoices/invoices.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseSeederService } from './shared/infrastructure/persistence/database-seeder.service';
@@ -14,6 +15,7 @@ import { DatabaseSeederService } from './shared/infrastructure/persistence/datab
     CustomersModule,
     SimulationsModule,
     EmailsModule,
+    InvoicesModule,
   ],
   controllers: [AppController],
   providers: [AppService, DatabaseSeederService],

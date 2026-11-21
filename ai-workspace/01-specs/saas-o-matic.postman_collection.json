@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "a9b2c3d4-e5f6-4a1b-8c2d-3e4f5a6b7c8d",
     "name": "SaaS-O-Matic API",
-    "description": "Colección completa de pruebas para la API REST de SaaS-O-Matic (Reto Técnico omaticc).\nIncluye casos de éxito, validaciones algorítmicas, reglas fiscales (tramos + IVA) y errores estándar RFC 7807 (Problem Details).",
+    "description": "Colección completa de pruebas para la API REST de SaaS-O-Matic (Reto Técnico Omatic).\nIncluye casos de éxito, validaciones algorítmicas, reglas fiscales (tramos + IVA) y errores estándar RFC 7807 (Problem Details).",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -53,7 +53,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"companyName\": \"omaticc Telecom S.L.\",\n  \"taxId\": \"B-12345674\",\n  \"email\": \"billingomaticic.es\",\n  \"country\": \"ES\",\n  \"selectedPlan\": \"Enterprise Scale\"\n}"
+              "raw": "{\n  \"companyName\": \"Omatic Telecom S.L.\",\n  \"taxId\": \"B-12345674\",\n  \"email\": \"billing@omatic.es\",\n  \"country\": \"ES\",\n  \"selectedPlan\": \"Enterprise Scale\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/customers",
@@ -157,7 +157,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"companyName\": \"omaticc Duplicado\",\n  \"taxId\": \"B 12345674\",\n  \"email\": \"dupomaticic.es\",\n  \"country\": \"ES\",\n  \"selectedPlan\": \"Starter\"\n}"
+              "raw": "{\n  \"companyName\": \"Omatic Duplicado\",\n  \"taxId\": \"B 12345674\",\n  \"email\": \"dup@omatic.es\",\n  \"country\": \"ES\",\n  \"selectedPlan\": \"Starter\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/customers",
@@ -194,7 +194,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/customers?search=omaticc",
+              "raw": "{{baseUrl}}/customers?search=Omatic",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -204,7 +204,7 @@
               "query": [
                 {
                   "key": "search",
-                  "value": "omaticc",
+                  "value": "Omatic",
                   "description": "Búsqueda insensible a mayúsculas por empresa"
                 }
               ]
@@ -537,7 +537,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"to\": \"billing@omaticc.es\",\n  \"subject\": \"Propuesta de Optimización SaaS-O-Matic\",\n  \"htmlBody\": \"<h2>Estimado cliente</h2><p>Le remitimos la simulación de costes calculada para 50 usuarios corporativos.</p><ul><li>Coste Base: 420.00 €</li><li>IVA (21% ES): 88.20 €</li><li><strong>Total Mensual: 508.20 €</strong></li></ul>\"\n}"
+              "raw": "{\n  \"to\": \"billing@omatic.es\",\n  \"subject\": \"Propuesta de Optimización SaaS-O-Matic\",\n  \"htmlBody\": \"<h2>Estimado cliente</h2><p>Le remitimos la simulación de costes calculada para 50 usuarios corporativos.</p><ul><li>Coste Base: 420.00 €</li><li>IVA (21% ES): 88.20 €</li><li><strong>Total Mensual: 508.20 €</strong></li></ul>\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/emails",

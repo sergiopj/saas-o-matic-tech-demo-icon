@@ -28,6 +28,11 @@ export const APP_NAV_ITEMS: readonly NavItem[] = [
     labelKey: 'sidebar.simulations',
     icon: 'calculate',
   },
+  {
+    path: '/invoices',
+    labelKey: 'sidebar.invoices',
+    icon: 'receipt_long',
+  },
 ] as const;
 
 @Component({

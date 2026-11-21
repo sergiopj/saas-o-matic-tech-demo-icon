@@ -1,0 +1,266 @@
+<div class="invoices-page">
+  <!-- Header / Hero Section -->
+  <header class="invoices-header">
+    <div class="header-content">
+      <div class="header-badge">
+        <mat-icon class="badge-icon">receipt_long</mat-icon>
+        <span class="badge-text">{{ 'invoices.title' | translate }}</span>
+      </div>
+      <h1 class="header-title">{{ 'invoices.title' | translate }}</h1>
+      <p class="header-subtitle">{{ 'invoices.subtitle' | translate }}</p>
+    </div>
+  </header>
+
+  <!-- KPI Metric Summary Cards -->
+  <section class="kpi-grid" [attr.aria-label]="'invoices.title' | translate">
+    <article class="kpi-card">
+      <div class="kpi-icon-wrapper kpi-icon--primary">
+        <mat-icon>account_balance</mat-icon>
+      </div>
+      <div class="kpi-body">
+        <span class="kpi-label">{{ 'invoices.kpi.totalInvoiced' | translate }}</span>
+        <span class="kpi-value">{{ totalInvoiced() | number:'1.2-2' }} €</span>
+      </div>
+    </article>
+
+    <article class="kpi-card">
+      <div class="kpi-icon-wrapper kpi-icon--warning">
+        <mat-icon>pending_actions</mat-icon>
+      </div>
+      <div class="kpi-body">
+        <span class="kpi-label">{{ 'invoices.kpi.pendingCollections' | translate }}</span>
+        <span class="kpi-value">{{ pendingAmount() | number:'1.2-2' }} €</span>
+      </div>
+    </article>
+
+    <article class="kpi-card">
+      <div class="kpi-icon-wrapper kpi-icon--success">
+        <mat-icon>check_circle</mat-icon>
+      </div>
+      <div class="kpi-body">
+        <span class="kpi-label">{{ 'invoices.kpi.paidAmount' | translate }}</span>
+        <span class="kpi-value">{{ paidAmount() | number:'1.2-2' }} €</span>
+      </div>
+    </article>
+
+    <article class="kpi-card">
+      <div class="kpi-icon-wrapper kpi-icon--info">
+        <mat-icon>description</mat-icon>
+      </div>
+      <div class="kpi-body">
+        <span class="kpi-label">{{ 'invoices.kpi.totalCount' | translate }}</span>
+        <span class="kpi-value">{{ totalInvoices() }}</span>
+      </div>
+    </article>
+  </section>
+
+  <!-- Filter Controls -->
+  <section class="filter-bar">
+    <div class="filter-chips" role="group" [attr.aria-label]="'invoices.title' | translate">
+      <button
+        type="button"
+        class="filter-chip"
+        [class.is-active]="selectedStatus() === 'ALL'"
+        (click)="filterByStatus('ALL')"
+      >
+        {{ 'invoices.filter.all' | translate }}
+      </button>
+      <button
+        type="button"
+        class="filter-chip"
+        [class.is-active]="selectedStatus() === 'ISSUED'"
+        (click)="filterByStatus('ISSUED')"
+      >
+        {{ 'invoices.filter.issued' | translate }}
+      </button>
+      <button
+        type="button"
+        class="filter-chip"
+        [class.is-active]="selectedStatus() === 'PAID'"
+        (click)="filterByStatus('PAID')"
+      >
+        {{ 'invoices.filter.paid' | translate }}
+      </button>
+      <button
+        type="button"
+        class="filter-chip"
+        [class.is-active]="selectedStatus() === 'CANCELLED'"
+        (click)="filterByStatus('CANCELLED')"
+      >
+        {{ 'invoices.filter.cancelled' | translate }}
+      </button>
+    </div>
+  </section>
+
+  <!-- Invoices Table Section -->
+  <section class="table-container">
+    @if (loading()) {
+      <div class="loading-state">
+        <output class="loading-indicator" aria-live="polite">
+          <mat-icon class="spin-icon">sync</mat-icon>
+          <span>{{ 'customers.list.loading' | translate }}</span>
+        </output>
+      </div>
+    } @else if (invoices().length === 0) {
+      <div class="empty-state">
+        <mat-icon class="empty-icon">receipt</mat-icon>
+        <h2 class="empty-title">{{ 'invoices.empty.title' | translate }}</h2>
+        <p class="empty-desc">{{ 'invoices.empty.desc' | translate }}</p>
+      </div>
+    } @else {
+      <div class="table-responsive">
+        <table class="invoices-table" [attr.aria-label]="'invoices.title' | translate">
+          <thead>
+            <tr>
+              <th>{{ 'invoices.table.invoiceNumber' | translate }}</th>
+              <th>{{ 'invoices.table.customer' | translate }}</th>
+              <th>{{ 'invoices.table.concept' | translate }}</th>
+              <th>{{ 'invoices.table.issueDate' | translate }}</th>
+              <th>{{ 'invoices.table.dueDate' | translate }}</th>
+              <th class="text-right">{{ 'invoices.table.subtotal' | translate }}</th>
+              <th class="text-right">{{ 'invoices.table.total' | translate }}</th>
+              <th>{{ 'invoices.table.status' | translate }}</th>
+              <th class="text-center">{{ 'invoices.table.actions' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (invoice of invoices(); track invoice.id) {
+              <tr class="table-row">
+                <td class="font-mono font-semibold">{{ invoice.invoiceNumber }}</td>
+                <td>
+                  <div class="customer-info">
+                    <span class="customer-name">{{ invoice.customerCompanyName }}</span>
+                    <span class="customer-tax-id">{{ invoice.customerTaxId }}</span>
+                  </div>
+                </td>
+                <td class="concept-cell" [matTooltip]="invoice.concept">{{ invoice.concept }}</td>
+                <td>{{ invoice.issueDate | date:'mediumDate' }}</td>
+                <td>{{ invoice.dueDate | date:'mediumDate' }}</td>
+                <td class="text-right font-mono">{{ invoice.subtotal | number:'1.2-2' }} €</td>
+                <td class="text-right font-mono font-bold">{{ invoice.totalAmount | number:'1.2-2' }} €</td>
+                <td>
+                  <span
+                    class="status-badge"
+                    [class.status-badge--issued]="invoice.status === 'ISSUED'"
+                    [class.status-badge--paid]="invoice.status === 'PAID'"
+                    [class.status-badge--cancelled]="invoice.status === 'CANCELLED'"
+                  >
+                    @if (invoice.status === 'ISSUED') { {{ 'invoices.status.issued' | translate }} }
+                    @else if (invoice.status === 'PAID') { {{ 'invoices.status.paid' | translate }} }
+                    @else if (invoice.status === 'CANCELLED') { {{ 'invoices.status.cancelled' | translate }} }
+                    @else { {{ 'invoices.status.draft' | translate }} }
+                  </span>
+                </td>
+                <td class="actions-cell">
+                  <button
+                    mat-icon-button
+                    type="button"
+                    class="action-btn"
+                    [matTooltip]="'invoices.actions.viewDetail' | translate"
+                    (click)="openDrawer(invoice)"
+                  >
+                    <mat-icon>visibility</mat-icon>
+                  </button>
+                  @if (invoice.status === 'ISSUED') {
+                    <button
+                      mat-icon-button
+                      type="button"
+                      class="action-btn action-btn--paid"
+                      [matTooltip]="'invoices.actions.markPaid' | translate"
+                      (click)="markAsPaid(invoice)"
+                    >
+                      <mat-icon>check_circle</mat-icon>
+                    </button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination Component -->
+      <app-paginator
+        [totalItems]="totalInvoices()"
+        [(currentPage)]="currentPage"
+        [(pageSize)]="pageSize"
+        (currentPageChange)="loadInvoices()"
+        (pageSizeChange)="loadInvoices()"
+      />
+    }
+  </section>
+
+  <!-- Slide-Over Drawer for Detailed Breakdown -->
+  <app-slide-over-drawer
+    [(isOpen)]="isDrawerOpen"
+    [title]="'invoices.drawer.title' | translate"
+    [subtitle]="selectedInvoice()?.invoiceNumber ?? ''"
+    icon="receipt_long"
+    (closed)="closeDrawer()"
+  >
+    @if (selectedInvoice(); as inv) {
+      <div class="drawer-detail">
+        <section class="detail-section">
+          <h3 class="detail-title">{{ 'invoices.drawer.fiscalData' | translate }}</h3>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <span class="detail-label">{{ 'customers.card.taxId' | translate }}</span>
+              <span class="detail-value font-mono">{{ inv.customerTaxId }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">{{ 'customers.card.country' | translate }}</span>
+              <span class="detail-value">{{ inv.customerCountry }}</span>
+            </div>
+            <div class="detail-item full-width">
+              <span class="detail-label">{{ 'customers.list.title' | translate }}</span>
+              <span class="detail-value">{{ inv.customerCompanyName }}</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="detail-section">
+          <h3 class="detail-title">{{ 'invoices.drawer.financialBreakdown' | translate }}</h3>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <span class="detail-label">{{ 'invoices.table.subtotal' | translate }}</span>
+              <span class="detail-value font-mono">{{ inv.subtotal | number:'1.2-2' }} €</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">{{ 'invoices.drawer.taxRate' | translate }}</span>
+              <span class="detail-value font-mono">{{ (inv.taxRate * 100) | number:'1.0-0' }}%</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">{{ 'invoices.drawer.taxAmount' | translate }}</span>
+              <span class="detail-value font-mono">{{ inv.taxAmount | number:'1.2-2' }} €</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label font-bold">{{ 'invoices.drawer.totalAmount' | translate }}</span>
+              <span class="detail-value font-mono font-bold text-primary">{{ inv.totalAmount | number:'1.2-2' }} €</span>
+            </div>
+          </div>
+        </section>
+
+        @if (inv.notes) {
+          <section class="detail-section">
+            <h3 class="detail-title">{{ 'invoices.drawer.notes' | translate }}</h3>
+            <p class="detail-notes">{{ inv.notes }}</p>
+          </section>
+        }
+
+        <div class="drawer-actions">
+          @if (inv.status === 'ISSUED') {
+            <button
+              mat-flat-button
+              type="button"
+              class="btn-mark-paid"
+              (click)="markAsPaid(inv)"
+            >
+              <mat-icon>check_circle</mat-icon>
+              <span>{{ 'invoices.actions.markPaid' | translate }}</span>
+            </button>
+          }
+        </div>
+      </div>
+    }
+  </app-slide-over-drawer>
+</div>

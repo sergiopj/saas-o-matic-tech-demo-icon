@@ -28,6 +28,13 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'invoices',
+    loadChildren: () =>
+      import('./modules/invoices/invoices.routes').then(
+        (m) => m.INVOICES_ROUTES
+      ),
+  },
+  {
     path: '**',
     redirectTo: 'home',
   },

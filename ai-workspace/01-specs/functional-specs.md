@@ -241,7 +241,7 @@ Al tratarse SaaS-O-Matic de un **panel de trabajo operativo diario (*workstation
 
 **Especificaciones Técnicas del Conmutador:**
 - **Interruptor Transversal Accesible (`ThemeToggleComponent`):** Ubicado en la barra superior de navegación (`NavbarComponent`), arriba a la izquierda junto a la identidad corporativa de SaaS-O-Matic.
-- **Bocadillo de Cómic para Onboarding Visual (*Comic Speech Bubble Callout*):** Al iniciar la aplicación, se presenta un bocadillo estilo cómic con cola apuntando directamente al interruptor (`.comic-speech-bubble`), sombra sólida pop (`box-shadow: 3px 3px 0 var(--omaticc-border-inverse)`), micro-animación de entrada elástica (`comicPopIn`) y texto internacionalizado indicativo (`theme.toggle.comicHint`).
+- **Bocadillo de Cómic para Onboarding Visual (*Comic Speech Bubble Callout*):** Al iniciar la aplicación, se presenta un bocadillo estilo cómic con cola apuntando directamente al interruptor (`.comic-speech-bubble`), sombra sólida pop (`box-shadow: 3px 3px 0 var(--omatic-border-inverse)`), micro-animación de entrada elástica (`comicPopIn`) y texto internacionalizado indicativo (`theme.toggle.comicHint`).
   - *Desvanecimiento Automático:* A los 4.5 segundos inicia una transición de opacidad y a los 5 segundos se retira del DOM.
   - *Descarte Inmediato:* Si el usuario hace clic en el interruptor de tema, en el propio bocadillo o en su botón de cierre (`&times;`), se cancelan los temporizadores y se oculta de forma instantánea.
   - *Accesibilidad W3C Estricta:* Implementado sobre un elemento HTML5 nativo `<output class="comic-speech-bubble" aria-live="polite">` (evitando `role="status"` sobre `<div>` genérico conforme a la regla SonarQube `Web:S6819`).
@@ -259,6 +259,19 @@ Para optimizar el escaneo de clientes recién incorporados en una sola fila comp
   2. *Swipe Táctil en Móvil:* Eventos `touchstart` y `touchend` con umbral de 40px para avanzar o retroceder el lote completo.
   3. *Arrastre con Ratón en Escritorio:* Detección de `mousedown`, `mousemove`, `mouseup` y `mouseleave` con cursor `grab` / `grabbing` y `user-select: none;`, permitiendo arrastrar las tarjetas con el ratón de forma natural.
 - **Responsividad Dinámica:** Presenta 3 tarjetas simultáneas en pantallas de escritorio ($> 1024\text{px}$), 2 tarjetas en tablets ($640\text{px} - 1024\text{px}$) y 1 tarjeta completa en smartphones ($< 640\text{px}$). Carga un conjunto armónico de hasta 12 clientes recientes (`getRecentLite(12)`).
+
+### 3.7 Módulo de Facturas y Libro de Ingresos (`/invoices`)
+Para completar el ciclo comercial tras la simulación de precios, se incorpora el módulo de Facturación y Cobros:
+- **Acceso Directo desde el Menú Lateral (`SidebarComponent`):** Incorporado en `APP_NAV_ITEMS` con ruta `/invoices`, etiqueta i18n `sidebar.invoices` e icono Material `receipt_long`.
+- **Panel de Métricas Clave (KPIs Financieros):**
+  - *Total Facturado:* Suma acumulada de importes totales de facturas emitidas y cobradas.
+  - *Cobros Pendientes:* Volumen monetario de facturas en estado `ISSUED` pendientes de cobro.
+  - *Importe Cobrado:* Suma de facturas liquidadas con éxito (`PAID`).
+  - *Total Facturas:* Contador total de registros emitidos.
+- **Filtros por Estado en Píldora/Chips:** Conmutación rápida entre `ALL` (todas), `ISSUED` (emitidas/pendientes), `PAID` (cobradas) y `CANCELLED` (anuladas).
+- **Tabla Contable y Paginación Reutilizable:** Muestra número correlativo fiscal (`INV-YYYY-XXXXX`), razón social, identificador fiscal, concepto, fecha de emisión, vencimiento a 30 días, base imponible, impuestos y total. Delega la navegación al componente desacoplado `<app-paginator>`.
+- **Acción Rápida de Cobro y Notificación Centralizada:** Botón directo para marcar una factura emitida como cobrada (`PATCH /invoices/:id/status` con estado `PAID`), con retroalimentación inmediata mediante `ToastService`.
+- **Cajón Deslizante de Desglose Fiscal (`<app-slide-over-drawer>`):** Inspección lateral accesible con datos fiscales del cliente, desglose de tipo impositivo, cuota tributaria, importe total y observaciones.
 
 ---
 
@@ -312,6 +325,10 @@ Documentación interactiva (Swagger UI): `http://localhost:3000/docs`.
 | `GET` | `/simulations` | `customerId` (requerido, UUID) | Ninguna | Lista el historial de simulaciones de un cliente ordenadas descendentemente por fecha. |
 | `POST` | `/simulations` | Ninguno | Ninguna | Registra y persiste una simulación calculando el coste por tramos e impuestos. Valida `customerId` compatible con cualquier estándar RFC de UUID (v1-v5 y v7). |
 | `POST` | `/emails/send` | Ninguno | Ninguna | Despacha una propuesta comercial o presupuesto por email mediante adaptador transaccional desacoplado con sanitización anti-XSS. |
+| `GET` | `/invoices` | `customerId` (opcional, UUID)<br>`status` (opcional: `DRAFT`, `ISSUED`, `PAID`, `CANCELLED`)<br>`page` (opcional, entero $\ge 1$)<br>`limit` (opcional, entero $1..100$)<br>`sortBy` (opcional)<br>`sortOrder` (opcional: `ASC`, `DESC`) | `X-Total-Count`<br>`X-Page`<br>`X-Limit`<br>`X-Total-Pages` | Lista facturas con paginación server-side, ordenación y filtrado por estado contable o cliente corporativo. |
+| `POST` | `/invoices` | Ninguno | Ninguna | Emite y persiste una nueva factura corporativa con cálculo automático de base imponible, desglose impositivo y numeración correlativa anual. |
+| `GET` | `/invoices/{id}` | Ninguno | Ninguna | Obtiene el detalle contable completo de una factura por su identificador UUID. |
+| `PATCH` | `/invoices/{id}/status` | Ninguno | Ninguna | Transiciona el estado de la factura (`PAID`, `CANCELLED`) registrando la fecha de liquidación en `paidAt`. |
 
 #### Especificación de Cabeceras de Paginación RFC
 Cuando se consulta `GET /customers`, el controlador primario inyecta las siguientes cabeceras HTTP estándar (expuestas en CORS mediante `Access-Control-Expose-Headers`):
