@@ -1,0 +1,60 @@
+@if (problem(); as p) {
+  <div class="error-banner" role="alert" aria-live="assertive">
+    <div class="error-banner-header">
+      <div class="error-banner-title-group">
+        <mat-icon class="error-icon" aria-hidden="true">error_outline</mat-icon>
+        <h3 class="error-title">{{ p.title }}</h3>
+      </div>
+
+      <div class="error-banner-actions">
+        @if (retryable()) {
+          <button
+            type="button"
+            class="retry-btn"
+            [attr.aria-label]="'error.banner.retry' | translate"
+            (click)="onRetry()"
+          >
+            <mat-icon aria-hidden="true">refresh</mat-icon>
+            <span>{{ 'error.banner.retry' | translate }}</span>
+          </button>
+        }
+        @if (dismissible()) {
+          <button
+            type="button"
+            class="dismiss-btn"
+            [attr.aria-label]="'error.banner.dismiss.aria' | translate"
+            (click)="onDismiss()"
+          >
+            <mat-icon aria-hidden="true">close</mat-icon>
+          </button>
+        }
+      </div>
+    </div>
+
+    @if (p.detail) {
+      <p class="error-detail">{{ p.detail }}</p>
+    }
+
+    @if (p.invalidParams && p.invalidParams.length > 0) {
+      <div class="invalid-params-section">
+        <span class="invalid-params-title">{{ 'error.banner.invalidParams.title' | translate }}</span>
+        <table class="invalid-params-table">
+          <thead>
+            <tr>
+              <th scope="col">{{ 'error.banner.field' | translate }}</th>
+              <th scope="col">{{ 'error.banner.reason' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (param of p.invalidParams; track param.name) {
+              <tr>
+                <td class="param-name"><code>{{ param.name }}</code></td>
+                <td class="param-reason">{{ param.reason }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+}

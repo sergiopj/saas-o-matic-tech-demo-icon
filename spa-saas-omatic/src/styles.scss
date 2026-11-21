@@ -1,0 +1,108 @@
+@use '@angular/material' as mat;
+@use './styles/colors';
+@use './styles/variables';
+@use 'quill/dist/quill.snow.css';
+
+html {
+  height: 100%;
+  @include mat.theme((
+    color: (
+      primary: mat.$azure-palette,
+      tertiary: mat.$blue-palette,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+
+  &[data-theme='dark'],
+  &.dark-theme {
+    color-scheme: dark;
+    @include mat.theme((
+      color: (
+        primary: mat.$azure-palette,
+        tertiary: mat.$blue-palette,
+        theme-type: dark,
+      ),
+    ));
+  }
+}
+
+body {
+  margin: 0;
+  height: 100%;
+  color-scheme: light;
+  background-color: var(--omaticc-bg-page);
+  color: var(--omaticc-text-primary);
+  font: var(--mat-sys-body-medium);
+  font-family: Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  transition: background-color 0.25s ease, color 0.25s ease;
+
+  &.dark-theme {
+    color-scheme: dark;
+  }
+}
+
+/* ========================================================================
+   Global Dark Theme Overrides for Material & Rich-Text Integrations
+   ======================================================================== */
+[data-theme='dark'],
+.dark-theme {
+  color-scheme: dark;
+
+  /* Material Form Fields & Inputs */
+  .mat-mdc-text-field-wrapper {
+    background-color: var(--omaticc-bg-card);
+  }
+
+  .mat-mdc-form-field-input-control {
+    color: var(--omaticc-text-primary);
+  }
+
+  /* Angular Material Dialogs & Overlays */
+  .mat-mdc-dialog-container .mdc-dialog__surface {
+    background-color: var(--omaticc-surface);
+    color: var(--omaticc-text-primary);
+  }
+
+  .mat-mdc-menu-panel {
+    background-color: var(--omaticc-surface);
+    border: 1px solid var(--omaticc-border);
+  }
+
+  .mat-mdc-menu-item {
+    color: var(--omaticc-text-primary);
+
+    &:hover:not([disabled]) {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+  }
+
+  /* Quill Rich Text Editor (Snow Theme Dark Adaptation) */
+  .ql-toolbar.ql-snow {
+    background-color: var(--omaticc-surface);
+    border-color: var(--omaticc-border);
+
+    .ql-stroke {
+      stroke: var(--omaticc-text-secondary);
+    }
+    .ql-fill {
+      fill: var(--omaticc-text-secondary);
+    }
+    .ql-picker-label {
+      color: var(--omaticc-text-primary);
+    }
+    .ql-picker-options {
+      background-color: var(--omaticc-surface);
+      border-color: var(--omaticc-border);
+    }
+    .ql-picker-item {
+      color: var(--omaticc-text-primary);
+    }
+  }
+
+  .ql-container.ql-snow {
+    background-color: var(--omaticc-bg-page);
+    border-color: var(--omaticc-border);
+    color: var(--omaticc-text-primary);
+  }
+}

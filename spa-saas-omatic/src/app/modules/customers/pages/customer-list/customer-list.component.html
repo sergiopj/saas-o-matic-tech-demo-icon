@@ -1,0 +1,150 @@
+<div class="customer-list-container">
+  <header class="page-header">
+    <div class="header-titles-group">
+      <img
+        src="images/corporate-customer-badge.jpg"
+        [alt]="'customers.badge.alt' | translate"
+        class="corporate-badge-img"
+        width="64"
+        height="64"
+        loading="eager"
+      />
+      <div class="header-titles">
+        <h1 class="page-title">{{ 'customers.list.title' | translate }}</h1>
+        <p class="page-subtitle">{{ 'customers.list.subtitle' | translate }}</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button
+        mat-flat-button
+        color="primary"
+        type="button"
+        class="create-customer-btn"
+        (click)="openCreateCustomerDialog()"
+        [attr.aria-label]="'customers.create.btn' | translate"
+      >
+        <mat-icon>add_business</mat-icon>
+        <span>{{ 'customers.create.btn' | translate }}</span>
+      </button>
+    </div>
+  </header>
+
+  <app-error-banner [problem]="customerApi.error()" [retryable]="true" (retry)="loadCustomers()"
+    (dismiss)="customerApi.error.set(null)" />
+
+  <section class="controls-section">
+    <div class="toolbar-row">
+      <div class="search-box">
+        <app-customer-search-bar [loading]="isSearchingText()" (searchChange)="onSearchChange($event)" />
+      </div>
+
+      @if (!initialLoading() && customers().length > 0) {
+      <div class="filter-select-wrapper">
+        <mat-form-field appearance="outline" class="country-filter-field" subscriptSizing="dynamic">
+          <mat-label>{{ 'customers.filter.selectCountry' | translate }}</mat-label>
+          <mat-icon matPrefix class="filter-icon" aria-hidden="true">public</mat-icon>
+          <mat-select [value]="selectedCountry()" [disabled]="customerApi.loading()" (selectionChange)="selectCountry($event.value)"
+            [attr.aria-label]="'customers.filter.dropdownAria' | translate">
+            @for (filter of countryFilters(); track filter.code) {
+            <mat-option [value]="filter.code">
+              {{ filter.label }}
+            </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="sort-select-wrapper">
+        <mat-form-field appearance="outline" class="sort-filter-field" subscriptSizing="dynamic">
+          <mat-label>{{ 'customers.sort.label' | translate }}</mat-label>
+          <mat-icon matPrefix class="sort-icon" aria-hidden="true">sort</mat-icon>
+          <mat-select [value]="activeSortKey()" [disabled]="customerApi.loading()" (selectionChange)="onSortChange($event.value)"
+            [attr.aria-label]="'customers.sort.aria' | translate">
+            @for (opt of sortOptions; track opt.key) {
+            <mat-option [value]="opt.key">
+              {{ opt.labelKey | translate }}
+            </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+      }
+    </div>
+
+    @if (!initialLoading() && totalCount() > 0) {
+    <div class="results-meta">
+      <span class="count-badge">{{ totalCount() }}</span>
+      <span class="count-text">{{ 'customers.list.count' | translate }}</span>
+      @if (selectedCountry() !== 'ALL') {
+      <button type="button" class="reset-filter-link" (click)="selectCountry('ALL')">
+        {{ 'customers.filter.reset' | translate }}
+      </button>
+      }
+    </div>
+    }
+  </section>
+
+  @if (initialLoading() || (customerApi.loading() && customers().length === 0)) {
+  <app-loading-state [message]="'customers.list.loading' | translate" />
+  } @else if (customers().length === 0) {
+    @if (selectedCountry() !== 'ALL') {
+    <div class="empty-state country-empty-state">
+      <div class="empty-icon-circle" aria-hidden="true">
+        <mat-icon class="empty-icon" aria-hidden="true">public_off</mat-icon>
+      </div>
+      <h2 class="empty-title">{{ 'customers.filter.empty.title' | translate }}</h2>
+      <p class="empty-desc">{{ 'customers.filter.empty.desc' | translate }}</p>
+      <button mat-stroked-button class="reset-search-btn" (click)="selectCountry('ALL')">
+        <mat-icon aria-hidden="true">public</mat-icon>
+        <span>{{ 'customers.filter.reset' | translate }}</span>
+      </button>
+    </div>
+    } @else {
+    <div class="empty-state">
+      <div class="empty-icon-circle" aria-hidden="true">
+        <mat-icon class="empty-icon" aria-hidden="true">person_search</mat-icon>
+      </div>
+      <h2 class="empty-title">{{ 'customers.list.empty.title' | translate }}</h2>
+      <p class="empty-desc">{{ 'customers.list.empty.desc' | translate }}</p>
+      @if (searchTerm()) {
+      <button mat-stroked-button class="reset-search-btn" (click)="onClearSearch()">
+        <mat-icon aria-hidden="true">restart_alt</mat-icon>
+        <span>{{ 'customers.list.empty.clearBtn' | translate }}</span>
+      </button>
+      }
+    </div>
+    }
+  } @else {
+  <div class="customers-grid-wrapper">
+    @if (customerApi.loading() && customers().length > 0) {
+    <div class="grid-loading-bar" role="progressbar" [attr.aria-label]="'customers.list.updating' | translate">
+      <mat-progress-bar mode="indeterminate" />
+    </div>
+
+    <div class="grid-loading-overlay" aria-live="polite">
+      <div class="refreshing-pill">
+        <mat-spinner diameter="20" strokeWidth="2.5" />
+        <span>{{ 'customers.list.updating' | translate }}</span>
+      </div>
+    </div>
+    }
+
+    <main class="customers-grid" [class.is-searching]="customerApi.loading()" [attr.aria-busy]="customerApi.loading()">
+      @for (customer of customers(); track customer.id) {
+      <app-customer-card [customer]="customer" />
+      }
+    </main>
+  </div>
+
+  <app-paginator
+    [totalItems]="totalCount()"
+    [currentPage]="currentPage()"
+    [pageSize]="pageSize()"
+    [pageSizeOptions]="pageSizeOptions"
+    [disabled]="customerApi.loading()"
+    [ariaLabel]="'pagination.aria' | translate"
+    (currentPageChange)="goToPage($event)"
+    (pageSizeChange)="onPageSizeChange($event)"
+  />
+  }
+</div>

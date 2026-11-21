@@ -1,0 +1,152 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentRef } from '@angular/core';
+import { provideRouter } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { of } from 'rxjs';
+import { CustomerCardComponent } from './customer-card.component';
+import { Customer } from '../../models/customer.model';
+import { I18nService } from '../../../../core/services/i18n.service';
+import { EmailComposerDialogComponent } from '../../../../shared/components/email-composer-dialog/email-composer-dialog.component';
+
+describe('CustomerCardComponent', () => {
+  let fixture: ComponentFixture<CustomerCardComponent>;
+  let component: CustomerCardComponent;
+  let componentRef: ComponentRef<CustomerCardComponent>;
+  let i18nService: I18nService;
+
+  const mockCustomer: Customer = {
+    id: 'cust-123',
+    companyName: 'Acme Corporation',
+    taxId: 'B12345678',
+    email: 'billing@acme.corp',
+    country: 'ES',
+    selectedPlan: 'Pro',
+    createdAt: '2026-11-14T10:00:00.000Z',
+  };
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [CustomerCardComponent],
+      providers: [provideRouter([])],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(CustomerCardComponent);
+    component = fixture.componentInstance;
+    componentRef = fixture.componentRef;
+    componentRef.setInput('customer', mockCustomer);
+    i18nService = TestBed.inject(I18nService);
+    i18nService.setLanguage('es');
+    fixture.detectChanges();
+  });
+
+  it('should create the customer card component', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should render company name, taxId, email and selectedPlan', () => {
+    const titleEl = fixture.nativeElement.querySelector('.company-name');
+    expect(titleEl.textContent.trim()).toBe('Acme Corporation');
+
+    const taxIdEl = fixture.nativeElement.querySelector('.tax-id-badge');
+    expect(taxIdEl.textContent.trim()).toBe('B12345678');
+
+    const emailEl = fixture.nativeElement.querySelector('.email-text');
+    expect(emailEl.textContent.trim()).toBe('billing@acme.corp');
+
+    const planEl = fixture.nativeElement.querySelector('.plan-pill');
+    expect(planEl.textContent.trim()).toBe('Pro');
+  });
+
+  it('should render company initial in avatar', () => {
+    const avatarEl = fixture.nativeElement.querySelector('.company-avatar');
+    expect(avatarEl.textContent.trim()).toBe('A');
+  });
+
+  it('should render the country code in the country badge', () => {
+    const countryEl = fixture.nativeElement.querySelector('.country-code');
+    expect(countryEl.textContent.trim()).toBe('ES');
+
+    componentRef.setInput('customer', { ...mockCustomer, country: 'US' });
+    fixture.detectChanges();
+    expect(countryEl.textContent.trim()).toBe('US');
+  });
+
+  it('should render creation date using DatePipe and dynamically adapt format to active language', () => {
+    const timeEl = fixture.nativeElement.querySelector('.date-badge time');
+    expect(timeEl).toBeTruthy();
+    expect(timeEl.getAttribute('datetime')).toBe('2026-11-14T10:00:00.000Z');
+
+    // 1. In Spanish: "14 nov 2026"
+    i18nService.setLanguage('es');
+    fixture.detectChanges();
+    expect(timeEl.textContent.trim().toLowerCase()).toContain('nov');
+
+    // 2. In English: "Nov 14, 2026"
+    i18nService.setLanguage('en');
+    fixture.detectChanges();
+    expect(timeEl.textContent.trim()).toMatch(/Nov\s+14,\s+2026/);
+
+    // 3. In German: "14.11.2026" or "14. Nov. 2026"
+    i18nService.setLanguage('de');
+    fixture.detectChanges();
+    expect(timeEl.textContent.trim()).toContain('14');
+
+    // 4. In French: "14 nov. 2026"
+    i18nService.setLanguage('fr');
+    fixture.detectChanges();
+    expect(timeEl.textContent.trim()).toContain('14');
+  });
+
+  it('should open EmailComposerDialogComponent when clicking the email button', () => {
+    const dialog = TestBed.inject(MatDialog);
+    const openSpy = vi.spyOn(dialog, 'open').mockReturnValue({
+      afterClosed: () => of(null),
+    } as unknown as ReturnType<MatDialog['open']>);
+
+    const emailBtn: HTMLButtonElement = fixture.nativeElement.querySelector('.email-action-btn');
+    emailBtn.click();
+
+    expect(openSpy).toHaveBeenCalledWith(
+      EmailComposerDialogComponent,
+      expect.objectContaining({
+        data: expect.objectContaining({
+          recipient: mockCustomer.email,
+          recipientName: mockCustomer.companyName,
+        }),
+      })
+    );
+  });
+
+  it('should trigger snackBar toast when email dialog returns sent: true', () => {
+    const dialog = TestBed.inject(MatDialog);
+    const snackBar = fixture.debugElement.injector.get(MatSnackBar);
+    const snackBarSpy = vi.spyOn(snackBar, 'open');
+    vi.spyOn(dialog, 'open').mockReturnValue({
+      afterClosed: () => of({ sent: true, recipient: 'test@example.com' }),
+    } as unknown as ReturnType<MatDialog['open']>);
+
+    component.openEmailComposer(new MouseEvent('click'));
+
+    expect(snackBarSpy).toHaveBeenCalledWith(
+      expect.any(String),
+      'OK',
+      expect.objectContaining({ duration: 4000 })
+    );
+  });
+
+  it('should emit selectCustomer event when onSimulate is called', () => {
+    let emittedCustomer: Customer | undefined;
+    component.selectCustomer.subscribe((c) => {
+      emittedCustomer = c;
+    });
+
+    component.onSimulate();
+    expect(emittedCustomer).toEqual(mockCustomer);
+  });
+
+  it('should configure routerLink targeting customer detail view', () => {
+    const simulateBtn: HTMLAnchorElement = fixture.nativeElement.querySelector('.simulate-btn');
+    expect(simulateBtn.getAttribute('href')).toBe('/customers/cust-123');
+  });
+});

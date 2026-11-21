@@ -1,0 +1,80 @@
+import { TestBed } from '@angular/core/testing';
+import { I18nService } from './i18n.service';
+import { SUPPORTED_LANGUAGES } from '../i18n/translations';
+
+describe('I18nService', () => {
+  let service: I18nService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [I18nService],
+    });
+    service = TestBed.inject(I18nService);
+  });
+
+  it('should initialize with a supported language from the configured catalog', () => {
+    const supportedCodes = SUPPORTED_LANGUAGES.map((l) => l.code);
+    expect(supportedCodes).toContain(service.currentLanguage());
+  });
+
+  it('should expose the full list of supported languages from project configuration', () => {
+    expect(service.languages).toEqual(SUPPORTED_LANGUAGES);
+  });
+
+  it('should switch language reactively and provide valid translations for all catalog languages', () => {
+    SUPPORTED_LANGUAGES.forEach(({ code, flag }) => {
+      service.setLanguage(code);
+      expect(service.currentLanguage()).toBe(code);
+      expect(service.currentFlag()).toBe(flag);
+      expect(service.t('navbar.title')).toBe('SaaS-O-Matic');
+      expect(service.t('currency.sync.loading')).toBeTruthy();
+      expect(service.t('error.communication.title')).toBeTruthy();
+    });
+  });
+
+  it('should interpolate parameter placeholders when provided', () => {
+    service.setLanguage('es');
+    const interpolated = service.t('customers.emailDialog.defaultSubject', { company: 'Acme Corp' });
+    expect(interpolated).toBe('SaaS-O-Matic: Propuesta de optimización para Acme Corp');
+  });
+
+  it('should ignore unsupported languages and preserve current language', () => {
+    service.setLanguage(SUPPORTED_LANGUAGES[0].code);
+    service.setLanguage('unsupported' as any);
+    expect(service.currentLanguage()).toBe(SUPPORTED_LANGUAGES[0].code);
+  });
+
+  it('should persist selected language to localStorage and prioritize it on detection', () => {
+    service.setLanguage('de');
+    expect(localStorage.getItem('saas_omatic_lang')).toBe('de');
+    localStorage.removeItem('saas_omatic_lang');
+  });
+
+  it('should return the key when translation is not found', () => {
+    expect(service.t('missing.translation.key' as any)).toBe('missing.translation.key');
+  });
+
+  it('should fallback to es when browser language is not in catalog', () => {
+    localStorage.removeItem('saas_omatic_lang');
+    const originalLanguage = navigator.language;
+    try {
+      Object.defineProperty(navigator, 'language', { value: 'pt-BR', configurable: true });
+      const detected = (service as any).detectLanguage();
+      expect(detected).toBe('es');
+    } finally {
+      Object.defineProperty(navigator, 'language', { value: originalLanguage, configurable: true });
+    }
+  });
+
+  it('should detect browser language when it matches supported catalog', () => {
+    localStorage.removeItem('saas_omatic_lang');
+    const originalLanguage = navigator.language;
+    try {
+      Object.defineProperty(navigator, 'language', { value: 'fr-FR', configurable: true });
+      const detected = (service as any).detectLanguage();
+      expect(detected).toBe('fr');
+    } finally {
+      Object.defineProperty(navigator, 'language', { value: originalLanguage, configurable: true });
+    }
+  });
+});

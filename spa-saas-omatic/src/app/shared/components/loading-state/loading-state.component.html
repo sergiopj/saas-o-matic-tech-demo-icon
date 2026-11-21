@@ -1,0 +1,6 @@
+<output class="loading-state-wrapper" aria-live="polite">
+  <mat-spinner [diameter]="diameter()" [strokeWidth]="strokeWidth()" />
+  @if (message()) {
+    <p class="loading-message">{{ message() }}</p>
+  }
+</output>

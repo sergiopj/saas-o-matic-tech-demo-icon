@@ -1,0 +1,378 @@
+openapi: 3.0.3
+info:
+  title: SaaS-O-Matic API
+  description: API REST para simulación y presupuestado dinámico de suscripciones B2B. Contrato API-First de la prueba técnica Omatic.
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+    description: Servidor de Desarrollo Local
+
+paths:
+  /customers:
+    post:
+      summary: Registra un nuevo cliente corporativo
+      operationId: createCustomer
+      tags:
+        - Customers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerCreate'
+      responses:
+        '201':
+          description: Cliente creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+    get:
+      summary: Busca clientes por empresa o identificador fiscal
+      operationId: searchCustomers
+      tags:
+        - Customers
+      parameters:
+        - name: search
+          in: query
+          required: false
+          description: Término de búsqueda parcial, case-insensitive, por companyName o taxId
+          schema:
+            type: string
+            example: "Omatic"
+        - name: country
+          in: query
+          required: false
+          description: Código de país ISO 3166-1 alpha-2 para filtrado de jurisdicción fiscal
+          schema:
+            type: string
+            example: "ES"
+        - name: page
+          in: query
+          required: false
+          description: Número de página (1-based) para paginación
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+            example: 1
+        - name: limit
+          in: query
+          required: false
+          description: Cantidad de clientes por página
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 12
+            example: 12
+        - name: sortBy
+          in: query
+          required: false
+          description: Campo por el cual ordenar los resultados
+          schema:
+            type: string
+            enum: [companyName, createdAt, country, taxId]
+            default: createdAt
+            example: "companyName"
+        - name: order
+          in: query
+          required: false
+          description: Dirección del ordenamiento
+          schema:
+            type: string
+            enum: [ASC, DESC]
+            default: DESC
+            example: "ASC"
+      responses:
+        '200':
+          description: Lista de clientes encontrados
+          headers:
+            X-Total-Count:
+              schema:
+                type: integer
+              description: Cantidad total de registros disponibles
+            X-Page:
+              schema:
+                type: integer
+              description: Página actual
+            X-Limit:
+              schema:
+                type: integer
+              description: Límite de elementos por página
+            X-Total-Pages:
+              schema:
+                type: integer
+              description: Cantidad total de páginas disponibles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Customer'
+
+  /customers/{id}:
+    get:
+      summary: Obtiene el detalle de un cliente
+      operationId: getCustomerById
+      tags:
+        - Customers
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: UUID del cliente
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Datos del cliente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /simulations:
+    get:
+      summary: Lista las simulaciones de un cliente ordenadas por fecha desc
+      operationId: listSimulationsByCustomer
+      tags:
+        - Simulations
+      parameters:
+        - name: customerId
+          in: query
+          required: true
+          description: UUID del cliente cuyo historial se consulta
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Historial de simulaciones del cliente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Simulation'
+    post:
+      summary: Calcula y registra una simulación de costes
+      operationId: createSimulation
+      tags:
+        - Simulations
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SimulationCreate'
+      responses:
+        '201':
+          description: Simulación calculada y registrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Simulation'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+components:
+  schemas:
+    CustomerCreate:
+      type: object
+      required:
+        - companyName
+        - taxId
+        - email
+        - country
+        - selectedPlan
+      properties:
+        companyName:
+          type: string
+          minLength: 2
+          maxLength: 120
+          example: "Omatic Telecom S.L."
+        taxId:
+          type: string
+          description: "Se normaliza con trim + mayúsculas + quitar espacios y guiones antes de validar. Si country es ES se valida con algoritmo oficial DNI/NIE/CIF."
+          example: "B12345678"
+        email:
+          type: string
+          format: email
+          example: "facturacion@omatic.es"
+        country:
+          type: string
+          minLength: 2
+          maxLength: 2
+          pattern: "^[A-Z]{2}$"
+          description: "Código ISO 3166-1 alpha-2, en mayúsculas. Determina las reglas fiscales."
+          example: "ES"
+        selectedPlan:
+          type: string
+          minLength: 2
+          maxLength: 50
+          description: "Texto libre. No es enum. El enunciado solo dice Plan Elegido."
+          example: "Pro"
+
+    Customer:
+      allOf:
+        - $ref: '#/components/schemas/CustomerCreate'
+        - type: object
+          required:
+            - id
+            - createdAt
+          properties:
+            id:
+              type: string
+              format: uuid
+            createdAt:
+              type: string
+              format: date-time
+
+    SimulationCreate:
+      type: object
+      required:
+        - customerId
+        - activeUsers
+        - storageGb
+        - apiCalls
+      properties:
+        customerId:
+          type: string
+          format: uuid
+        activeUsers:
+          type: integer
+          minimum: 0
+          description: "Número de usuarios activos. Tramo 1 es de 0 a 10, por eso 0 es válido."
+          example: 15
+        storageGb:
+          type: number
+          minimum: 0
+          description: "Almacenamiento en GB. Métrica histórica, coste 0 €."
+          example: 100
+        apiCalls:
+          type: integer
+          minimum: 0
+          description: "Llamadas a API estimadas. Métrica histórica, coste 0 €."
+          example: 50000
+
+    Simulation:
+      allOf:
+        - $ref: '#/components/schemas/SimulationCreate'
+        - type: object
+          required:
+            - id
+            - monthlyBaseCost
+            - taxRate
+            - taxAmount
+            - totalCost
+            - currency
+            - createdAt
+          properties:
+            id:
+              type: string
+              format: uuid
+            monthlyBaseCost:
+              type: number
+              format: float
+              description: "Coste base calculado por tramos, en EUR. Ejemplo 15 usuarios = 140.00"
+              example: 140.00
+            taxRate:
+              type: number
+              format: float
+              description: "Tipo impositivo en decimal. Ejemplo ES 0.21 para 21%."
+              example: 0.21
+            taxAmount:
+              type: number
+              format: float
+              description: "monthlyBaseCost * taxRate"
+              example: 29.40
+            totalCost:
+              type: number
+              format: float
+              description: "monthlyBaseCost + taxAmount"
+              example: 169.40
+            currency:
+              type: string
+              enum: [EUR]
+              description: "Backend siempre devuelve EUR. La conversión la hace el Frontend."
+              example: "EUR"
+            createdAt:
+              type: string
+              format: date-time
+
+    ProblemDetail:
+      type: object
+      required:
+        - type
+        - title
+        - status
+        - detail
+        - instance
+        - timestamp
+      properties:
+        type:
+          type: string
+          example: "https://errors.saas-o-matic.com/400"
+        title:
+          type: string
+          example: "Bad Request"
+        status:
+          type: integer
+          example: 400
+        detail:
+          type: string
+          example: "Invalid tax identifier 'B1234567X' for country 'ES'."
+        instance:
+          type: string
+          example: "/customers"
+        invalidParams:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvalidParam'
+        timestamp:
+          type: string
+          format: date-time
+
+    InvalidParam:
+      type: object
+      required:
+        - name
+        - reason
+      properties:
+        name:
+          type: string
+          example: "taxId"
+        reason:
+          type: string
+          example: "taxId must be a valid Spanish fiscal identifier (DNI/NIE/CIF)."
+
+  responses:
+    BadRequest:
+      description: Error de validación o formato (ej. CIF inválido)
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+    NotFound:
+      description: Recurso no encontrado (ej. customerId no existe)
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+    Conflict:
+      description: Conflicto, taxId ya existente
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'

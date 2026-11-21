@@ -1,0 +1,346 @@
+import { TestBed } from '@angular/core/testing';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { CustomerApiService } from './customer-api.service';
+import { Customer, CustomerCreate } from '../models/customer.model';
+import { ProblemDetail } from '../../../core/errors/problem-detail.model';
+import { errorInterceptor } from '../../../core/errors/error.interceptor';
+import { I18nService } from '../../../core/services/i18n.service';
+import { environment } from '../../../../environments/environment';
+
+describe('CustomerApiService', () => {
+  let service: CustomerApiService;
+  let httpTesting: HttpTestingController;
+  let i18n: I18nService;
+  const baseUrl = `${environment.apiBaseUrl}/customers`;
+
+  const mockCustomer: Customer = {
+    id: 'c0000000-0000-4000-8000-000000000001',
+    companyName: 'Omatic Telecom S.L.',
+    taxId: 'B12345678',
+    email: 'contacto@omatic.es',
+    country: 'ES',
+    selectedPlan: 'Enterprise',
+    createdAt: '2026-11-13T10:00:00.000Z',
+  };
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        CustomerApiService,
+        provideHttpClient(withInterceptors([errorInterceptor])),
+        provideHttpClientTesting(),
+      ],
+    });
+
+    service = TestBed.inject(CustomerApiService);
+    httpTesting = TestBed.inject(HttpTestingController);
+    i18n = TestBed.inject(I18nService);
+  });
+
+  afterEach(() => {
+    httpTesting.verify();
+  });
+
+  it('should be created with initial signals in default state', () => {
+    expect(service).toBeTruthy();
+    expect(service.loading()).toBe(false);
+    expect(service.error()).toBeNull();
+  });
+
+  describe('search', () => {
+    it('should query customers with search term and update signals', () => {
+      let resultItems: Customer[] = [];
+      let resultTotal = 0;
+
+      service.search('Omatic').subscribe((response) => {
+        resultItems = response.items;
+        resultTotal = response.total;
+      });
+
+      expect(service.loading()).toBe(true);
+
+      const req = httpTesting.expectOne(`${baseUrl}?search=Omatic`);
+      expect(req.request.method).toBe('GET');
+      req.flush([mockCustomer], { headers: { 'x-total-count': '1' } });
+
+      expect(resultItems).toEqual([mockCustomer]);
+      expect(resultTotal).toBe(1);
+      expect(service.loading()).toBe(false);
+      expect(service.error()).toBeNull();
+    });
+
+    it('should query all customers when no search term is given', () => {
+      let resultItems: Customer[] = [];
+
+      service.search().subscribe((response) => {
+        resultItems = response.items;
+      });
+
+      const req = httpTesting.expectOne(baseUrl);
+      expect(req.request.method).toBe('GET');
+      expect(req.request.params.has('search')).toBe(false);
+      expect(req.request.params.has('country')).toBe(false);
+      req.flush([mockCustomer]);
+
+      expect(resultItems).toEqual([mockCustomer]);
+    });
+
+    it('should query customers with country filter parameter', () => {
+      let resultItems: Customer[] = [];
+
+      service.search(undefined, 'ES').subscribe((response) => {
+        resultItems = response.items;
+      });
+
+      const req = httpTesting.expectOne(`${baseUrl}?country=ES`);
+      expect(req.request.method).toBe('GET');
+      req.flush([mockCustomer]);
+
+      expect(resultItems).toEqual([mockCustomer]);
+    });
+
+    it('should combine search term and country filter in query params', () => {
+      service.search('Omatic', 'ES').subscribe();
+
+      const req = httpTesting.expectOne(`${baseUrl}?search=Omatic&country=ES`);
+      expect(req.request.method).toBe('GET');
+      req.flush([mockCustomer]);
+    });
+
+    it('should pass pagination parameters page and limit and read x-total-count header', () => {
+      let resultTotal = 0;
+
+      service.search(undefined, undefined, 2, 10).subscribe((response) => {
+        resultTotal = response.total;
+      });
+
+      const req = httpTesting.expectOne(`${baseUrl}?page=2&limit=10`);
+      expect(req.request.method).toBe('GET');
+      req.flush([mockCustomer], { headers: { 'x-total-count': '45' } });
+
+      expect(resultTotal).toBe(45);
+    });
+
+    it('should pass sortBy and order query parameters when provided', () => {
+      service.search('Omatic', 'ES', 1, 12, 'companyName', 'ASC').subscribe();
+
+      const req = httpTesting.expectOne(
+        `${baseUrl}?search=Omatic&country=ES&page=1&limit=12&sortBy=companyName&order=ASC`
+      );
+      expect(req.request.method).toBe('GET');
+      expect(req.request.params.get('sortBy')).toBe('companyName');
+      expect(req.request.params.get('order')).toBe('ASC');
+      req.flush([mockCustomer]);
+    });
+
+    it('should omit country param when country is ALL', () => {
+      service.search('Omatic', 'ALL').subscribe();
+
+      const req = httpTesting.expectOne(`${baseUrl}?search=Omatic`);
+      expect(req.request.method).toBe('GET');
+      expect(req.request.params.has('country')).toBe(false);
+      req.flush([mockCustomer]);
+    });
+  });
+
+  describe('getById', () => {
+    it('should retrieve customer detail by ID', () => {
+      let result: Customer | undefined;
+
+      service.getById(mockCustomer.id).subscribe((customer) => {
+        result = customer;
+      });
+
+      const req = httpTesting.expectOne(`${baseUrl}/${mockCustomer.id}`);
+      expect(req.request.method).toBe('GET');
+      req.flush(mockCustomer);
+
+      expect(result).toEqual(mockCustomer);
+      expect(service.loading()).toBe(false);
+    });
+  });
+
+  describe('create', () => {
+    it('should post new customer and return created entity', () => {
+      const payload: CustomerCreate = {
+        companyName: 'Omatic Telecom S.L.',
+        taxId: 'B12345678',
+        email: 'contacto@omatic.es',
+        country: 'ES',
+        selectedPlan: 'Enterprise',
+      };
+
+      let result: Customer | undefined;
+
+      service.create(payload).subscribe((customer) => {
+        result = customer;
+      });
+
+      const req = httpTesting.expectOne(baseUrl);
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual(payload);
+      req.flush(mockCustomer);
+
+      expect(result).toEqual(mockCustomer);
+      expect(service.loading()).toBe(false);
+    });
+  });
+
+  describe('update', () => {
+    it('should patch customer by id and return updated entity', () => {
+      const updatePayload: Partial<CustomerCreate> = {
+        companyName: 'Omatic Telecom Updated',
+        email: 'billing@omatic.es',
+      };
+      const updatedMock: Customer = {
+        ...mockCustomer,
+        companyName: 'Omatic Telecom Updated',
+        email: 'billing@omatic.es',
+      };
+
+      let result: Customer | undefined;
+
+      service.update('cust-123', updatePayload).subscribe((customer) => {
+        result = customer;
+      });
+
+      const req = httpTesting.expectOne(`${baseUrl}/cust-123`);
+      expect(req.request.method).toBe('PATCH');
+      expect(req.request.body).toEqual(updatePayload);
+      req.flush(updatedMock);
+
+      expect(result).toEqual(updatedMock);
+      expect(service.loading()).toBe(false);
+    });
+
+    it('should capture backend ProblemDetail error on update failure', () => {
+      const backendError: ProblemDetail = {
+        type: 'https://errors.saas-o-matic.com/404',
+        title: 'Not Found',
+        status: 404,
+        detail: 'Customer not found',
+        instance: '/customers/cust-123',
+        timestamp: '2026-11-13T10:00:00.000Z',
+      };
+
+      let capturedError: ProblemDetail | undefined;
+
+      service.update('cust-123', { companyName: 'New' }).subscribe({
+        next: () => {
+          throw new Error('should have failed with 404');
+        },
+        error: (err: ProblemDetail) => {
+          capturedError = err;
+        },
+      });
+
+      const req = httpTesting.expectOne(`${baseUrl}/cust-123`);
+      req.flush(backendError, { status: 404, statusText: 'Not Found' });
+
+      expect(capturedError).toEqual(backendError);
+      expect(service.error()).toEqual(backendError);
+      expect(service.loading()).toBe(false);
+    });
+  });
+
+  describe('error handling (RFC 7807 via errorInterceptor)', () => {
+    it('should capture backend ProblemDetail error and update error signal', () => {
+      const backendError: ProblemDetail = {
+        type: 'https://errors.saas-o-matic.com/400',
+        title: 'Bad Request',
+        status: 400,
+        detail: 'Invalid tax identifier',
+        instance: '/customers',
+        invalidParams: [{ name: 'taxId', reason: 'taxId must be valid DNI/NIE/CIF' }],
+        timestamp: '2026-11-13T10:00:00.000Z',
+      };
+
+      let capturedError: ProblemDetail | undefined;
+
+      service.create({} as CustomerCreate).subscribe({
+        next: () => {
+          throw new Error('should have failed with 400');
+        },
+        error: (err: ProblemDetail) => {
+          capturedError = err;
+        },
+      });
+
+      const req = httpTesting.expectOne(baseUrl);
+      req.flush(backendError, { status: 400, statusText: 'Bad Request' });
+
+      expect(capturedError).toEqual(backendError);
+      expect(service.error()).toEqual(backendError);
+      expect(service.loading()).toBe(false);
+    });
+
+    it('should receive about:blank fallback normalized by errorInterceptor when network drops', () => {
+      let capturedError: ProblemDetail | undefined;
+
+      service.getById('non-existent').subscribe({
+        next: () => {
+          throw new Error('should have failed with network error');
+        },
+        error: (err: ProblemDetail) => {
+          capturedError = err;
+        },
+      });
+
+      const req = httpTesting.expectOne(`${baseUrl}/non-existent`);
+      req.error(new ProgressEvent('error'), { status: 0, statusText: 'Unknown Error' });
+
+      expect(capturedError?.type).toBe('about:blank');
+      expect(capturedError?.title).toBe(i18n.t('error.communication.title'));
+      expect(service.error()?.type).toBe('about:blank');
+      expect(service.loading()).toBe(false);
+    });
+
+    it('should fetch lightweight read-model projections with fields=lite', () => {
+      const mockLiteList = [
+        { id: 'c1', companyName: 'omaticc Corp', country: 'ES' },
+        { id: 'c2', companyName: 'Berlin Cloud', country: 'DE' },
+      ];
+
+      service.getRecentLite(2).subscribe((res) => {
+        expect(res.items).toEqual(mockLiteList);
+        expect(res.items[0].companyName).toBe('omaticc Corp');
+      });
+
+      const req = httpTesting.expectOne(
+        (request) =>
+          request.url === baseUrl &&
+          request.params.get('fields') === 'lite' &&
+          request.params.get('limit') === '2' &&
+          request.params.get('sortBy') === 'createdAt' &&
+          request.params.get('order') === 'DESC'
+      );
+      expect(req.request.method).toBe('GET');
+      req.flush(mockLiteList, { headers: { 'x-total-count': '2' } });
+    });
+
+    it('should clear error state when clearError is called', () => {
+      service.error.set({
+        type: 'about:blank',
+        title: 'Error',
+        status: 400,
+        detail: 'Test detail',
+        instance: baseUrl,
+        timestamp: new Date().toISOString(),
+      });
+      expect(service.error()).toBeTruthy();
+      service.clearError();
+      expect(service.error()).toBeNull();
+    });
+
+    it('should normalize non-object or non-problem error objects', () => {
+      const normalized = (service as any).normalizeProblem('string error');
+      expect(normalized.type).toBe('about:blank');
+      expect(normalized.title).toBe(i18n.t('error.communication.title'));
+      expect(normalized.status).toBe(500);
+
+      const normalizedWithStatus = (service as any).normalizeProblem({ status: 503 });
+      expect(normalizedWithStatus.status).toBe(503);
+    });
+  });
+});

@@ -1,0 +1,566 @@
+<div class="customer-detail-page">
+  <!-- Top Navigation -->
+  <div class="page-top-nav">
+    <a mat-button routerLink="/customers" class="back-link">
+      <mat-icon aria-hidden="true">arrow_back</mat-icon>
+      <span>{{ 'customerDetail.back' | translate }}</span>
+    </a>
+  </div>
+
+  <app-error-banner
+    [problem]="customerApi.error() || simulationApi.error()"
+    [retryable]="true"
+    (retry)="customer() ? loadSimulationsHistory(customer()!.id) : null"
+    (dismiss)="customerApi.clearError(); simulationApi.clearError()"
+  />
+
+  @if (customerLoading()) {
+    <app-loading-state [message]="'customerDetail.loading' | translate" />
+  } @else if (!customer()) {
+    <div class="empty-not-found">
+      <mat-icon class="not-found-icon">person_off</mat-icon>
+      <h2>{{ 'customerDetail.notFound' | translate }}</h2>
+      <a mat-flat-button routerLink="/customers">{{ 'customerDetail.back' | translate }}</a>
+    </div>
+  } @else {
+    <!-- Corporate Profile Card -->
+    <header class="customer-profile-card">
+      <div class="profile-main">
+        <div class="company-avatar">{{ customer()!.companyName.charAt(0).toUpperCase() }}</div>
+        <div class="company-info">
+          <div class="company-header-row">
+            <h1 class="company-title">{{ customer()!.companyName }}</h1>
+            <span class="country-badge">{{ customer()!.country }}</span>
+            <span class="plan-pill" [class]="'plan-' + customer()!.selectedPlan.toLowerCase()">
+              {{ customer()!.selectedPlan }}
+            </span>
+            <button
+              mat-stroked-button
+              type="button"
+              class="edit-customer-btn"
+              (click)="openEditCustomerDialog()"
+              [attr.aria-label]="'customers.edit.btn' | translate"
+            >
+              <mat-icon aria-hidden="true">edit</mat-icon>
+              <span>{{ 'customers.edit.btn' | translate }}</span>
+            </button>
+          </div>
+
+          <div class="meta-chips-row">
+            <div class="meta-item">
+              <mat-icon class="meta-icon" aria-hidden="true">badge</mat-icon>
+              <span class="meta-label">{{ 'customers.card.taxId' | translate }}:</span>
+              <strong class="meta-value">{{ customer()!.taxId }}</strong>
+            </div>
+
+            <div class="meta-item">
+              <mat-icon class="meta-icon" aria-hidden="true">calendar_today</mat-icon>
+              <span class="meta-label">{{ 'customerDetail.created' | translate }}:</span>
+              <span class="meta-value">{{ customer()!.createdAt | date:'mediumDate' }}</span>
+            </div>
+
+            <button
+              type="button"
+              class="email-composer-btn"
+              (click)="openEmailComposer()"
+              [matTooltip]="'customers.card.emailTooltip' | translate"
+            >
+              <mat-icon class="meta-icon" aria-hidden="true">mail</mat-icon>
+              <span class="email-text">{{ customer()!.email }}</span>
+              <mat-icon class="launch-icon" aria-hidden="true">open_in_new</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <div class="profile-badge-visual">
+          <img
+            src="images/corporate-customer-badge.jpg"
+            [alt]="'customerDetail.badge.alt' | translate"
+            class="profile-corporate-badge"
+            width="84"
+            height="84"
+            loading="lazy"
+          />
+        </div>
+      </div>
+    </header>
+
+    <!-- Interactive Simulation Studio Grid -->
+    <div class="simulation-studio-grid">
+      <!-- Left Column: Controls and Parameters -->
+      <section class="studio-card controls-card">
+        <div class="card-title-group">
+          <mat-icon class="title-icon" aria-hidden="true">tune</mat-icon>
+          <div>
+            <h2 class="card-title">{{ 'simulation.studio.title' | translate }}</h2>
+            <p class="card-subtitle">{{ 'simulation.studio.subtitle' | translate }}</p>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <div class="control-header">
+            <label for="users-input" class="control-label">
+              <mat-icon aria-hidden="true">person</mat-icon>
+              <span>{{ 'simulation.form.activeUsers' | translate }}</span>
+            </label>
+            <input
+              id="users-input"
+              type="number"
+              min="1"
+              max="1000"
+              class="number-stepper"
+              [value]="activeUsers()"
+              (input)="onUsersInputChange(+$any($event.target).value)"
+            />
+          </div>
+
+          <mat-slider min="1" max="150" step="1" discrete class="users-slider">
+            <input matSliderThumb [value]="activeUsers()" (input)="onUsersSliderChange($event)" />
+          </mat-slider>
+
+          <!-- Tiers Indicator Bar -->
+          <div class="tiers-visual-bar">
+            <div class="bar-segment t1" [class.is-active]="activeUsers() > 0" [attr.title]="'simulation.tiers.tier1Title' | translate">
+              <span>T1 (10 €)</span>
+            </div>
+            <div class="bar-segment t2" [class.is-active]="activeUsers() > 10" [attr.title]="'simulation.tiers.tier2Title' | translate">
+              <span>T2 (8 €)</span>
+            </div>
+            <div class="bar-segment t3" [class.is-active]="activeUsers() > 50" [attr.title]="'simulation.tiers.tier3Title' | translate">
+              <span>T3 (5 €)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="metrics-row">
+          <mat-form-field appearance="outline" class="metric-field">
+            <mat-label>{{ 'simulation.form.storage' | translate }}</mat-label>
+            <mat-icon matPrefix>cloud</mat-icon>
+            <input
+              matInput
+              type="number"
+              min="0"
+              [value]="storageGb()"
+              (input)="onStorageChange(+$any($event.target).value)"
+            />
+            <mat-hint>{{ 'simulation.form.storageHint' | translate }}</mat-hint>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="metric-field">
+            <mat-label>{{ 'simulation.form.apiCalls' | translate }}</mat-label>
+            <mat-icon matPrefix>api</mat-icon>
+            <input
+              matInput
+              type="number"
+              min="0"
+              step="1000"
+              [value]="apiCalls()"
+              (input)="onApiCallsChange(+$any($event.target).value)"
+            />
+            <mat-hint>{{ 'simulation.form.apiCallsHint' | translate }}</mat-hint>
+          </mat-form-field>
+        </div>
+
+        @if (saveSuccess()) {
+          <output class="save-success-banner">
+            <mat-icon aria-hidden="true">check_circle</mat-icon>
+            <span>{{ 'simulation.form.savedSuccess' | translate }}</span>
+          </output>
+        }
+
+        <button
+          mat-flat-button
+          class="save-simulation-btn"
+          [disabled]="isSaving()"
+          (click)="saveSimulation()"
+        >
+          <span>{{ (isSaving() ? 'simulation.form.saving' : 'simulation.form.saveBtn') | translate }}</span>
+        </button>
+      </section>
+
+      <!-- Right Column: Live Projection Breakdown -->
+      <section class="studio-card projection-card">
+        <div class="card-title-group">
+          <mat-icon class="title-icon gold" aria-hidden="true">receipt_long</mat-icon>
+          <div>
+            <h2 class="card-title">{{ 'simulation.breakdown.title' | translate }}</h2>
+            <p class="card-subtitle">{{ customer()!.companyName }} • {{ customer()!.country }}</p>
+          </div>
+        </div>
+
+        <div class="breakdown-list">
+          <div class="breakdown-row tier-row">
+            <div class="breakdown-label">
+              <span class="tier-tag t1">T1</span>
+              <span>{{ 'simulation.breakdown.tier1' | translate }}</span>
+              <span class="tier-calc">({{ tier1Users() }} × {{ 10 | localizedCurrency }})</span>
+            </div>
+            <strong class="breakdown-val">{{ tier1Cost() | localizedCurrency }}</strong>
+          </div>
+
+          <div class="breakdown-row tier-row">
+            <div class="breakdown-label">
+              <span class="tier-tag t2">T2</span>
+              <span>{{ 'simulation.breakdown.tier2' | translate }}</span>
+              <span class="tier-calc">({{ tier2Users() }} × {{ 8 | localizedCurrency }})</span>
+            </div>
+            <strong class="breakdown-val">{{ tier2Cost() | localizedCurrency }}</strong>
+          </div>
+
+          <div class="breakdown-row tier-row">
+            <div class="breakdown-label">
+              <span class="tier-tag t3">T3</span>
+              <span>{{ 'simulation.breakdown.tier3' | translate }}</span>
+              <span class="tier-calc">({{ tier3Users() }} × {{ 5 | localizedCurrency }})</span>
+            </div>
+            <strong class="breakdown-val">{{ tier3Cost() | localizedCurrency }}</strong>
+          </div>
+
+          <div class="breakdown-row tier-row capacity-tier-row">
+            <div class="breakdown-label">
+              <span class="tier-tag cap">INFRA</span>
+              <span>{{ 'simulation.breakdown.capacity' | translate }}</span>
+              <span class="tier-calc">({{ storageGb() }} GB • {{ apiCalls() | number }} calls)</span>
+            </div>
+            <span class="capacity-badge">{{ 'simulation.breakdown.included' | translate }}</span>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="breakdown-row subtotal-row">
+            <span>{{ 'simulation.breakdown.baseCost' | translate }}</span>
+            <strong>{{ projection().monthlyBaseCostEur | localizedCurrency }}</strong>
+          </div>
+
+          <div class="breakdown-row tax-row">
+            <span>
+              {{ 'simulation.breakdown.tax' | translate }}
+              ({{ taxPercentage() }}% {{ customer()?.country }})
+            </span>
+            <strong>+{{ projection().taxAmountEur | localizedCurrency }}</strong>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="breakdown-row total-eur-row">
+            <span>{{ 'simulation.breakdown.total' | translate }} ({{ currencyService.selectedCurrency() }})</span>
+            <strong class="eur-amount">{{ projection().totalCostEur | localizedCurrency }}</strong>
+          </div>
+
+          <!-- Highlight Converted Amount in Active Currency -->
+          <div class="converted-highlight-box">
+            <div class="converted-label-group">
+              <span class="highlight-tag">{{ 'simulation.breakdown.liveConversion' | translate }}</span>
+              <span class="converted-label">{{ 'simulation.breakdown.converted' | translate }}</span>
+            </div>
+            <div class="converted-amount">
+              {{ projection().totalCostEur | localizedCurrency }}
+            </div>
+            <span class="rate-indicator">
+              1 EUR = {{ currencyService.currentRate().toFixed(4) }} {{ currencyService.selectedCurrency() }}
+              @if (currencyService.selectedCurrency() !== 'EUR') {
+                • Base: {{ projection().totalCostEur | localizedCurrency:'EUR' }}
+              }
+            </span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Chronological Simulations History with Slide-over Drawer Filters & Pagination -->
+    <section class="studio-card history-card">
+      <div class="history-header">
+        <div class="card-title-group">
+          <mat-icon class="title-icon purple" aria-hidden="true">history</mat-icon>
+          <div>
+            <h2 class="card-title">{{ 'simulation.history.title' | translate }}</h2>
+            <p class="card-subtitle">
+              @if (activeFiltersCount() > 0) {
+                {{ 'simulation.history.countFiltered' | translate:{ filtered: filteredSimulations().length, total: simulations().length } }}
+              } @else {
+                {{ 'simulation.history.countAll' | translate:{ total: simulations().length } }}
+              }
+            </p>
+          </div>
+        </div>
+
+        <div class="history-actions-group">
+          <button
+            type="button"
+            mat-stroked-button
+            class="filter-trigger-btn"
+            (click)="openFilterDrawer()"
+            [class.has-active-filters]="activeFiltersCount() > 0"
+          >
+            <mat-icon aria-hidden="true">tune</mat-icon>
+            <span>{{ 'simulation.history.filterBtn' | translate }}</span>
+            @if (activeFiltersCount() > 0) {
+              <span class="active-badge">{{ activeFiltersCount() }}</span>
+            }
+          </button>
+
+          @if (activeFiltersCount() > 0) {
+            <button
+              type="button"
+              mat-button
+              class="clear-quick-btn"
+              (click)="resetFilters()"
+            >
+              <mat-icon aria-hidden="true">clear_all</mat-icon>
+              <span>{{ 'simulation.history.clearFilters' | translate }}</span>
+            </button>
+          }
+        </div>
+      </div>
+
+      @if (simulationsLoading()) {
+        <app-loading-state [message]="'customers.list.loading' | translate" />
+      } @else if (simulations().length === 0) {
+        <div class="history-empty">
+          <mat-icon class="empty-icon">history_toggle_off</mat-icon>
+          <p>{{ 'simulation.history.empty' | translate }}</p>
+        </div>
+      } @else if (filteredSimulations().length === 0) {
+        <div class="history-empty filtered-empty">
+          <mat-icon class="empty-icon">filter_alt_off</mat-icon>
+          <p>{{ 'simulation.history.noResultsFiltered' | translate }}</p>
+          <button mat-stroked-button color="primary" class="reset-filter-action" (click)="resetFilters()">
+            <mat-icon aria-hidden="true">restart_alt</mat-icon>
+            <span>{{ 'simulation.history.clearFilters' | translate }}</span>
+          </button>
+        </div>
+      } @else {
+        <div class="table-responsive">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>{{ 'simulation.history.date' | translate }}</th>
+                <th>{{ 'simulation.history.users' | translate }}</th>
+                <th>{{ 'simulation.history.storageApi' | translate }}</th>
+                <th>{{ 'simulation.history.base' | translate }}</th>
+                <th>{{ 'simulation.history.tax' | translate }}</th>
+                <th>{{ 'simulation.history.total' | translate }}</th>
+                <th>{{ 'simulation.history.converted' | translate }}</th>
+                <th class="actions-col">{{ 'simulation.history.actions' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (sim of paginatedSimulations(); track sim.id) {
+                <tr class="history-row" (click)="loadSimulationIntoStudio(sim)" [attr.title]="'simulation.history.loadBtn' | translate">
+                  <td class="date-cell">{{ sim.createdAt | date:'short' }}</td>
+                  <td class="users-cell">
+                    <span class="users-badge">{{ sim.activeUsers }} u</span>
+                  </td>
+                  <td class="metrics-cell">{{ sim.storageGb }} GB • {{ sim.apiCalls | number }} calls</td>
+                  <td>{{ sim.monthlyBaseCost | localizedCurrency:'EUR' }}</td>
+                  <td class="tax-cell">
+                    {{ sim.taxAmount | localizedCurrency:'EUR' }}
+                    <span class="tax-rate-sub">({{ sim.taxRate | percent:'1.0-0' }})</span>
+                  </td>
+                  <td class="total-eur-cell">
+                    <strong>{{ sim.totalCost | localizedCurrency:'EUR' }}</strong>
+                  </td>
+                  <td class="converted-cell">
+                    <strong class="converted-val">
+                      {{ sim.totalCost | localizedCurrency }}
+                    </strong>
+                  </td>
+                  <td class="actions-cell" (click)="$event.stopPropagation()">
+                    <button
+                      type="button"
+                      mat-icon-button
+                      class="load-sim-btn"
+                      (click)="loadSimulationIntoStudio(sim)"
+                      [attr.aria-label]="'simulation.history.loadBtn' | translate"
+                      [matTooltip]="'simulation.history.loadBtn' | translate"
+                    >
+                      <mat-icon aria-hidden="true">settings_backup_restore</mat-icon>
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <app-paginator
+          [totalItems]="filteredSimulations().length"
+          [(currentPage)]="historyPage"
+          [(pageSize)]="historyPageSize"
+          [pageSizeOptions]="[5, 10, 20]"
+          [ariaLabel]="'simulation.history.paginationAria' | translate"
+        />
+      }
+    </section>
+
+    <!-- Generic Slide-over Drawer for Advanced Filters -->
+    <app-slide-over-drawer
+      [(isOpen)]="isFilterDrawerOpen"
+      [title]="'simulation.history.filtersTitle' | translate"
+      [subtitle]="'simulation.history.filtersSubtitle' | translate"
+      icon="tune"
+      width="460px"
+    >
+      <div drawer-header-actions>
+        @if (activeFiltersCount() > 0) {
+          <span class="drawer-active-badge">
+            {{ 'simulation.history.activeBadge' | translate:{ count: activeFiltersCount() } }}
+          </span>
+        }
+      </div>
+
+      <!-- Drawer Body: Filter Controls -->
+      <div class="drawer-filters-container">
+        <!-- 1. Interactive Calendar Date Range Picker -->
+        <div class="filter-section">
+          <label class="filter-section-title">
+            <mat-icon class="section-icon">calendar_today</mat-icon>
+            <span>{{ 'simulation.history.filterDateRange' | translate }}</span>
+          </label>
+          <mat-form-field appearance="outline" class="w-full filter-date-field" subscriptSizing="dynamic" floatLabel="always">
+            <mat-label>{{ 'simulation.history.filterDateRange' | translate }}</mat-label>
+            <mat-date-range-input [rangePicker]="simRangePicker">
+              <input
+                matStartDate
+                [placeholder]="'simulation.history.dateFrom' | translate"
+                [value]="filterDateFrom()"
+                (dateChange)="onDateFromChange($event.value)"
+              />
+              <input
+                matEndDate
+                [placeholder]="'simulation.history.dateTo' | translate"
+                [value]="filterDateTo()"
+                (dateChange)="onDateToChange($event.value)"
+              />
+            </mat-date-range-input>
+            <mat-datepicker-toggle matIconSuffix [for]="simRangePicker" />
+            <mat-date-range-picker #simRangePicker />
+          </mat-form-field>
+        </div>
+
+        <!-- 2. Active Users Range (Min / Max) -->
+        <div class="filter-section">
+          <label class="filter-section-title">
+            <mat-icon class="section-icon">group</mat-icon>
+            <span>{{ 'simulation.history.filterUsers' | translate }}</span>
+          </label>
+          <div class="range-inputs-row">
+            <mat-form-field appearance="outline" class="range-field" subscriptSizing="dynamic" floatLabel="always">
+              <mat-label>{{ 'simulation.history.min' | translate }}</mat-label>
+              <input
+                matInput
+                type="number"
+                min="0"
+                [value]="filterMinUsers() ?? ''"
+                (input)="onMinUsersChange($event)"
+                placeholder="0"
+              />
+            </mat-form-field>
+            <span class="range-separator">—</span>
+            <mat-form-field appearance="outline" class="range-field" subscriptSizing="dynamic" floatLabel="always">
+              <mat-label>{{ 'simulation.history.max' | translate }}</mat-label>
+              <input
+                matInput
+                type="number"
+                min="0"
+                [value]="filterMaxUsers() ?? ''"
+                (input)="onMaxUsersChange($event)"
+                placeholder="1000"
+              />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- 3. API Calls Range (Min / Max) -->
+        <div class="filter-section">
+          <label class="filter-section-title">
+            <mat-icon class="section-icon">api</mat-icon>
+            <span>{{ 'simulation.history.filterApiCalls' | translate }}</span>
+          </label>
+          <div class="range-inputs-row">
+            <mat-form-field appearance="outline" class="range-field" subscriptSizing="dynamic" floatLabel="always">
+              <mat-label>{{ 'simulation.history.min' | translate }}</mat-label>
+              <input
+                matInput
+                type="number"
+                min="0"
+                step="1000"
+                [value]="filterMinApiCalls() ?? ''"
+                (input)="onMinApiCallsChange($event)"
+                placeholder="0"
+              />
+            </mat-form-field>
+            <span class="range-separator">—</span>
+            <mat-form-field appearance="outline" class="range-field" subscriptSizing="dynamic" floatLabel="always">
+              <mat-label>{{ 'simulation.history.max' | translate }}</mat-label>
+              <input
+                matInput
+                type="number"
+                min="0"
+                step="1000"
+                [value]="filterMaxApiCalls() ?? ''"
+                (input)="onMaxApiCallsChange($event)"
+                placeholder="500000"
+              />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- 4. Storage Range (Min / Max GB) -->
+        <div class="filter-section">
+          <label class="filter-section-title">
+            <mat-icon class="section-icon">cloud</mat-icon>
+            <span>{{ 'simulation.history.filterStorage' | translate }}</span>
+          </label>
+          <div class="range-inputs-row">
+            <mat-form-field appearance="outline" class="range-field" subscriptSizing="dynamic" floatLabel="always">
+              <mat-label>{{ 'simulation.history.min' | translate }}</mat-label>
+              <input
+                matInput
+                type="number"
+                min="0"
+                [value]="filterMinStorage() ?? ''"
+                (input)="onMinStorageChange($event)"
+                placeholder="0"
+              />
+            </mat-form-field>
+            <span class="range-separator">—</span>
+            <mat-form-field appearance="outline" class="range-field" subscriptSizing="dynamic" floatLabel="always">
+              <mat-label>{{ 'simulation.history.max' | translate }}</mat-label>
+              <input
+                matInput
+                type="number"
+                min="0"
+                [value]="filterMaxStorage() ?? ''"
+                (input)="onMaxStorageChange($event)"
+                placeholder="1000"
+              />
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+
+      <!-- Drawer Footer Actions -->
+      <div drawer-footer class="drawer-footer-content">
+        <button
+          type="button"
+          mat-button
+          class="clear-drawer-btn"
+          (click)="resetFilters()"
+          [disabled]="activeFiltersCount() === 0"
+        >
+          <mat-icon aria-hidden="true">clear_all</mat-icon>
+          <span>{{ 'simulation.history.clearFilters' | translate }}</span>
+        </button>
+        <button
+          type="button"
+          mat-flat-button
+          class="apply-drawer-btn"
+          (click)="closeFilterDrawer()"
+        >
+          <span>{{ 'simulation.history.applyFilters' | translate }} ({{ filteredSimulations().length }})</span>
+        </button>
+      </div>
+    </app-slide-over-drawer>
+  }
+</div>

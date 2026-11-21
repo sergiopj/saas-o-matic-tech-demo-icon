@@ -1,0 +1,17 @@
+.loading-state-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3.5rem 1rem;
+  gap: 1rem;
+  text-align: center;
+  --mdc-circular-progress-active-indicator-color: var(--omaticc-accent-blue);
+
+  .loading-message {
+    margin: 0;
+    color: var(--omaticc-text-secondary);
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+}

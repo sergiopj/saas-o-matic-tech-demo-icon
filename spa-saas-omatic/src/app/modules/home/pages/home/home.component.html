@@ -1,0 +1,203 @@
+<div class="home-container">
+  <!-- Hero Section -->
+  <section class="hero-banner">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <mat-icon aria-hidden="true">verified</mat-icon>
+        <span>SaaS-O-Matic Engine</span>
+      </div>
+      <h1 class="hero-title">{{ 'home.hero.title' | translate }}</h1>
+      <p class="hero-subtitle">{{ 'home.hero.subtitle' | translate }}</p>
+      <div class="hero-actions">
+        <a mat-flat-button routerLink="/customers" class="hero-btn primary">
+          <mat-icon aria-hidden="true">groups</mat-icon>
+          <span>{{ 'home.recent.viewAll' | translate }}</span>
+        </a>
+        <a mat-stroked-button routerLink="/simulations" class="hero-btn secondary">
+          <mat-icon aria-hidden="true">tune</mat-icon>
+          <span>{{ 'sidebar.simulations' | translate }}</span>
+        </a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <img
+        src="images/hero-illustration.jpg"
+        [alt]="'home.hero.imgAlt' | translate"
+        class="hero-illustration"
+        loading="eager"
+      />
+    </div>
+  </section>
+
+  <app-error-banner
+    [problem]="customerApi.error()"
+    [retryable]="true"
+    (retry)="loadRecentCustomers()"
+    (dismiss)="customerApi.error.set(null)"
+  />
+
+  <!-- KPI Metrics Grid -->
+  <section class="kpis-grid">
+    <a
+      routerLink="/customers"
+      class="kpi-card clickable"
+      [attr.aria-label]="'home.kpi.customersLinkAria' | translate"
+    >
+      <div
+        class="kpi-icon-circle blue"
+        [style.--fill-angle]="customersFillAngle() + 'deg'"
+        aria-hidden="true"
+      >
+        <mat-icon aria-hidden="true">groups</mat-icon>
+      </div>
+      <div class="kpi-details">
+        <span class="kpi-value">{{ displayedCustomers() }}</span>
+        <span class="kpi-label">{{ 'home.kpi.customers' | translate }}</span>
+      </div>
+      <mat-icon class="kpi-arrow" aria-hidden="true">arrow_forward</mat-icon>
+    </a>
+
+    <div class="kpi-card">
+      <div
+        class="kpi-icon-circle emerald"
+        [style.--fill-angle]="countriesFillAngle() + 'deg'"
+        aria-hidden="true"
+      >
+        <mat-icon aria-hidden="true">public</mat-icon>
+      </div>
+      <div class="kpi-details">
+        <span class="kpi-value">{{ displayedCountries() }}</span>
+        <span class="kpi-label">{{ 'home.kpi.countries' | translate }}</span>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div
+        class="kpi-icon-circle amber"
+        [style.--fill-angle]="tiersFillAngle() + 'deg'"
+        aria-hidden="true"
+      >
+        <mat-icon aria-hidden="true">layers</mat-icon>
+      </div>
+      <div class="kpi-details">
+        <span class="kpi-value">{{ displayedTiers() }}</span>
+        <span class="kpi-label">{{ 'home.kpi.tiers' | translate }}</span>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-icon-circle purple" aria-hidden="true">
+        <mat-icon aria-hidden="true">payments</mat-icon>
+      </div>
+      <div class="kpi-details">
+        <span class="kpi-value">{{ currencyService.selectedCurrency() }}</span>
+        <span class="kpi-label">{{ 'home.kpi.currency' | translate }}</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Tiers Feature Banner -->
+  <section class="pricing-feature-card">
+    <div class="pricing-header">
+      <div class="pricing-title-group">
+        <mat-icon class="pricing-icon" aria-hidden="true">trending_up</mat-icon>
+        <h2 class="pricing-title">{{ 'home.pricing.title' | translate }}</h2>
+      </div>
+      <a mat-stroked-button routerLink="/simulations" class="hub-link-btn">
+        <mat-icon aria-hidden="true">calculate</mat-icon>
+        <span>{{ 'sidebar.simulations' | translate }}</span>
+      </a>
+    </div>
+
+    <div class="tiers-pills-row">
+      <div class="tier-pill tier-1">
+        <div class="tier-badge">T1</div>
+        <div class="tier-info">
+          <span class="tier-name">{{ 'home.pricing.tier1' | translate }}</span>
+          <span class="tier-desc">{{ 'home.pricing.tier1Desc' | translate }}</span>
+        </div>
+        <div class="tier-visual-group">
+          <div class="users-cluster cluster-t1" aria-hidden="true" [attr.title]="'simulation.tiers.tier1Range' | translate">
+            <mat-icon class="user-glyph u1">person</mat-icon>
+          </div>
+          <div class="coin-stack stack-t1" aria-hidden="true">
+            <span class="coin c1"></span>
+            <span class="coin c2"></span>
+            <span class="coin c3"></span>
+            <span class="coin c4"></span>
+            <span class="coin c5"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tier-pill tier-2">
+        <div class="tier-badge">T2</div>
+        <div class="tier-info">
+          <span class="tier-name">{{ 'home.pricing.tier2' | translate }}</span>
+          <span class="tier-desc">{{ 'home.pricing.tier2Desc' | translate }}</span>
+        </div>
+        <div class="tier-visual-group">
+          <div class="users-cluster cluster-t2" aria-hidden="true" [attr.title]="'simulation.tiers.tier2Range' | translate">
+            <mat-icon class="user-glyph u1">person</mat-icon>
+            <mat-icon class="user-glyph u2">person</mat-icon>
+            <mat-icon class="user-glyph u3">person</mat-icon>
+          </div>
+          <div class="coin-stack stack-t2" aria-hidden="true">
+            <span class="coin c1"></span>
+            <span class="coin c2"></span>
+            <span class="coin c3"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tier-pill tier-3">
+        <div class="tier-badge">T3</div>
+        <div class="tier-info">
+          <span class="tier-name">{{ 'home.pricing.tier3' | translate }}</span>
+          <span class="tier-desc">{{ 'home.pricing.tier3Desc' | translate }}</span>
+        </div>
+        <div class="tier-visual-group">
+          <div class="users-cluster cluster-t3" aria-hidden="true" [attr.title]="'simulation.tiers.tier3Range' | translate">
+            <mat-icon class="user-glyph u1">person</mat-icon>
+            <mat-icon class="user-glyph u2">person</mat-icon>
+            <mat-icon class="user-glyph u3">person</mat-icon>
+            <mat-icon class="user-glyph u4">person</mat-icon>
+            <mat-icon class="user-glyph u5">person</mat-icon>
+          </div>
+          <div class="coin-stack stack-t3" aria-hidden="true">
+            <span class="coin c1"></span>
+            <span class="coin c2"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="pricing-tax-note">
+      <mat-icon class="info-icon" aria-hidden="true">info</mat-icon>
+      <span>{{ 'home.pricing.taxNote' | translate }}</span>
+    </p>
+  </section>
+
+  <!-- Recent Customers Section -->
+  <section class="recent-section">
+    <div class="section-header">
+      <div class="header-text-group">
+        <h2 class="section-title">{{ 'home.recent.title' | translate }}</h2>
+        <p class="section-subtitle">{{ 'home.recent.subtitle' | translate }}</p>
+      </div>
+
+      <div class="section-actions">
+        <a mat-flat-button routerLink="/customers" class="view-all-btn">
+          <span>{{ 'home.recent.viewAll' | translate }}</span>
+          <mat-icon aria-hidden="true">arrow_forward</mat-icon>
+        </a>
+      </div>
+    </div>
+
+    @if (customerApi.loading() && recentCustomers().length === 0) {
+      <app-loading-state [message]="'customers.list.loading' | translate" />
+    } @else {
+      <app-customer-carousel [customers]="recentCustomers()" />
+    }
+  </section>
+</div>

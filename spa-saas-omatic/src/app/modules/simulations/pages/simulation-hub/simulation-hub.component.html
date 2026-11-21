@@ -1,0 +1,155 @@
+<div class="simulation-hub-container">
+  <header class="hub-header">
+    <div class="header-titles-group">
+      <img
+        src="images/simulations-badge.jpg"
+        [alt]="'simulations.hub.badgeAlt' | translate"
+        class="simulations-badge-img"
+        width="64"
+        height="64"
+        loading="eager"
+      />
+      <div class="header-titles">
+        <h1 class="page-title">{{ 'simulations.hub.title' | translate }}</h1>
+        <p class="page-subtitle">{{ 'simulations.hub.subtitle' | translate }}</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- Quick Account Launcher Card with 3D Studio Illustration -->
+  <section class="launcher-card">
+    <div class="launcher-content">
+      <div class="launcher-info-column">
+        <h2 class="launcher-title">{{ 'simulations.hub.launcherBadge' | translate }}</h2>
+        <p class="launcher-desc">{{ 'simulations.hub.launcherDesc' | translate }}</p>
+
+        <div class="launcher-form">
+          <div class="select-action-row">
+            <mat-form-field appearance="outline" class="customer-picker-field" subscriptSizing="dynamic">
+              <mat-label>{{ 'simulations.hub.selectCustomer' | translate }}</mat-label>
+              <mat-select
+                id="hub-customer-select"
+                [value]="selectedCustomerId()"
+                [disabled]="customerApi.loading()"
+                (selectionChange)="onSelectCustomer($event.value)"
+              >
+                <mat-option [value]="''">
+                  -- {{ 'simulations.hub.selectCustomer' | translate }} --
+                </mat-option>
+                @for (c of customers(); track c.id) {
+                  <mat-option [value]="c.id">
+                    {{ c.companyName }} ({{ c.country }} - {{ c.taxId }})
+                  </mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+
+            <button
+              mat-flat-button
+              type="button"
+              class="launch-btn"
+              [disabled]="!selectedCustomerId() || customerApi.loading()"
+              (click)="goToSimulation()"
+            >
+              <mat-icon aria-hidden="true">tune</mat-icon>
+              <span>{{ 'simulations.hub.startBtn' | translate }}</span>
+            </button>
+          </div>
+
+          @if (customerApi.loading() && customers().length === 0) {
+            <div class="launcher-loading-hint">
+              <mat-icon class="spin-icon" aria-hidden="true">sync</mat-icon>
+              <span>{{ 'customers.list.loading' | translate }}</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="launcher-visual-column">
+        <img
+          src="images/simulations-illustration.jpg"
+          [alt]="'simulations.hub.illustrationAlt' | translate"
+          class="simulations-illustration"
+          loading="eager"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Model Reference Cards -->
+  <section class="model-reference-section">
+    <h2 class="section-heading">{{ 'home.pricing.title' | translate }}</h2>
+
+    <div class="tiers-grid">
+      <div class="tier-card t1">
+        <div class="tier-header">
+          <span class="badge">{{ 'simulation.tiers.tier1Badge' | translate }}</span>
+          <div class="price-stack-group">
+            <div class="coin-stack stack-t1" aria-hidden="true">
+              <span class="coin c1"></span>
+              <span class="coin c2"></span>
+              <span class="coin c3"></span>
+              <span class="coin c4"></span>
+              <span class="coin c5"></span>
+            </div>
+            <span class="price">10,00 €</span>
+          </div>
+        </div>
+        <div class="tier-range-row">
+          <h3 class="tier-range">{{ 'simulation.tiers.tier1Range' | translate }}</h3>
+          <div class="users-cluster cluster-t1" aria-hidden="true" [attr.title]="'simulation.tiers.tier1Range' | translate">
+            <mat-icon class="user-glyph u1">person</mat-icon>
+          </div>
+        </div>
+        <p class="tier-desc">{{ 'simulation.tiers.tier1HubDesc' | translate }}</p>
+      </div>
+
+      <div class="tier-card t2">
+        <div class="tier-header">
+          <span class="badge">{{ 'simulation.tiers.tier2Badge' | translate }}</span>
+          <div class="price-stack-group">
+            <div class="coin-stack stack-t2" aria-hidden="true">
+              <span class="coin c1"></span>
+              <span class="coin c2"></span>
+              <span class="coin c3"></span>
+            </div>
+            <span class="price">8,00 €</span>
+          </div>
+        </div>
+        <div class="tier-range-row">
+          <h3 class="tier-range">{{ 'simulation.tiers.tier2Range' | translate }}</h3>
+          <div class="users-cluster cluster-t2" aria-hidden="true" [attr.title]="'simulation.tiers.tier2Range' | translate">
+            <mat-icon class="user-glyph u1">person</mat-icon>
+            <mat-icon class="user-glyph u2">person</mat-icon>
+            <mat-icon class="user-glyph u3">person</mat-icon>
+          </div>
+        </div>
+        <p class="tier-desc">{{ 'simulation.tiers.tier2HubDesc' | translate }}</p>
+      </div>
+
+      <div class="tier-card t3">
+        <div class="tier-header">
+          <span class="badge">{{ 'simulation.tiers.tier3Badge' | translate }}</span>
+          <div class="price-stack-group">
+            <div class="coin-stack stack-t3" aria-hidden="true">
+              <span class="coin c1"></span>
+              <span class="coin c2"></span>
+            </div>
+            <span class="price">5,00 €</span>
+          </div>
+        </div>
+        <div class="tier-range-row">
+          <h3 class="tier-range">{{ 'simulation.tiers.tier3Range' | translate }}</h3>
+          <div class="users-cluster cluster-t3" aria-hidden="true" [attr.title]="'simulation.tiers.tier3Range' | translate">
+            <mat-icon class="user-glyph u1">person</mat-icon>
+            <mat-icon class="user-glyph u2">person</mat-icon>
+            <mat-icon class="user-glyph u3">person</mat-icon>
+            <mat-icon class="user-glyph u4">person</mat-icon>
+            <mat-icon class="user-glyph u5">person</mat-icon>
+          </div>
+        </div>
+        <p class="tier-desc">{{ 'simulation.tiers.tier3HubDesc' | translate }}</p>
+      </div>
+    </div>
+  </section>
+</div>

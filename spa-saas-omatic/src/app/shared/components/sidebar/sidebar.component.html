@@ -1,0 +1,60 @@
+<aside
+  class="sidebar-container"
+  [class.is-collapsed]="isCollapsed()"
+  [attr.aria-label]="'sidebar.aria' | translate"
+>
+  <div class="sidebar-header">
+    @if (!isCollapsed()) {
+      <div class="brand-mini">
+        <span class="brand-tag">{{ 'sidebar.brandTag' | translate }}</span>
+      </div>
+    }
+    <button
+      type="button"
+      mat-icon-button
+      class="collapse-btn"
+      (click)="toggleCollapse()"
+      [matTooltip]="(isCollapsed() ? 'sidebar.expand' : 'sidebar.collapse') | translate"
+      [attr.aria-label]="(isCollapsed() ? 'sidebar.expand' : 'sidebar.collapse') | translate"
+    >
+      <mat-icon>{{ isCollapsed() ? 'chevron_right' : 'chevron_left' }}</mat-icon>
+    </button>
+  </div>
+
+  <nav class="sidebar-nav">
+    <ul class="nav-list">
+      @for (item of navItems; track item.path) {
+        <li class="nav-item">
+          <a
+            [routerLink]="item.path"
+            routerLinkActive="active"
+            class="nav-link"
+            [matTooltip]="isCollapsed() ? (item.labelKey | translate) : ''"
+            matTooltipPosition="right"
+          >
+            <mat-icon class="nav-icon" aria-hidden="true">{{ item.icon }}</mat-icon>
+            @if (!isCollapsed()) {
+              <span class="nav-label">{{ item.labelKey | translate }}</span>
+            }
+          </a>
+        </li>
+      }
+    </ul>
+  </nav>
+
+  @if (!isCollapsed()) {
+    <div class="sidebar-footer">
+      <a
+        href="https://omatic.es/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="footer-link"
+        [matTooltip]="'sidebar.omaticcLink.aria' | translate"
+        [attr.aria-label]="'sidebar.omaticcLink.aria' | translate"
+      >
+        <span class="footer-copy">© {{ currentYear }} Omatic</span>
+        <mat-icon class="external-icon" aria-hidden="true">open_in_new</mat-icon>
+      </a>
+    </div>
+  }
+</aside>
