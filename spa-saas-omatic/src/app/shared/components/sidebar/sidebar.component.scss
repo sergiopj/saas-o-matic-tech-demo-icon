@@ -15,8 +15,8 @@
   width: 250px;
   height: 100%;
   min-height: 100%;
-  background-color: var(--omaticc-surface);
-  border-right: 1px solid var(--omaticc-border);
+  background-color: var(--omatic-surface);
+  border-right: 1px solid var(--omatic-border);
   transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   padding: 1.25rem 0.75rem 1rem 0.75rem;
   box-sizing: border-box;
@@ -44,7 +44,7 @@
   justify-content: space-between;
   margin-bottom: 1.5rem;
   padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--omaticc-border-light);
+  border-bottom: 1px solid var(--omatic-border-light);
   gap: 8px;
 }
 
@@ -58,8 +58,8 @@
     font-size: 0.6875rem;
     font-weight: 700;
     letter-spacing: 0.04em;
-    color: var(--omaticc-accent-blue);
-    background-color: var(--omaticc-accent-blue-subtle);
+    color: var(--omatic-accent-blue);
+    background-color: var(--omatic-accent-blue-subtle);
     padding: 0.25rem 0.55rem;
     border-radius: 9999px;
     white-space: nowrap;
@@ -69,14 +69,14 @@
 }
 
 .collapse-btn {
-  color: var(--omaticc-text-secondary);
+  color: var(--omatic-text-secondary);
   width: 36px;
   height: 36px;
   line-height: 36px;
 
   &:hover {
-    color: var(--omaticc-accent-blue);
-    background-color: var(--omaticc-accent-blue-subtle);
+    color: var(--omatic-accent-blue);
+    background-color: var(--omatic-accent-blue-subtle);
   }
 }
 
@@ -98,18 +98,18 @@
   align-items: center;
   gap: 0.85rem;
   padding: 0.65rem 0.85rem;
-  border-radius: var(--omaticc-radius-sm);
+  border-radius: var(--omatic-radius-sm);
   text-decoration: none;
   font-size: 0.9rem;
   font-weight: 500;
-  color: var(--omaticc-text-secondary);
+  color: var(--omatic-text-secondary);
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
 
   .nav-icon {
     font-size: 1.3rem;
     width: 1.3rem;
     height: 1.3rem;
-    color: var(--omaticc-text-muted);
+    color: var(--omatic-text-muted);
     transition: color 0.15s ease-in-out;
   }
 
@@ -120,21 +120,21 @@
   }
 
   &:hover {
-    color: var(--omaticc-accent-blue);
-    background-color: var(--omaticc-accent-blue-subtle);
+    color: var(--omatic-accent-blue);
+    background-color: var(--omatic-accent-blue-subtle);
 
     .nav-icon {
-      color: var(--omaticc-accent-blue);
+      color: var(--omatic-accent-blue);
     }
   }
 
   &.active {
-    color: var(--omaticc-accent-blue);
-    background-color: var(--omaticc-accent-blue-subtle-hover);
+    color: var(--omatic-accent-blue);
+    background-color: var(--omatic-accent-blue-subtle-hover);
     font-weight: 600;
 
     .nav-icon {
-      color: var(--omaticc-accent-blue);
+      color: var(--omatic-accent-blue);
     }
   }
 }
@@ -142,7 +142,7 @@
 .sidebar-footer {
   margin-top: auto;
   padding-top: 1rem;
-  border-top: 1px solid var(--omaticc-border-light);
+  border-top: 1px solid var(--omatic-border-light);
 
   .footer-link {
     display: inline-flex;
@@ -150,14 +150,14 @@
     gap: 0.45rem;
     font-size: 0.8rem;
     font-weight: 500;
-    color: var(--omaticc-text-secondary);
+    color: var(--omatic-text-secondary);
     text-decoration: none;
     padding: 0.35rem 0.6rem;
-    border-radius: var(--omaticc-radius-sm);
+    border-radius: var(--omatic-radius-sm);
     transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
 
     .footer-copy {
-      color: var(--omaticc-text-secondary);
+      color: var(--omatic-text-secondary);
       transition: color 0.15s ease-in-out;
     }
 
@@ -165,7 +165,7 @@
       font-size: 0.95rem;
       width: 0.95rem;
       height: 0.95rem;
-      color: var(--omaticc-text-muted);
+      color: var(--omatic-text-muted);
       transition: color 0.15s ease-in-out, transform 0.15s ease-in-out;
 
       @media (prefers-reduced-motion: reduce) {
@@ -174,14 +174,14 @@
     }
 
     &:hover {
-      background-color: var(--omaticc-accent-blue-subtle);
+      background-color: var(--omatic-accent-blue-subtle);
 
       .footer-copy {
-        color: var(--omaticc-accent-blue);
+        color: var(--omatic-accent-blue);
       }
 
       .external-icon {
-        color: var(--omaticc-accent-blue);
+        color: var(--omatic-accent-blue);
         transform: translate(1px, -1px);
       }
     }

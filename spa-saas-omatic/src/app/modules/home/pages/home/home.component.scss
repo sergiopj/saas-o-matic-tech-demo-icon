@@ -11,11 +11,11 @@
   align-items: center;
   justify-content: space-between;
   gap: 2rem;
-  background: linear-gradient(135deg, var(--omaticc-primary) 0%, var(-omaticic-primary-light) 100%);
-  border-radius: var(--omaticc-radius-lg);
+  background: linear-gradient(135deg, var(--omatic-primary) 0%, var(-omaticic-primary-light) 100%);
+  border-radius: var(--omatic-radius-lg);
   padding: 1.15rem 2rem;
-  color: var(--omaticc-text-inverse);
-  box-shadow: var(--omaticc-shadow-sm);
+  color: var(--omatic-text-inverse);
+  box-shadow: var(--omatic-shadow-sm);
   position: relative;
   overflow: hidden;
 
@@ -33,7 +33,7 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    background-color: var(--omaticc-bg-input-dark);
+    background-color: var(--omatic-bg-input-dark);
     padding: 0.25rem 0.65rem;
     border-radius: 9999px;
     margin-bottom: 0.45rem;
@@ -42,7 +42,7 @@
       font-size: 0.95rem;
       width: 0.95rem;
       height: 0.95rem;
-      color: var(--omaticc-accent-cyan);
+      color: var(--omatic-accent-cyan);
     }
   }
 
@@ -55,7 +55,7 @@
 
   .hero-subtitle {
     font-size: 0.88rem;
-    color: var(--omaticc-text-inverse-muted);
+    color: var(--omatic-text-inverse-muted);
     margin: 0 0 0.85rem 0;
     max-width: 680px;
     line-height: 1.4;
@@ -74,14 +74,14 @@
       font-weight: 600;
       font-size: 0.85rem;
       min-height: 36px;
-      border-radius: var(--omaticc-radius-md);
+      border-radius: var(--omatic-radius-md);
       padding: 0.35rem 1rem;
       text-decoration: none;
       transition: filter 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
 
       &.primary {
-        background-color: var(--omaticc-accent-cyan);
-        color: var(--omaticc-primary-dark);
+        background-color: var(--omatic-accent-cyan);
+        color: var(--omatic-primary-dark);
 
         &:hover {
           filter: brightness(1.1);
@@ -90,12 +90,12 @@
       }
 
       &.secondary {
-        border: 1px solid var(--omaticc-border-inverse);
-        color: var(--omaticc-text-inverse);
-        background-color: var(--omaticc-bg-input-dark);
+        border: 1px solid var(--omatic-border-inverse);
+        color: var(--omatic-text-inverse);
+        background-color: var(--omatic-bg-input-dark);
 
         &:hover {
-          background-color: var(--omaticc-border-inverse);
+          background-color: var(--omatic-border-inverse);
           transform: translateY(-1px);
         }
       }
@@ -123,9 +123,9 @@
       max-width: 340px;
       aspect-ratio: 16 / 9;
       object-fit: cover;
-      border-radius: var(--omaticc-radius-md);
-      border: 1px solid var(--omaticc-border-inverse);
-      box-shadow: var(--omaticc-shadow-md);
+      border-radius: var(--omatic-radius-md);
+      border: 1px solid var(--omatic-border-inverse);
+      box-shadow: var(--omatic-shadow-md);
       transition: transform 0.3s ease;
 
       &:hover {
@@ -183,11 +183,11 @@
   display: flex;
   align-items: center;
   gap: 1.25rem;
-  background-color: var(--omaticc-surface);
-  border: 1px solid var(--omaticc-border);
+  background-color: var(--omatic-surface);
+  border: 1px solid var(--omatic-border);
   border-radius: 14px;
   padding: 1.25rem 1.5rem;
-  box-shadow: var(--omaticc-shadow-sm);
+  box-shadow: var(--omatic-shadow-sm);
   text-decoration: none;
   color: inherit;
   transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
@@ -197,11 +197,11 @@
 
     &:hover {
       transform: translateY(-2px);
-      border-color: var(--omaticc-accent-blue);
-      box-shadow: var(--omaticc-shadow-md);
+      border-color: var(--omatic-accent-blue);
+      box-shadow: var(--omatic-shadow-md);
 
       .kpi-arrow {
-        color: var(--omaticc-accent-blue);
+        color: var(--omatic-accent-blue);
         transform: translateX(3px);
       }
     }
@@ -209,7 +209,7 @@
 
   .kpi-arrow {
     margin-left: auto;
-    color: var(--omaticc-text-muted);
+    color: var(--omatic-text-muted);
     font-size: 1.25rem;
     width: 1.25rem;
     height: 1.25rem;
@@ -218,7 +218,7 @@
 
   .kpi-icon-circle {
     --fill-angle: 0deg;
-    --kpi-theme-color: var(--omaticc-accent-blue);
+    --kpi-theme-color: var(--omatic-accent-blue);
     --kpi-fill-base: color-mix(in srgb, var(--kpi-theme-color) 10%, transparent);
     --kpi-fill-dark: color-mix(in srgb, var(--kpi-theme-color) 26%, transparent);
 
@@ -251,19 +251,19 @@
     }
 
     &.blue {
-      --kpi-theme-color: var(--omaticc-accent-blue);
+      --kpi-theme-color: var(--omatic-accent-blue);
     }
 
     &.emerald {
-      --kpi-theme-color: var(--omaticc-status-success);
+      --kpi-theme-color: var(--omatic-status-success);
     }
 
     &.amber {
-      --kpi-theme-color: var(--omaticc-status-warning);
+      --kpi-theme-color: var(--omatic-status-warning);
     }
 
     &.purple {
-      --kpi-theme-color: var(--omaticc-accent-purple);
+      --kpi-theme-color: var(--omatic-accent-purple);
       --fill-angle: 360deg;
     }
   }
@@ -286,22 +286,22 @@
     .kpi-value {
       font-size: 1.75rem;
       font-weight: 800;
-      color: var(--omaticc-text-primary);
+      color: var(--omatic-text-primary);
       line-height: 1.1;
     }
 
     .kpi-label {
       font-size: 0.825rem;
       font-weight: 500;
-      color: var(--omaticc-text-secondary);
+      color: var(--omatic-text-secondary);
       margin-top: 0.25rem;
     }
   }
 }
 
 .pricing-feature-card {
-  background-color: var(--omaticc-surface);
-  border: 1px solid var(--omaticc-border);
+  background-color: var(--omatic-surface);
+  border: 1px solid var(--omatic-border);
   border-radius: 14px;
   padding: 1.5rem;
   display: flex;
@@ -321,19 +321,19 @@
       gap: 0.65rem;
 
       .pricing-icon {
-        color: var(--omaticc-accent-blue);
+        color: var(--omatic-accent-blue);
       }
 
       .pricing-title {
         font-size: 1.15rem;
         font-weight: 700;
-        color: var(--omaticc-text-primary);
+        color: var(--omatic-text-primary);
         margin: 0;
       }
     }
 
     .hub-link-btn {
-      color: var(--omaticc-accent-blue);
+      color: var(--omatic-accent-blue);
       border-color: rgba(16, 97, 226, 0.3);
 
       &:hover {
@@ -353,9 +353,9 @@
     align-items: center;
     gap: 1rem;
     padding: 1rem;
-    border-radius: var(--omaticc-radius-sm);
-    border: 1px solid var(--omaticc-border-light);
-    background-color: var(--omaticc-bg-page);
+    border-radius: var(--omatic-radius-sm);
+    border: 1px solid var(--omatic-border-light);
+    background-color: var(--omatic-bg-page);
 
     .tier-badge {
       display: flex;
@@ -363,24 +363,24 @@
       justify-content: center;
       width: 38px;
       height: 38px;
-      border-radius: var(--omaticc-radius-sm);
+      border-radius: var(--omatic-radius-sm);
       font-weight: 800;
       font-size: 0.9rem;
     }
 
     &.tier-1 .tier-badge {
       background-color: rgba(16, 97, 226, 0.12);
-      color: var(--omaticc-accent-blue);
+      color: var(--omatic-accent-blue);
     }
 
     &.tier-2 .tier-badge {
       background-color: rgba(16, 185, 129, 0.12);
-      color: var(--omaticc-status-success);
+      color: var(--omatic-status-success);
     }
 
     &.tier-3 .tier-badge {
       background-color: rgba(245, 158, 11, 0.12);
-      color: var(--omaticc-status-warning);
+      color: var(--omatic-status-warning);
     }
 
     .tier-info {
@@ -390,12 +390,12 @@
       .tier-name {
         font-size: 0.875rem;
         font-weight: 600;
-        color: var(--omaticc-text-primary);
+        color: var(--omatic-text-primary);
       }
 
       .tier-desc {
         font-size: 0.775rem;
-        color: var(--omaticc-text-secondary);
+        color: var(--omatic-text-secondary);
         margin-top: 0.15rem;
       }
     }
@@ -414,9 +414,9 @@
       position: relative;
       padding: 2px 5px;
       border-radius: 9999px;
-      background-color: var(--omaticc-surface);
-      border: 1px solid var(--omaticc-border-light);
-      box-shadow: var(--omaticc-shadow-sm);
+      background-color: var(--omatic-surface);
+      border: 1px solid var(--omatic-border-light);
+      box-shadow: var(--omatic-shadow-sm);
       transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.25s ease;
 
       .user-glyph {
@@ -435,19 +435,19 @@
       }
 
       &.cluster-t1 {
-        border-color: color-mix(in srgb, var(--omaticc-accent-blue) 25%, transparent);
+        border-color: color-mix(in srgb, var(--omatic-accent-blue) 25%, transparent);
 
         .user-glyph {
-          color: var(--omaticc-accent-blue);
+          color: var(--omatic-accent-blue);
           animation-delay: 0.15s;
         }
       }
 
       &.cluster-t2 {
-        border-color: color-mix(in srgb, var(--omaticc-status-success) 25%, transparent);
+        border-color: color-mix(in srgb, var(--omatic-status-success) 25%, transparent);
 
         .user-glyph {
-          color: var(--omaticc-status-success);
+          color: var(--omatic-status-success);
 
           &.u1 {
             animation-delay: 0.15s;
@@ -464,10 +464,10 @@
       }
 
       &.cluster-t3 {
-        border-color: color-mix(in srgb, var(--omaticc-status-warning) 25%, transparent);
+        border-color: color-mix(in srgb, var(--omatic-status-warning) 25%, transparent);
 
         .user-glyph {
-          color: var(--omaticc-status-warning);
+          color: var(--omatic-status-warning);
 
           &.u1 {
             animation-delay: 0.10s;
@@ -505,10 +505,10 @@
         width: 19px;
         height: 5.5px;
         border-radius: 50%;
-        background: linear-gradient(135deg, var(--omaticc-coin-gold-light) 0%, var(-omaticic-coin-gold) 60%, var(omatictic-coin-gold-dark) 100%);
+        background: linear-gradient(135deg, var(--omatic-coin-gold-light) 0%, var(-omaticic-coin-gold) 60%, var(omatictic-coin-gold-dark) 100%);
         box-shadow:
-          0 1px 0 var(--omaticc-coin-gold-dark),
-          0 1.5px 0 var(--omaticc-coin-gold-rim),
+          0 1px 0 var(--omatic-coin-gold-dark),
+          0 1.5px 0 var(--omatic-coin-gold-rim),
           0 1.5px 2px rgba(15, 23, 42, 0.2);
         margin-top: -3px;
         position: relative;
@@ -547,7 +547,7 @@
     }
 
     &:hover {
-      border-color: var(--omaticc-accent-blue);
+      border-color: var(--omatic-accent-blue);
       transform: translateY(-1px);
       transition: border-color 0.2s ease, transform 0.2s ease;
 
@@ -576,7 +576,7 @@
     align-items: center;
     gap: 0.5rem;
     font-size: 0.8rem;
-    color: var(--omaticc-text-muted);
+    color: var(--omatic-text-muted);
     margin: 0;
 
     .info-icon {
@@ -608,13 +608,13 @@
     .section-title {
       font-size: 1.35rem;
       font-weight: 700;
-      color: var(--omaticc-text-primary);
+      color: var(--omatic-text-primary);
       margin: 0;
     }
 
     .section-subtitle {
       font-size: 0.875rem;
-      color: var(--omaticc-text-secondary);
+      color: var(--omatic-text-secondary);
       margin: 0;
     }
 
@@ -626,12 +626,12 @@
     }
 
     .view-all-btn {
-      background-color: var(--omaticc-accent-blue);
-      color: var(--omaticc-text-inverse);
+      background-color: var(--omatic-accent-blue);
+      color: var(--omatic-text-inverse);
       gap: 0.4rem;
 
       &:hover {
-        background-color: var(--omaticc-accent-blue-hover);
+        background-color: var(--omatic-accent-blue-hover);
       }
     }
   }

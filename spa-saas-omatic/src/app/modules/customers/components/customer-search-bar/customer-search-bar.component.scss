@@ -4,16 +4,16 @@
 
 .search-field {
   width: 100%;
-  --mdc-outlined-text-field-container-shape: var(--omaticc-radius-md);
-  --mdc-outlined-text-field-outline-color: var(--omaticc-border);
-  --mdc-outlined-text-field-focus-outline-color: var(--omaticc-accent-blue);
-  --mdc-outlined-text-field-hover-outline-color: var(--omaticc-accent-blue);
+  --mdc-outlined-text-field-container-shape: var(--omatic-radius-md);
+  --mdc-outlined-text-field-outline-color: var(--omatic-border);
+  --mdc-outlined-text-field-focus-outline-color: var(--omatic-accent-blue);
+  --mdc-outlined-text-field-hover-outline-color: var(--omatic-accent-blue);
 
   ::ng-deep {
     .mat-mdc-text-field-wrapper {
-      background-color: var(--omaticc-bg-card);
-      border-radius: var(--omaticc-radius-md);
-      box-shadow: var(--omaticc-shadow-sm);
+      background-color: var(--omatic-bg-card);
+      border-radius: var(--omatic-radius-md);
+      box-shadow: var(--omatic-shadow-sm);
       transition: box-shadow 0.2s ease;
     }
 
@@ -23,16 +23,16 @@
 
     &.mat-focused {
       .mat-mdc-text-field-wrapper {
-        box-shadow: var(--omaticc-shadow-md);
+        box-shadow: var(--omatic-shadow-md);
       }
     }
 
     input.mat-mdc-input-element {
-      color: var(--omaticc-text-primary);
+      color: var(--omatic-text-primary);
       font-size: 0.95rem;
 
       &::placeholder {
-        color: var(--omaticc-text-secondary);
+        color: var(--omatic-text-secondary);
         opacity: 0.8;
       }
     }
@@ -40,7 +40,7 @@
 }
 
 .search-icon {
-  color: var(--omaticc-text-secondary);
+  color: var(--omatic-text-secondary);
   margin-right: 0.5rem;
   margin-left: 0.35rem;
 }
@@ -53,14 +53,14 @@
 
 .search-spinner {
   margin-right: 0.25rem;
-  --mdc-circular-progress-active-indicator-color: var(--omaticc-accent-blue);
+  --mdc-circular-progress-active-indicator-color: var(--omatic-accent-blue);
 }
 
 .clear-button {
-  color: var(--omaticc-text-secondary);
+  color: var(--omatic-text-secondary);
   transition: color 0.15s ease;
 
   &:hover {
-    color: var(--omaticc-status-error);
+    color: var(--omatic-status-error);
   }
 }

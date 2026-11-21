@@ -15,7 +15,7 @@ describe('HomeComponent', () => {
   const mockCustomers: CustomerLite[] = [
     {
       id: 'cust-1',
-      companyName: 'omaticc Corp',
+      companyName: 'Omatic Corp',
       country: 'ES',
     },
     {
@@ -80,7 +80,7 @@ describe('HomeComponent', () => {
     const cards = fixture.nativeElement.querySelectorAll('.customer-lite-card');
     expect(cards.length).toBe(2);
     const company = fixture.nativeElement.querySelector('.lite-company');
-    expect(company.textContent.trim()).toBe('omaticc Corp');
+    expect(company.textContent.trim()).toBe('Omatic Corp');
     const simulateBtn = fixture.nativeElement.querySelector('.lite-simulate-btn');
     expect(simulateBtn).toBeTruthy();
   });

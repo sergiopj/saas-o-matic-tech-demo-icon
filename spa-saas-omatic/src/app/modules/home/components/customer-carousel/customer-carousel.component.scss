@@ -23,10 +23,10 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background-color: var(--omaticc-surface);
-  border: 1px solid var(--omaticc-border);
-  color: var(--omaticc-text-primary);
-  box-shadow: var(--omaticc-shadow-sm);
+  background-color: var(--omatic-surface);
+  border: 1px solid var(--omatic-border);
+  color: var(--omatic-text-primary);
+  box-shadow: var(--omatic-shadow-sm);
   transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
     color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
     border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
@@ -37,11 +37,11 @@
   z-index: 2;
 
   &:hover:not([disabled]) {
-    background-color: color-mix(in srgb, var(--omaticc-accent-blue) 12%, var(-omaticic-surface));
-    color: var(--omaticc-accent-blue);
-    border-color: var(--omaticc-accent-blue);
+    background-color: color-mix(in srgb, var(--omatic-accent-blue) 12%, var(-omaticic-surface));
+    color: var(--omatic-accent-blue);
+    border-color: var(--omatic-accent-blue);
     transform: scale(1.08);
-    box-shadow: var(--omaticc-shadow-md);
+    box-shadow: var(--omatic-shadow-md);
   }
 
   &[disabled] {
@@ -113,18 +113,18 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background-color: var(--omaticc-surface);
-  border: 1px solid var(--omaticc-border);
-  border-radius: var(--omaticc-radius-md);
+  background-color: var(--omatic-surface);
+  border: 1px solid var(--omatic-border);
+  border-radius: var(--omatic-radius-md);
   padding: 1.25rem;
-  box-shadow: var(--omaticc-shadow-sm);
+  box-shadow: var(--omatic-shadow-sm);
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   gap: 1.25rem;
 
   &:hover {
     transform: translateY(-2px);
-    border-color: var(--omaticc-accent-blue);
-    box-shadow: var(--omaticc-shadow-md);
+    border-color: var(--omatic-accent-blue);
+    box-shadow: var(--omatic-shadow-md);
   }
 
   .lite-card-header {
@@ -138,9 +138,9 @@
       justify-content: center;
       width: 44px;
       height: 44px;
-      border-radius: var(--omaticc-radius-sm);
-      background: linear-gradient(135deg, var(--omaticc-primary) 0%, var(-omaticic-primary-light) 100%);
-      color: var(--omaticc-text-inverse);
+      border-radius: var(--omatic-radius-sm);
+      background: linear-gradient(135deg, var(--omatic-primary) 0%, var(-omaticic-primary-light) 100%);
+      color: var(--omatic-text-inverse);
       font-weight: 700;
       font-size: 1.15rem;
       flex-shrink: 0;
@@ -156,7 +156,7 @@
         margin: 0;
         font-size: 1rem;
         font-weight: 700;
-        color: var(--omaticc-text-primary);
+        color: var(--omatic-text-primary);
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -167,8 +167,8 @@
         align-items: center;
         font-size: 0.725rem;
         font-weight: 700;
-        color: var(--omaticc-accent-blue);
-        background-color: var(--omaticc-accent-blue-subtle);
+        color: var(--omatic-accent-blue);
+        background-color: var(--omatic-accent-blue-subtle);
         padding: 0.15rem 0.45rem;
         border-radius: 4px;
         width: fit-content;
@@ -179,9 +179,9 @@
   .lite-card-actions {
     .lite-simulate-btn {
       width: 100%;
-      background-color: var(--omaticc-accent-blue);
-      color: var(--omaticc-text-inverse);
-      border-radius: var(--omaticc-radius-sm);
+      background-color: var(--omatic-accent-blue);
+      color: var(--omatic-text-inverse);
+      border-radius: var(--omatic-radius-sm);
       font-weight: 600;
       transition: background-color 0.15s ease;
 
@@ -193,7 +193,7 @@
       }
 
       &:hover {
-        background-color: var(--omaticc-accent-blue-hover);
+        background-color: var(--omatic-accent-blue-hover);
       }
     }
   }

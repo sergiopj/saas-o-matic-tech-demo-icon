@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   padding: 1.5rem 1.75rem;
-  background: var(--omaticc-surface);
+  background: var(--omatic-surface);
   box-sizing: border-box;
   width: 100%;
   max-width: 680px;
@@ -22,9 +22,9 @@
   .header-badge-img {
     width: 48px;
     height: 48px;
-    border-radius: var(--omaticc-radius-md);
-    border: 1px solid var(--omaticc-border);
-    box-shadow: var(--omaticc-shadow-sm);
+    border-radius: var(--omatic-radius-md);
+    border: 1px solid var(--omatic-border);
+    box-shadow: var(--omatic-shadow-sm);
     object-fit: cover;
     flex-shrink: 0;
     transition: transform 0.2s ease;
@@ -42,20 +42,20 @@
       margin: 0;
       font-size: 1.25rem;
       font-weight: 700;
-      color: var(--omaticc-text-primary);
+      color: var(--omatic-text-primary);
       line-height: 1.3;
     }
 
     .dialog-subtitle {
       margin: 0.25rem 0 0 0;
       font-size: 0.8125rem;
-      color: var(--omaticc-text-secondary);
+      color: var(--omatic-text-secondary);
       line-height: 1.4;
     }
   }
 
   .close-btn {
-    color: var(--omaticc-text-secondary);
+    color: var(--omatic-text-secondary);
     flex-shrink: 0;
   }
 }
@@ -65,7 +65,7 @@
   align-items: center;
   gap: 0.625rem;
   padding: 0.75rem 1rem;
-  border-radius: var(--omaticc-radius-sm);
+  border-radius: var(--omatic-radius-sm);
   margin-bottom: 1rem;
   font-size: 0.875rem;
   font-weight: 500;
@@ -78,15 +78,15 @@
   }
 
   &.error-alert {
-    background: var(--omaticc-bg-card);
-    border: 1px solid var(--omaticc-status-error);
-    color: var(--omaticc-status-error);
+    background: var(--omatic-bg-card);
+    border: 1px solid var(--omatic-status-error);
+    color: var(--omatic-status-error);
   }
 
   &.success-alert {
-    background: var(--omaticc-bg-card);
-    border: 1px solid var(--omaticc-status-success);
-    color: var(--omaticc-status-success);
+    background: var(--omatic-bg-card);
+    border: 1px solid var(--omatic-status-success);
+    color: var(--omatic-status-success);
   }
 }
 
@@ -132,7 +132,7 @@ mat-form-field.form-field {
   flex: 1;
 
   .field-icon {
-    color: var(--omaticc-text-muted);
+    color: var(--omatic-text-muted);
     margin-right: 0.375rem;
     font-size: 18px;
     width: 18px;
@@ -146,18 +146,18 @@ mat-form-field.form-field {
 
     input.mat-mdc-input-element {
       font-size: 0.875rem;
-      color: var(--omaticc-text-primary);
+      color: var(--omatic-text-primary);
 
       &::placeholder {
         font-size: 0.8125rem;
-        color: var(--omaticc-text-muted);
+        color: var(--omatic-text-muted);
         opacity: 0.85;
       }
     }
 
     .mat-mdc-select-value {
       font-size: 0.875rem;
-      color: var(--omaticc-text-primary);
+      color: var(--omatic-text-primary);
     }
 
     .mat-mdc-floating-label {
@@ -182,7 +182,7 @@ mat-form-field.form-field {
       display: block;
       font-size: 0.75rem;
       line-height: 1.35;
-      color: var(--omaticc-status-error);
+      color: var(--omatic-status-error);
       word-break: break-word;
     }
   }
@@ -198,7 +198,7 @@ mat-form-field.form-field {
   justify-content: flex-end;
   gap: 0.75rem;
   padding: 1.25rem 0 0 0;
-  border-top: 1px solid var(--omaticc-border);
+  border-top: 1px solid var(--omatic-border);
   margin-top: 0.5rem;
 
   .action-btn {
@@ -208,7 +208,7 @@ mat-form-field.form-field {
     font-weight: 600;
     min-height: 40px;
     padding: 0 1.25rem;
-    border-radius: var(--omaticc-radius-md);
+    border-radius: var(--omatic-radius-md);
 
     mat-icon {
       font-size: 18px;
@@ -218,33 +218,33 @@ mat-form-field.form-field {
   }
 
   .cancel-btn {
-    color: var(--omaticc-text-secondary);
+    color: var(--omatic-text-secondary);
   }
 
   button.action-btn.submit-btn.mat-mdc-flat-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--omaticc-primary);
-    color: var(--omaticc-text-inverse);
+    background-color: var(--omatic-primary);
+    color: var(--omatic-text-inverse);
     border: 1px solid transparent;
     transition: background-color 0.2s ease, opacity 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 
     &:hover:not(:disabled) {
-      background-color: var(--omaticc-primary-dark);
+      background-color: var(--omatic-primary-dark);
     }
 
     &:disabled,
     &[disabled] {
-      background-color: var(--omaticc-bg-card);
-      color: var(--omaticc-text-muted);
-      border: 1px solid var(--omaticc-border);
+      background-color: var(--omatic-bg-card);
+      color: var(--omatic-text-muted);
+      border: 1px solid var(--omatic-border);
       opacity: 0.65;
       cursor: not-allowed;
       pointer-events: auto;
 
       mat-icon {
-        color: var(--omaticc-text-muted);
+        color: var(--omatic-text-muted);
       }
     }
   }

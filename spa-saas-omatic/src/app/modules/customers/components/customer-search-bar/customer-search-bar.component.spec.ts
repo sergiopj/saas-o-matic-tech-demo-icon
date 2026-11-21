@@ -36,7 +36,7 @@ describe('CustomerSearchBarComponent', () => {
   });
 
   it('should show spinner when debouncing user input', () => {
-    component.onInput('omaticc');
+    component.onInput('omatic');
     fixture.detectChanges();
 
     expect(component.isDebouncing()).toBe(true);
@@ -55,14 +55,14 @@ describe('CustomerSearchBarComponent', () => {
       emittedTerm = term;
     });
 
-    component.onInput('omaticc Tech');
+    component.onInput('omatic Tech');
     expect(emittedTerm).toBe('');
 
     vi.advanceTimersByTime(299);
     expect(emittedTerm).toBe('');
 
     vi.advanceTimersByTime(1);
-    expect(emittedTerm).toBe('omaticc Tech');
+    expect(emittedTerm).toBe('omatic Tech');
   });
 
   it('should not emit duplicate consecutive terms (distinctUntilChanged)', () => {

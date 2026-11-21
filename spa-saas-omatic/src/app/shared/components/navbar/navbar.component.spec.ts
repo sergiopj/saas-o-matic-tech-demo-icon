@@ -43,12 +43,12 @@ describe('NavbarComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should render the official Omatic logo image and SaaS-O-Matic title', () => {
+  it('should render the brand icon badge and SaaS-O-Matic title', () => {
     const compiled = fixture.nativeElement as HTMLElement;
-    const logoImg = compiled.querySelector('.brand-logo-img') as HTMLImageElement;
-    expect(logoImg).toBeTruthy();
-    expect(logoImg.getAttribute('src')).toContain('images/omaticc-logo.png');
-    expect(logoImg.getAttribute('alt')).toBe('Omatic');
+    const iconBadge = compiled.querySelector('.brand-icon-badge');
+    expect(iconBadge).toBeTruthy();
+    const iconSvg = compiled.querySelector('.brand-icon-svg');
+    expect(iconSvg).toBeTruthy();
     expect(compiled.querySelector('.app-title')?.textContent).toContain('SaaS-O-Matic');
   });
 

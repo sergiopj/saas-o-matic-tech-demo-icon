@@ -640,7 +640,7 @@ describe('CustomerDetailComponent', () => {
     it('should open edit dialog and update customer signal when dialog returns updated customer', () => {
       const dialog = TestBed.inject(MatDialog);
       const dialogSpy = vi.spyOn(dialog, 'open').mockReturnValue({
-        afterClosed: () => of({ ...mockCustomer, companyName: 'Updated omaticc' }),
+        afterClosed: () => of({ ...mockCustomer, companyName: 'Updated Omatic' }),
       } as any);
 
       component.customer.set(mockCustomer);
@@ -649,7 +649,7 @@ describe('CustomerDetailComponent', () => {
         expect.anything(),
         expect.objectContaining({ data: mockCustomer })
       );
-      expect(component.customer()?.companyName).toBe('Updated omaticc');
+      expect(component.customer()?.companyName).toBe('Updated Omatic');
     });
 
     it('should not open edit dialog if customer is null', () => {

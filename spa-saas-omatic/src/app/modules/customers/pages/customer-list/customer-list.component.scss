@@ -8,7 +8,7 @@
 }
 
 .page-header {
-  border-bottom: 1px solid var(--omaticc-border);
+  border-bottom: 1px solid var(--omatic-border);
   padding-bottom: 1.25rem;
   display: flex;
   justify-content: space-between;
@@ -32,16 +32,16 @@
   .corporate-badge-img {
     width: 64px;
     height: 64px;
-    border-radius: var(--omaticc-radius-md);
+    border-radius: var(--omatic-radius-md);
     object-fit: cover;
-    border: 1px solid var(--omaticc-border);
-    box-shadow: var(--omaticc-shadow-sm);
+    border: 1px solid var(--omatic-border);
+    box-shadow: var(--omatic-shadow-sm);
     flex-shrink: 0;
     transition: transform 0.25s ease, box-shadow 0.25s ease;
 
     &:hover {
       transform: translateY(-2px) scale(1.04);
-      box-shadow: var(--omaticc-shadow-md);
+      box-shadow: var(--omatic-shadow-md);
     }
   }
 
@@ -79,14 +79,14 @@
   font-weight: 600;
   min-height: 42px;
   padding: 0 1.25rem;
-  border-radius: var(--omaticc-radius-md);
-  background-color: var(--omaticc-primary);
-  color: var(--omaticc-text-inverse);
+  border-radius: var(--omatic-radius-md);
+  background-color: var(--omatic-primary);
+  color: var(--omatic-text-inverse);
   flex-shrink: 0;
   transition: background-color 0.15s ease-in-out;
 
   &:hover {
-    background-color: var(--omaticc-primary-dark);
+    background-color: var(--omatic-primary-dark);
   }
 
   mat-icon {
@@ -110,14 +110,14 @@
   margin: 0;
   font-size: 1.75rem;
   font-weight: 700;
-  color: var(--omaticc-text-primary);
+  color: var(--omatic-text-primary);
   letter-spacing: -0.02em;
 }
 
 .page-subtitle {
   margin: 0;
   font-size: 0.95rem;
-  color: var(--omaticc-text-secondary);
+  color: var(--omatic-text-secondary);
   line-height: 1.4;
 }
 
@@ -154,10 +154,10 @@
 
   .country-filter-field {
     width: 100%;
-    --mdc-outlined-text-field-container-shape: var(--omaticc-radius-md);
+    --mdc-outlined-text-field-container-shape: var(--omatic-radius-md);
 
     .filter-icon {
-      color: var(--omaticc-status-info);
+      color: var(--omatic-status-info);
       margin-right: 8px;
       font-size: 20px;
       width: 20px;
@@ -176,10 +176,10 @@
 
   .sort-filter-field {
     width: 100%;
-    --mdc-outlined-text-field-container-shape: var(--omaticc-radius-md);
+    --mdc-outlined-text-field-container-shape: var(--omatic-radius-md);
 
     .sort-icon {
-      color: var(--omaticc-accent-blue);
+      color: var(--omatic-accent-blue);
       margin-right: 8px;
       font-size: 20px;
       width: 20px;
@@ -193,14 +193,14 @@
   align-items: center;
   gap: 0.5rem;
   font-size: 0.85rem;
-  color: var(--omaticc-text-secondary);
+  color: var(--omatic-text-secondary);
 }
 
 .reset-filter-link {
   background: none;
   border: none;
   padding: 0;
-  color: var(--omaticc-accent-blue);
+  color: var(--omatic-accent-blue);
   font-size: 0.85rem;
   font-weight: 500;
   text-decoration: underline;
@@ -214,8 +214,8 @@
 }
 
 .count-badge {
-  background-color: var(--omaticc-primary-light);
-  color: var(--omaticc-text-inverse);
+  background-color: var(--omatic-primary-light);
+  color: var(--omatic-text-inverse);
   font-weight: 700;
   font-size: 0.75rem;
   padding: 0.15rem 0.5rem;
@@ -232,14 +232,14 @@
   top: -8px;
   left: 0;
   right: 0;
-  border-radius: var(--omaticc-radius-full);
+  border-radius: var(--omatic-radius-full);
   overflow: hidden;
   height: 3px;
   z-index: 10;
 
   mat-progress-bar {
-    --mdc-linear-progress-active-indicator-color: var(--omaticc-accent-blue);
-    --mdc-linear-progress-track-color: var(--omaticc-border-light);
+    --mdc-linear-progress-active-indicator-color: var(--omatic-accent-blue);
+    --mdc-linear-progress-track-color: var(--omatic-border-light);
     height: 3px;
   }
 }
@@ -258,17 +258,17 @@
     align-items: center;
     gap: 0.625rem;
     padding: 0.45rem 1.125rem;
-    background-color: var(--omaticc-surface);
-    border: 1px solid var(--omaticc-border);
-    border-radius: var(--omaticc-radius-full);
-    box-shadow: var(--omaticc-shadow-md);
+    background-color: var(--omatic-surface);
+    border: 1px solid var(--omatic-border);
+    border-radius: var(--omatic-radius-full);
+    box-shadow: var(--omatic-shadow-md);
     font-size: 0.8125rem;
     font-weight: 500;
-    color: var(--omaticc-text-primary);
+    color: var(--omatic-text-primary);
 
     mat-spinner {
       circle {
-        stroke: var(--omaticc-accent-blue);
+        stroke: var(--omatic-accent-blue);
       }
     }
   }
@@ -305,9 +305,9 @@
   justify-content: center;
   padding: 4rem 1rem;
   text-align: center;
-  background-color: var(--omaticc-bg-card);
-  border: 1px dashed var(--omaticc-border);
-  border-radius: var(--omaticc-radius-lg);
+  background-color: var(--omatic-bg-card);
+  border: 1px dashed var(--omatic-border);
+  border-radius: var(--omatic-radius-lg);
   gap: 0.75rem;
 }
 
@@ -315,11 +315,11 @@
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background-color: var(--omaticc-bg-page);
+  background-color: var(--omatic-bg-page);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--omaticc-text-secondary);
+  color: var(--omatic-text-secondary);
   margin-bottom: 0.5rem;
 
   .empty-icon,
@@ -334,22 +334,22 @@
   margin: 0;
   font-size: 1.2rem;
   font-weight: 600;
-  color: var(--omaticc-text-primary);
+  color: var(--omatic-text-primary);
 }
 
 .empty-desc {
   margin: 0;
   font-size: 0.9rem;
-  color: var(--omaticc-text-secondary);
+  color: var(--omatic-text-secondary);
   max-width: 400px;
 }
 
 .reset-search-btn,
 button.reset-search-btn.mat-mdc-stroked-button {
   margin-top: 0.5rem;
-  border-color: var(--omaticc-border);
-  color: var(--omaticc-accent-blue);
-  border-radius: var(--omaticc-radius-md);
+  border-color: var(--omatic-border);
+  color: var(--omatic-accent-blue);
+  border-radius: var(--omatic-radius-md);
   display: flex;
   align-items: center;
   gap: 0.4rem;

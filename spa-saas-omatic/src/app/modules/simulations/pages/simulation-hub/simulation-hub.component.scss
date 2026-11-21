@@ -9,11 +9,11 @@
 .hub-header {
   display: flex;
   align-items: center;
-  background-color: var(--omaticc-surface);
-  border: 1px solid var(--omaticc-border);
-  border-radius: var(--omaticc-radius-lg);
+  background-color: var(--omatic-surface);
+  border: 1px solid var(--omatic-border);
+  border-radius: var(--omatic-radius-lg);
   padding: 1.25rem 2rem;
-  box-shadow: var(--omaticc-shadow-sm);
+  box-shadow: var(--omatic-shadow-sm);
 
   .header-titles-group {
     display: flex;
@@ -25,10 +25,10 @@
     .simulations-badge-img {
       width: 64px;
       height: 64px;
-      border-radius: var(--omaticc-radius-md);
+      border-radius: var(--omatic-radius-md);
       object-fit: cover;
-      border: 1px solid var(--omaticc-border);
-      box-shadow: var(--omaticc-shadow-sm);
+      border: 1px solid var(--omatic-border);
+      box-shadow: var(--omatic-shadow-sm);
       flex-shrink: 0;
       transition: transform 0.25s ease;
 
@@ -45,14 +45,14 @@
       .page-title {
         font-size: 1.6rem;
         font-weight: 800;
-        color: var(--omaticc-text-primary);
+        color: var(--omatic-text-primary);
         margin: 0 0 0.25rem 0;
         letter-spacing: -0.02em;
       }
 
       .page-subtitle {
         font-size: 0.95rem;
-        color: var(--omaticc-text-secondary);
+        color: var(--omatic-text-secondary);
         margin: 0;
         line-height: 1.4;
       }
@@ -84,11 +84,11 @@
 }
 
 .launcher-card {
-  background-color: var(--omaticc-surface);
-  border: 1px solid var(--omaticc-border);
-  border-radius: var(--omaticc-radius-lg);
+  background-color: var(--omatic-surface);
+  border: 1px solid var(--omatic-border);
+  border-radius: var(--omatic-radius-lg);
   padding: 2rem 2.25rem;
-  box-shadow: var(--omaticc-shadow-sm);
+  box-shadow: var(--omatic-shadow-sm);
 
   .launcher-content {
     display: flex;
@@ -103,7 +103,7 @@
       .launcher-title {
         font-size: 1.75rem;
         font-weight: 800;
-        color: var(--omaticc-text-primary);
+        color: var(--omatic-text-primary);
         margin: 0 0 0.65rem 0;
         letter-spacing: -0.02em;
         line-height: 1.25;
@@ -111,7 +111,7 @@
 
       .launcher-desc {
         font-size: 0.95rem;
-        color: var(--omaticc-text-secondary);
+        color: var(--omatic-text-secondary);
         line-height: 1.55;
         margin: 0 0 1.5rem 0;
       }
@@ -131,8 +131,8 @@
           .launch-btn {
             height: 52px;
             padding: 0 1.5rem;
-            background-color: var(--omaticc-accent-blue);
-            color: var(--omaticc-text-inverse);
+            background-color: var(--omatic-accent-blue);
+            color: var(--omatic-text-inverse);
             font-weight: 600;
             font-size: 0.95rem;
             border-radius: 10px;
@@ -140,21 +140,21 @@
             transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
 
             &:hover:not(:disabled) {
-              background-color: var(--omaticc-accent-blue-hover);
+              background-color: var(--omatic-accent-blue-hover);
               transform: translateY(-1px);
             }
 
             &:disabled,
             &[disabled],
             &.mat-mdc-button-disabled {
-              background-color: var(--omaticc-border);
-              color: var(--omaticc-text-muted);
+              background-color: var(--omatic-border);
+              color: var(--omatic-text-muted);
               cursor: not-allowed;
               box-shadow: none;
               opacity: 0.75;
 
               mat-icon {
-                color: var(--omaticc-text-muted);
+                color: var(--omatic-text-muted);
               }
             }
           }
@@ -165,7 +165,7 @@
           align-items: center;
           gap: 0.5rem;
           font-size: 0.825rem;
-          color: var(--omaticc-text-secondary);
+          color: var(--omatic-text-secondary);
           margin-top: 0.5rem;
 
           .spin-icon {
@@ -190,9 +190,9 @@
         height: auto;
         max-height: 250px;
         object-fit: cover;
-        border-radius: var(--omaticc-radius-md);
-        border: 1px solid var(--omaticc-border);
-        box-shadow: var(--omaticc-shadow-lg);
+        border-radius: var(--omatic-radius-md);
+        border: 1px solid var(--omatic-border);
+        box-shadow: var(--omatic-shadow-lg);
         transition: transform 0.3s ease;
 
         &:hover {
@@ -258,7 +258,7 @@
   .section-heading {
     font-size: 1.3rem;
     font-weight: 700;
-    color: var(--omaticc-text-primary);
+    color: var(--omatic-text-primary);
     margin: 0;
   }
 
@@ -269,8 +269,8 @@
   }
 
   .tier-card {
-    background-color: var(--omaticc-surface);
-    border: 1px solid var(--omaticc-border);
+    background-color: var(--omatic-surface);
+    border: 1px solid var(--omatic-border);
     border-radius: 14px;
     padding: 1.5rem;
     display: flex;
@@ -297,7 +297,7 @@
         .price {
           font-size: 1.4rem;
           font-weight: 800;
-          color: var(--omaticc-text-primary);
+          color: var(--omatic-text-primary);
         }
       }
     }
@@ -316,10 +316,10 @@
         width: 22px;
         height: 6.5px;
         border-radius: 50%;
-        background: linear-gradient(135deg, var(--omaticc-coin-gold-light) 0%, var(-omaticic-coin-gold) 60%, var(omatictic-coin-gold-dark) 100%);
+        background: linear-gradient(135deg, var(--omatic-coin-gold-light) 0%, var(-omaticic-coin-gold) 60%, var(omatictic-coin-gold-dark) 100%);
         box-shadow:
-          0 1px 0 var(--omaticc-coin-gold-dark),
-          0 2px 0 var(--omaticc-coin-gold-rim),
+          0 1px 0 var(--omatic-coin-gold-dark),
+          0 2px 0 var(--omatic-coin-gold-rim),
           0 2px 3px rgba(15, 23, 42, 0.2);
         margin-top: -3.5px;
         position: relative;
@@ -358,7 +358,7 @@
     }
 
     &:hover {
-      border-color: var(--omaticc-accent-blue);
+      border-color: var(--omatic-accent-blue);
       transform: translateY(-2px);
       transition: border-color 0.25s ease, transform 0.25s ease;
 
@@ -382,18 +382,18 @@
     }
 
     &.t1 .badge {
-      background-color: color-mix(in srgb, var(--omaticc-accent-blue) 10%, transparent);
-      color: var(--omaticc-accent-blue);
+      background-color: color-mix(in srgb, var(--omatic-accent-blue) 10%, transparent);
+      color: var(--omatic-accent-blue);
     }
 
     &.t2 .badge {
-      background-color: color-mix(in srgb, var(--omaticc-status-success) 10%, transparent);
-      color: var(--omaticc-status-success);
+      background-color: color-mix(in srgb, var(--omatic-status-success) 10%, transparent);
+      color: var(--omatic-status-success);
     }
 
     &.t3 .badge {
-      background-color: color-mix(in srgb, var(--omaticc-status-warning) 10%, transparent);
-      color: var(--omaticc-status-warning);
+      background-color: color-mix(in srgb, var(--omatic-status-warning) 10%, transparent);
+      color: var(--omatic-status-warning);
     }
 
     .tier-range-row {
@@ -410,9 +410,9 @@
       position: relative;
       padding: 3px 6px;
       border-radius: 9999px;
-      background-color: var(--omaticc-bg-page);
-      border: 1px solid var(--omaticc-border-light);
-      box-shadow: var(--omaticc-shadow-sm);
+      background-color: var(--omatic-bg-page);
+      border: 1px solid var(--omatic-border-light);
+      box-shadow: var(--omatic-shadow-sm);
       transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 
       .user-glyph {
@@ -431,19 +431,19 @@
       }
 
       &.cluster-t1 {
-        border-color: color-mix(in srgb, var(--omaticc-accent-blue) 25%, transparent);
+        border-color: color-mix(in srgb, var(--omatic-accent-blue) 25%, transparent);
 
         .user-glyph {
-          color: var(--omaticc-accent-blue);
+          color: var(--omatic-accent-blue);
           animation-delay: 0.15s;
         }
       }
 
       &.cluster-t2 {
-        border-color: color-mix(in srgb, var(--omaticc-status-success) 25%, transparent);
+        border-color: color-mix(in srgb, var(--omatic-status-success) 25%, transparent);
 
         .user-glyph {
-          color: var(--omaticc-status-success);
+          color: var(--omatic-status-success);
 
           &.u1 {
             animation-delay: 0.15s;
@@ -460,10 +460,10 @@
       }
 
       &.cluster-t3 {
-        border-color: color-mix(in srgb, var(--omaticc-status-warning) 25%, transparent);
+        border-color: color-mix(in srgb, var(--omatic-status-warning) 25%, transparent);
 
         .user-glyph {
-          color: var(--omaticc-status-warning);
+          color: var(--omatic-status-warning);
 
           &.u1 {
             animation-delay: 0.10s;
@@ -491,13 +491,13 @@
     .tier-range {
       font-size: 1.05rem;
       font-weight: 700;
-      color: var(--omaticc-text-primary);
+      color: var(--omatic-text-primary);
       margin: 0;
     }
 
     .tier-desc {
       font-size: 0.85rem;
-      color: var(--omaticc-text-secondary);
+      color: var(--omatic-text-secondary);
       margin: 0;
       line-height: 1.4;
     }

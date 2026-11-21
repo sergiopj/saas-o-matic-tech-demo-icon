@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   padding: 1.5rem 1.75rem;
-  background: var(--omaticc-surface);
+  background: var(--omatic-surface);
   box-sizing: border-box;
   width: 100%;
   max-width: 640px;
@@ -27,10 +27,10 @@
   .header-email-badge {
     width: 48px;
     height: 48px;
-    border-radius: var(--omaticc-radius-md);
+    border-radius: var(--omatic-radius-md);
     object-fit: cover;
-    border: 1px solid var(--omaticc-border);
-    box-shadow: var(--omaticc-shadow-sm);
+    border: 1px solid var(--omatic-border);
+    box-shadow: var(--omatic-shadow-sm);
     flex-shrink: 0;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 
@@ -49,7 +49,7 @@
 
     &:hover {
       transform: scale(1.06);
-      box-shadow: var(--omaticc-shadow-md);
+      box-shadow: var(--omatic-shadow-md);
     }
   }
 
@@ -61,7 +61,7 @@
       margin: 0;
       font-size: 1.25rem;
       font-weight: 700;
-      color: var(--omaticc-text-primary);
+      color: var(--omatic-text-primary);
       line-height: 1.3;
 
       @media (max-width: 599px) {
@@ -72,7 +72,7 @@
     .dialog-subtitle {
       margin: 0.25rem 0 0 0;
       font-size: 0.875rem;
-      color: var(--omaticc-text-secondary);
+      color: var(--omatic-text-secondary);
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -84,7 +84,7 @@
   }
 
   .close-btn {
-    color: var(--omaticc-text-secondary);
+    color: var(--omatic-text-secondary);
     flex-shrink: 0;
   }
 }
@@ -109,10 +109,10 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1rem;
-  border-radius: var(--omaticc-radius-sm);
-  background: var(--omaticc-status-error-subtle);
-  border: 1px solid color-mix(in srgb, var(--omaticc-status-error) 25%, transparent);
-  color: var(--omaticc-status-error);
+  border-radius: var(--omatic-radius-sm);
+  background: var(--omatic-status-error-subtle);
+  border: 1px solid color-mix(in srgb, var(--omatic-status-error) 25%, transparent);
+  color: var(--omatic-status-error);
   font-size: 0.875rem;
 }
 
@@ -129,7 +129,7 @@
 }
 
 .field-icon {
-  color: var(--omaticc-text-secondary);
+  color: var(--omatic-text-secondary);
   margin-right: 0.5rem;
 }
 
@@ -141,15 +141,15 @@
   .quill-label {
     font-size: 0.825rem;
     font-weight: 500;
-    color: var(--omaticc-text-secondary);
+    color: var(--omatic-text-secondary);
   }
 
   ::ng-deep {
     .ql-toolbar.ql-snow {
-      border: 1px solid var(--omaticc-border);
-      border-top-left-radius: var(--omaticc-radius-sm);
-      border-top-right-radius: var(--omaticc-radius-sm);
-      background: var(--omaticc-bg-page);
+      border: 1px solid var(--omatic-border);
+      border-top-left-radius: var(--omatic-radius-sm);
+      border-top-right-radius: var(--omatic-radius-sm);
+      background: var(--omatic-bg-page);
       padding: 8px;
       font-family: inherit;
       position: relative;
@@ -173,7 +173,7 @@
         transition: background-color 0.15s ease, color 0.15s ease;
 
         &:focus-visible {
-          outline: 2px solid var(--omaticc-accent-blue);
+          outline: 2px solid var(--omatic-accent-blue);
           outline-offset: 1px;
         }
 
@@ -188,7 +188,7 @@
         transition: background-color 0.15s ease, color 0.15s ease;
 
         &:focus-visible {
-          outline: 2px solid var(--omaticc-accent-blue);
+          outline: 2px solid var(--omatic-accent-blue);
           outline-offset: 1px;
         }
 
@@ -202,20 +202,20 @@
         width: 112px;
 
         .ql-picker-label {
-          color: var(--omaticc-text-primary);
+          color: var(--omatic-text-primary);
           font-size: 0.85rem;
           font-weight: 500;
           height: 28px;
           padding: 2px 8px;
-          border-radius: var(--omaticc-radius-sm);
-          border: 1px solid var(--omaticc-border-light);
-          background-color: var(--omaticc-surface);
+          border-radius: var(--omatic-radius-sm);
+          border: 1px solid var(--omatic-border-light);
+          background-color: var(--omatic-surface);
           display: flex;
           align-items: center;
           justify-content: space-between;
 
           &::before {
-            color: var(--omaticc-text-primary);
+            color: var(--omatic-text-primary);
             font-size: 0.85rem;
             font-weight: 500;
             line-height: 24px;
@@ -224,42 +224,42 @@
           svg {
             width: 14px;
             height: 14px;
-            color: var(--omaticc-text-secondary);
-            stroke: var(--omaticc-text-secondary);
+            color: var(--omatic-text-secondary);
+            stroke: var(--omatic-text-secondary);
           }
 
           &:hover {
-            border-color: var(--omaticc-accent-blue);
-            background-color: color-mix(in srgb, var(--omaticc-accent-blue) 6%, transparent);
+            border-color: var(--omatic-accent-blue);
+            background-color: color-mix(in srgb, var(--omatic-accent-blue) 6%, transparent);
           }
         }
 
         .ql-picker-options {
-          background-color: var(--omaticc-surface);
-          border: 1px solid var(--omaticc-border);
-          border-radius: var(--omaticc-radius-md);
-          box-shadow: var(--omaticc-shadow-md);
+          background-color: var(--omatic-surface);
+          border: 1px solid var(--omatic-border);
+          border-radius: var(--omatic-radius-md);
+          box-shadow: var(--omatic-shadow-md);
           padding: 4px;
           z-index: 100;
 
           .ql-picker-item {
-            color: var(--omaticc-text-primary);
+            color: var(--omatic-text-primary);
             font-size: 0.85rem;
             padding: 5px 8px;
-            border-radius: var(--omaticc-radius-sm);
+            border-radius: var(--omatic-radius-sm);
             transition: color 0.15s ease, background-color 0.15s ease;
 
             &::before {
-              color: var(--omaticc-text-primary);
+              color: var(--omatic-text-primary);
             }
 
             &:hover,
             &.ql-selected {
-              color: var(--omaticc-accent-blue);
-              background-color: color-mix(in srgb, var(--omaticc-accent-blue) 10%, transparent);
+              color: var(--omatic-accent-blue);
+              background-color: color-mix(in srgb, var(--omatic-accent-blue) 10%, transparent);
 
               &::before {
-                color: var(--omaticc-accent-blue);
+                color: var(--omatic-accent-blue);
               }
             }
           }
@@ -267,7 +267,7 @@
 
         &.ql-expanded {
           .ql-picker-label {
-            border-color: var(--omaticc-accent-blue);
+            border-color: var(--omatic-accent-blue);
           }
         }
       }
@@ -280,15 +280,15 @@
           left: 50%;
           transform: translateX(-50%) translateY(-2px);
           padding: 4px 8px;
-          background: var(--omaticc-primary);
-          color: var(--omaticc-text-inverse);
+          background: var(--omatic-primary);
+          color: var(--omatic-text-inverse);
           font-size: 0.725rem;
           font-weight: 500;
           font-family: inherit;
           line-height: 1.2;
           white-space: nowrap;
-          border-radius: var(--omaticc-radius-sm);
-          box-shadow: var(--omaticc-shadow-sm);
+          border-radius: var(--omatic-radius-sm);
+          box-shadow: var(--omatic-shadow-sm);
           pointer-events: none;
           opacity: 0;
           visibility: hidden;
@@ -304,7 +304,7 @@
           transform: translateX(-50%);
           border-width: 0 5px 5px 5px;
           border-style: solid;
-          border-color: transparent transparent var(--omaticc-primary) transparent;
+          border-color: transparent transparent var(--omatic-primary) transparent;
           pointer-events: none;
           opacity: 0;
           visibility: hidden;
@@ -330,15 +330,15 @@
     }
 
     .ql-container.ql-snow {
-      border: 1px solid var(--omaticc-border);
+      border: 1px solid var(--omatic-border);
       border-top: none;
-      border-bottom-left-radius: var(--omaticc-radius-sm);
-      border-bottom-right-radius: var(--omaticc-radius-sm);
+      border-bottom-left-radius: var(--omatic-radius-sm);
+      border-bottom-right-radius: var(--omatic-radius-sm);
       min-height: 160px;
       max-height: 260px;
       font-size: 0.95rem;
       font-family: inherit;
-      background: var(--omaticc-surface);
+      background: var(--omatic-surface);
     }
 
     .ql-editor {
@@ -356,7 +356,7 @@ mat-dialog-actions.mat-mdc-dialog-actions.dialog-actions {
   gap: 0.75rem;
   padding: 1.25rem 0 0 0;
   margin-top: 1rem;
-  border-top: 1px solid var(--omaticc-border-light);
+  border-top: 1px solid var(--omatic-border-light);
 
   @media (max-width: 540px) {
     flex-wrap: wrap;
@@ -397,11 +397,11 @@ mat-dialog-actions.mat-mdc-dialog-actions.dialog-actions {
   }
 
   .copy-btn {
-    color: var(--omaticc-accent-blue);
+    color: var(--omatic-accent-blue);
     gap: 0.4rem;
 
     &.is-copied {
-      color: var(--omaticc-status-success);
+      color: var(--omatic-status-success);
     }
   }
 
@@ -410,33 +410,33 @@ mat-dialog-actions.mat-mdc-dialog-actions.dialog-actions {
   }
 
   button.dispatch-btn.mat-mdc-flat-button {
-    background-color: var(--omaticc-accent-blue);
-    color: var(--omaticc-text-inverse);
+    background-color: var(--omatic-accent-blue);
+    color: var(--omatic-text-inverse);
     gap: 0.5rem;
     min-width: 130px;
     border: 1px solid transparent;
     transition: background-color 0.2s ease, opacity 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 
     &:hover:not(:disabled) {
-      background-color: var(--omaticc-accent-blue-hover);
+      background-color: var(--omatic-accent-blue-hover);
     }
 
     &:disabled,
     &[disabled] {
-      background-color: var(--omaticc-bg-card);
-      color: var(--omaticc-text-muted);
-      border: 1px solid var(--omaticc-border);
+      background-color: var(--omatic-bg-card);
+      color: var(--omatic-text-muted);
+      border: 1px solid var(--omatic-border);
       opacity: 0.65;
       cursor: not-allowed;
       pointer-events: auto;
 
       mat-icon {
-        color: var(--omaticc-text-muted);
+        color: var(--omatic-text-muted);
       }
     }
 
     .btn-spinner {
-      --mdc-circular-progress-active-indicator-color: var(--omaticc-text-inverse);
+      --mdc-circular-progress-active-indicator-color: var(--omatic-text-inverse);
     }
   }
 }

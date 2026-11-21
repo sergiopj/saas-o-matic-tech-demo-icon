@@ -13,8 +13,8 @@
 }
 
 .navbar-toolbar {
-  background-color: var(--omaticc-primary);
-  border-bottom: 1px solid var(--omaticc-border-inverse);
+  background-color: var(--omatic-primary);
+  border-bottom: 1px solid var(--omatic-border-inverse);
   padding: 0;
   height: 64px;
   box-sizing: border-box;
@@ -46,13 +46,13 @@
 
 .mobile-menu-btn {
   display: none;
-  color: var(--omaticc-text-inverse);
+  color: var(--omatic-text-inverse);
   width: 40px;
   height: 40px;
   line-height: 40px;
 
   &:hover {
-    background-color: var(--omaticc-bg-input-dark);
+    background-color: var(--omatic-bg-input-dark);
   }
 }
 
@@ -70,23 +70,28 @@
   }
 }
 
-.brand-logo-badge {
-  background-color: var(--omaticc-logo-badge-bg, var(-omaticic-surface));
-  padding: 4px 10px;
-  border-radius: var(--omaticc-radius-md);
+.brand-icon-badge {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  width: 36px;
   height: 36px;
-  box-sizing: border-box;
+  flex-shrink: 0;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(16, 97, 226, 0.3);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
 
-  .brand-logo-img {
-    height: 22px;
-    width: auto;
+  .brand-icon-svg {
+    width: 36px;
+    height: 36px;
     display: block;
-    object-fit: contain;
+    border-radius: 10px;
   }
+}
+
+.brand-link:hover .brand-icon-badge {
+  transform: scale(1.08) rotate(3deg);
+  box-shadow: 0 4px 14px rgba(14, 165, 233, 0.45);
 }
 
 .brand-text {
@@ -96,14 +101,14 @@
 }
 
 .app-title {
-  color: var(--omaticc-text-inverse);
+  color: var(--omatic-text-inverse);
   font-size: 1.125rem;
   font-weight: 700;
   letter-spacing: -0.01em;
 }
 
 .app-subtitle {
-  color: var(--omaticc-text-inverse-muted);
+  color: var(--omatic-text-inverse-muted);
   font-size: 0.75rem;
   font-weight: 400;
   letter-spacing: 0.02em;
@@ -119,7 +124,7 @@
 .mobile-backdrop {
   position: fixed;
   inset: 0;
-  background-color: var(--omaticc-bg-backdrop);
+  background-color: var(--omatic-bg-backdrop);
   backdrop-filter: blur(2px);
   z-index: 998;
 }
@@ -129,9 +134,9 @@
   top: 100%;
   left: 0;
   right: 0;
-  background-color: var(--omaticc-surface);
-  border-bottom: 2px solid var(--omaticc-border);
-  box-shadow: var(--omaticc-shadow-lg);
+  background-color: var(--omatic-surface);
+  border-bottom: 2px solid var(--omatic-border);
+  box-shadow: var(--omatic-shadow-lg);
   z-index: 999;
   animation: mobileNavSlideDown 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 
@@ -149,11 +154,11 @@
     align-items: center;
     gap: 0.85rem;
     padding: 0.75rem 1rem;
-    border-radius: var(--omaticc-radius-md);
+    border-radius: var(--omatic-radius-md);
     text-decoration: none;
     font-size: 0.95rem;
     font-weight: 500;
-    color: var(--omaticc-text-secondary);
+    color: var(--omatic-text-secondary);
     min-height: 48px;
     box-sizing: border-box;
     transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
@@ -162,26 +167,26 @@
       font-size: 1.35rem;
       width: 1.35rem;
       height: 1.35rem;
-      color: var(--omaticc-text-muted);
+      color: var(--omatic-text-muted);
       transition: color 0.15s ease-in-out;
     }
 
     &:hover {
-      color: var(--omaticc-accent-blue);
-      background-color: var(--omaticc-accent-blue-subtle);
+      color: var(--omatic-accent-blue);
+      background-color: var(--omatic-accent-blue-subtle);
 
       .mobile-nav-icon {
-        color: var(--omaticc-accent-blue);
+        color: var(--omatic-accent-blue);
       }
     }
 
     &.active {
-      color: var(--omaticc-accent-blue);
-      background-color: var(--omaticc-accent-blue-subtle-hover);
+      color: var(--omatic-accent-blue);
+      background-color: var(--omatic-accent-blue-subtle-hover);
       font-weight: 600;
 
       .mobile-nav-icon {
-        color: var(--omaticc-accent-blue);
+        color: var(--omatic-accent-blue);
       }
     }
   }
@@ -251,7 +256,7 @@
     width: 100%;
     justify-content: space-between;
     padding-top: 8px;
-    border-top: 1px solid var(--omaticc-border-inverse);
+    border-top: 1px solid var(--omatic-border-inverse);
     gap: 8px;
   }
 }
@@ -265,12 +270,13 @@
     gap: 6px;
   }
 
-  .brand-logo-badge {
-    padding: 2px 6px;
+  .brand-icon-badge {
+    width: 30px;
     height: 30px;
 
-    .brand-logo-img {
-      height: 18px;
+    .brand-icon-svg {
+      width: 30px;
+      height: 30px;
     }
   }
 

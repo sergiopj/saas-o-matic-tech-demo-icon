@@ -4,149 +4,148 @@
    ======================================================================== */
 
 // SCSS Variables (for compile-time usage, mixins and functions)
-$omaticc-primary: #0f172a; // Deep Navy (Navbar / Topbar / Main Headers)
-$omaticc-primary-light: #1e293b; // Slate Dark
-$omaticc-primary-dark: #090d16; // Darker Navy
-$omaticc-accent-blue: #1061e2; // Omatic Royal Blue
-$omaticc-accent-blue-hover: #0d4eb8; // Omatic Royal Blue Hover
-$omaticc-accent-cyan: #0ea5e9; // Omatic Cyan
-$omaticc-accent-purple: #8b5cf6; // Omatic Purple
+$omatic-primary: #0f172a;           // Deep Navy (Navbar / Topbar / Main Headers)
+$omatic-primary-light: #1e293b;     // Slate Dark
+$omatic-primary-dark: #090d16;      // Darker Navy
+$omatic-accent-blue: #1061e2;       // Omatic Royal Blue
+$omatic-accent-blue-hover: #0d4eb8; // Omatic Royal Blue Hover
+$omatic-accent-cyan: #0ea5e9;       // Omatic Cyan
+$omatic-accent-purple: #8b5cf6;     // Omatic Purple
 
-$omaticc-status-success: #10b981; // Emerald / Synced / Savings
-$omaticc-status-warning: #f59e0b; // Amber / Contingency / Alert
-$omaticc-status-error: #ef4444; // Red / Validation Error
-$omaticc-status-info: #0ea5e9; // Cyan / Live Sync
+$omatic-status-success: #10b981;    // Emerald / Synced / Savings
+$omatic-status-warning: #f59e0b;    // Amber / Contingency / Alert
+$omatic-status-error: #ef4444;      // Red / Validation Error
+$omatic-status-info: #0ea5e9;       // Cyan / Live Sync
 
 // Tactile Coin Tokens (for animated pricing stacks)
-$omaticc-coin-gold: #f59e0b;
-$omaticc-coin-gold-light: #fde68a;
-$omaticc-coin-gold-dark: #b45309;
-$omaticc-coin-gold-rim: #78350f;
+$omatic-coin-gold: #f59e0b;
+$omatic-coin-gold-light: #fde68a;
+$omatic-coin-gold-dark: #b45309;
+$omatic-coin-gold-rim: #78350f;
 
-$omaticc-bg-page: #f8fafc; // Canvas background
-$omaticc-bg-card: #ffffff; // Card surface
-$omaticc-surface: #ffffff; // Surface alias
-$omaticc-bg-input-dark: rgba(255, 255, 255, 0.1); // Transparent input over dark navbar
-$omaticc-bg-backdrop: rgba(15, 23, 42, 0.45); // Backdrop overlay for slide drawers and modals
+$omatic-bg-page: #f8fafc;           // Canvas background
+$omatic-bg-card: #ffffff;           // Card surface
+$omatic-surface: #ffffff;           // Surface alias
+$omatic-bg-input-dark: rgba(255, 255, 255, 0.1); // Transparent input over dark navbar
+$omatic-bg-backdrop: rgba(15, 23, 42, 0.45);      // Backdrop overlay for slide drawers and modals
 
-$omaticc-text-primary: #0f172a; // Dark Charcoal for headers & body
-$omaticc-text-secondary: #64748b; // Muted Slate for secondary text & hints
-$omaticc-text-muted: #94a3b8; // Lighter Slate for captions/hints
-$omaticc-text-inverse: #ffffff; // White text for dark surfaces
-$omaticc-text-inverse-muted: rgba(255, 255, 255, 0.7);
+$omatic-text-primary: #0f172a;      // Dark Charcoal for headers & body
+$omatic-text-secondary: #64748b;    // Muted Slate for secondary text & hints
+$omatic-text-muted: #94a3b8;        // Lighter Slate for captions/hints
+$omatic-text-inverse: #ffffff;      // White text for dark surfaces
+$omatic-text-inverse-muted: rgba(255, 255, 255, 0.7);
 
-$omaticc-border: #e2e8f0; // Subtle border for light cards
-$omaticc-border-light: #f1f5f9; // Inner border divider
-$omaticc-border-inverse: rgba(255, 255, 255, 0.2); // Subtle border for dark inputs
+$omatic-border: #e2e8f0;            // Subtle border for light cards
+$omatic-border-light: #f1f5f9;      // Inner border divider
+$omatic-border-inverse: rgba(255, 255, 255, 0.2); // Subtle border for dark inputs
 
 // CSS Custom Properties (:root) for runtime cascade & dynamic theming
 :root {
   /* Brand Colors */
-  --omaticc-primary: #{omaticic-primary};
-  --omaticc-primary-light: #{omaticic-primary-light};
-  --omaticc-primary-dark: #{omaticic-primary-dark};
-  --omaticc-accent-blue: #{omaticic-accent-blue};
-  --omaticc-accent-blue-hover: #{omaticic-accent-blue-hover};
-  --omaticc-accent-cyan: #{omaticic-accent-cyan};
-  --omaticc-accent-purple: #{omaticic-accent-purple};
+  --omatic-primary: #{$omatic-primary};
+  --omatic-primary-light: #{$omatic-primary-light};
+  --omatic-primary-dark: #{$omatic-primary-dark};
+  --omatic-accent-blue: #{$omatic-accent-blue};
+  --omatic-accent-blue-hover: #{$omatic-accent-blue-hover};
+  --omatic-accent-cyan: #{$omatic-accent-cyan};
+  --omatic-accent-purple: #{$omatic-accent-purple};
 
   /* Status & Visual Feedback */
-  --omaticc-status-success: #{omaticic-status-success};
-  --omaticc-status-warning: #{omaticic-status-warning};
-  --omaticc-status-error: #{omaticic-status-error};
-  --omaticc-status-info: #{omaticic-status-info};
+  --omatic-status-success: #{$omatic-status-success};
+  --omatic-status-warning: #{$omatic-status-warning};
+  --omatic-status-error: #{$omatic-status-error};
+  --omatic-status-info: #{$omatic-status-info};
 
   /* Tactile Coin Visual Tokens */
-  --omaticc-coin-gold: #{omaticic-coin-gold};
-  --omaticc-coin-gold-light: #{omaticic-coin-gold-light};
-  --omaticc-coin-gold-dark: #{omaticic-coin-gold-dark};
-  --omaticc-coin-gold-rim: #{omaticic-coin-gold-rim};
+  --omatic-coin-gold: #{$omatic-coin-gold};
+  --omatic-coin-gold-light: #{$omatic-coin-gold-light};
+  --omatic-coin-gold-dark: #{$omatic-coin-gold-dark};
+  --omatic-coin-gold-rim: #{$omatic-coin-gold-rim};
 
   /* Surfaces & Backgrounds */
-  --omaticc-bg-page: #{omaticic-bg-page};
-  --omaticc-bg-card: #{omaticic-bg-card};
-  --omaticc-surface: #{omaticic-surface};
-  --omaticc-logo-badge-bg: #ffffff;
-  --omaticc-bg-input-dark: #{omaticic-bg-input-dark};
-  --omaticc-bg-backdrop: #{omaticic-bg-backdrop};
+  --omatic-bg-page: #{$omatic-bg-page};
+  --omatic-bg-card: #{$omatic-bg-card};
+  --omatic-surface: #{$omatic-surface};
+  --omatic-logo-badge-bg: #ffffff;
+  --omatic-bg-input-dark: #{$omatic-bg-input-dark};
+  --omatic-bg-backdrop: #{$omatic-bg-backdrop};
 
   /* Typography Colors */
-  --omaticc-text-primary: #{omaticic-text-primary};
-  --omaticc-text-secondary: #{omaticic-text-secondary};
-  --omaticc-text-muted: #{omaticic-text-muted};
-  --omaticc-text-inverse: #{omaticic-text-inverse};
-  --omaticc-text-inverse-muted: #{omaticic-text-inverse-muted};
+  --omatic-text-primary: #{$omatic-text-primary};
+  --omatic-text-secondary: #{$omatic-text-secondary};
+  --omatic-text-muted: #{$omatic-text-muted};
+  --omatic-text-inverse: #{$omatic-text-inverse};
+  --omatic-text-inverse-muted: #{$omatic-text-inverse-muted};
 
   /* Borders & Dividers */
-  --omaticc-border: #{omaticic-border};
-  --omaticc-border-light: #{omaticic-border-light};
-  --omaticc-border-inverse: #{omaticic-border-inverse};
+  --omatic-border: #{$omatic-border};
+  --omatic-border-light: #{$omatic-border-light};
+  --omatic-border-inverse: #{$omatic-border-inverse};
 
   /* Subtle Backgrounds & State Tints (SSOT for badges, active states, hovers & alerts) */
-  --omaticc-accent-blue-subtle: rgba(16, 97, 226, 0.08);
-  --omaticc-accent-blue-subtle-hover: rgba(16, 97, 226, 0.14);
-  --omaticc-accent-purple-subtle: rgba(139, 92, 246, 0.12);
-  --omaticc-status-success-subtle: rgba(16, 185, 129, 0.08);
-  --omaticc-status-success-subtle-hover: rgba(16, 185, 129, 0.16);
-  --omaticc-status-warning-subtle: rgba(245, 158, 11, 0.08);
-  --omaticc-status-warning-subtle-hover: rgba(245, 158, 11, 0.16);
-  --omaticc-status-error-subtle: rgba(239, 68, 68, 0.08);
-  --omaticc-status-error-subtle-hover: rgba(239, 68, 68, 0.16);
+  --omatic-accent-blue-subtle: rgba(16, 97, 226, 0.08);
+  --omatic-accent-blue-subtle-hover: rgba(16, 97, 226, 0.14);
+  --omatic-accent-purple-subtle: rgba(139, 92, 246, 0.12);
+  --omatic-status-success-subtle: rgba(16, 185, 129, 0.08);
+  --omatic-status-success-subtle-hover: rgba(16, 185, 129, 0.16);
+  --omatic-status-warning-subtle: rgba(245, 158, 11, 0.08);
+  --omatic-status-warning-subtle-hover: rgba(245, 158, 11, 0.16);
+  --omatic-status-error-subtle: rgba(239, 68, 68, 0.08);
+  --omatic-status-error-subtle-hover: rgba(239, 68, 68, 0.16);
 }
 
-// Dark Mode Overrides (SSomaticnamic Theming via CSS Custom Properties)
+// Dark Mode Overrides (Dynamic Theming via CSS Custom Properties)
 :root[data-theme='dark'],
-omatic body.dark-theme {
-  omatic
+body.dark-theme {
   /* Surfaces & Backgrounds */
-  omatic --omatic-bg-page: #090d16;
-  omatic --omatic-bg-card: #131b2e;
-  omatic --omatic-surface: #131b2e;
-  omatic --omatic-logo-badge-bg: #ffffff;
-  --omatic-bg-input-dark: rgba(25omatic5, 255, 0.08);
-  --omatic-bg-backdrop: rgba(0, 0omatic0.75);
-  omatic
+  --omatic-bg-page: #090d16;
+  --omatic-bg-card: #131b2e;
+  --omatic-surface: #131b2e;
+  --omatic-logo-badge-bg: #ffffff;
+  --omatic-bg-input-dark: rgba(255, 255, 255, 0.08);
+  --omatic-bg-backdrop: rgba(0, 0, 0, 0.75);
+
   /* Typography Colors */
-  omatic --omatic-text-primary: #f8fafc;
-  --omatic-text-secondary: #omatic8;
+  --omatic-text-primary: #f8fafc;
+  --omatic-text-secondary: #94a3b8;
   --omatic-text-muted: #64748b;
-  omatic --omatic-text-inverse: #ffffff;
-  omatic --omatic-text-inverse-muted: romatic55, 255, 255, 0.7);
+  --omatic-text-inverse: #ffffff;
+  --omatic-text-inverse-muted: rgba(255, 255, 255, 0.7);
 
   /* Borders & Dividers */
-  omatic --omatic-border: #1e293bomatic --omatic-border-light: #omatic9;
-  --omatic-border-inverse: rgba(omatic255, 255, 0.15);
-  omatic
-  /* Brand Colors in Dark Canvomatic
+  --omatic-border: #1e293b;
+  --omatic-border-light: #334155;
+  --omatic-border-inverse: rgba(255, 255, 255, 0.15);
+
+  /* Brand Colors in Dark Canvas */
   --omatic-primary: #0b1120;
-  --omatic-primary-light: #1620omatic
-  --omatic-primary-dark: #050811;omatic
-  --omatic-accent-blue: #3b82omatic
-  --omatic-accent-blue-hover: #omatica;
-  --omatic-accent-cyan: #38bdf8;omatic
+  --omatic-primary-light: #162033;
+  --omatic-primary-dark: #050811;
+  --omatic-accent-blue: #3b82f6;
+  --omatic-accent-blue-hover: #60a5fa;
+  --omatic-accent-cyan: #38bdf8;
   --omatic-accent-purple: #a78bfa;
-omatic
-  /* Status Colors (Optimized fomaticrk Canvas Contrast) */
-  --omatic-status-success: #34d39omatic --omatic-status-warning: #fbbf24;
+
+  /* Status Colors (Optimized for Dark Canvas Contrast) */
+  --omatic-status-success: #34d399;
+  --omatic-status-warning: #fbbf24;
   --omatic-status-error: #f87171;
-  omatic --omatic-status-info: #38bdf8;
-  omatic omatic
-  /* Subtle Backgrounds & State Tints (Oomaticzed for Dark Canvas Contrast) */
-  --omatic-accent-blue-subtle: rgba(59, 130, 2omatic.15);
-  --omatic-accent-blue-subtle-hover: rgbomatic 130, 246, 0.24);
-  --omatic-accent-purple-subtle: rgba(167, 139omatic, 0.18);
-  --omatic-status-success-subtle: rgbaomatic211, 153, 0.15);
-  --omatic-status-success-subtle-hover: rgbaomatic211, 153, 0.24);
+  --omatic-status-info: #38bdf8;
+
+  /* Subtle Backgrounds & State Tints (Optimized for Dark Canvas Contrast) */
+  --omatic-accent-blue-subtle: rgba(59, 130, 246, 0.15);
+  --omatic-accent-blue-subtle-hover: rgba(59, 130, 246, 0.24);
+  --omatic-accent-purple-subtle: rgba(167, 139, 250, 0.18);
+  --omatic-status-success-subtle: rgba(52, 211, 153, 0.15);
+  --omatic-status-success-subtle-hover: rgba(52, 211, 153, 0.24);
   --omatic-status-warning-subtle: rgba(251, 191, 36, 0.15);
   --omatic-status-warning-subtle-hover: rgba(251, 191, 36, 0.24);
   --omatic-status-error-subtle: rgba(248, 113, 113, 0.15);
   --omatic-status-error-subtle-hover: rgba(248, 113, 113, 0.24);
 
   /* Tactile Coin Visual Tokens */
-  --omaticc-coin-gold: #fbbf24;
-  --omaticc-coin-gold-light: #fef08a;
-  --omaticc-coin-gold-dark: #d97706;
-  --omaticc-coin-gold-rim: #92400e;
+  --omatic-coin-gold: #fbbf24;
+  --omatic-coin-gold-light: #fef08a;
+  --omatic-coin-gold-dark: #d97706;
+  --omatic-coin-gold-rim: #92400e;
 }
-
-omatic omaticomaticomaticomaticomaticomaticomaticomaticomaticomaticomaticomaticomaticomaticomaticomaticomaticomaticomaticomaticomaticomaticomaticomaticomaticomaticomaticomaticomaticomaticomaticomaticomatic

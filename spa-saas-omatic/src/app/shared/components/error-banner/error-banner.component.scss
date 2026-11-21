@@ -1,12 +1,12 @@
 .error-banner {
   margin: 1rem 0;
   padding: 1rem 1.25rem;
-  background-color: var(--omaticc-status-error-subtle);
-  border: 1px solid var(--omaticc-status-error);
+  background-color: var(--omatic-status-error-subtle);
+  border: 1px solid var(--omatic-status-error);
   border-left-width: 5px;
-  border-radius: var(--omaticc-radius-md);
-  box-shadow: var(--omaticc-shadow-sm);
-  color: var(--omaticc-text-primary);
+  border-radius: var(--omatic-radius-md);
+  box-shadow: var(--omatic-shadow-sm);
+  color: var(--omatic-text-primary);
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
@@ -38,7 +38,7 @@
 }
 
 .error-icon {
-  color: var(--omaticc-status-error);
+  color: var(--omatic-status-error);
   font-size: 1.5rem;
   line-height: 1;
 }
@@ -47,7 +47,7 @@
   margin: 0;
   font-size: 1rem;
   font-weight: 600;
-  color: var(--omaticc-text-primary);
+  color: var(--omatic-text-primary);
 }
 
 .retry-btn {
@@ -57,10 +57,10 @@
   padding: 0.35rem 0.75rem;
   font-size: 0.8125rem;
   font-weight: 600;
-  border-radius: var(--omaticc-radius-sm);
-  background-color: var(--omaticc-bg-card);
-  color: var(--omaticc-status-error);
-  border: 1px solid var(--omaticc-status-error);
+  border-radius: var(--omatic-radius-sm);
+  background-color: var(--omatic-bg-card);
+  color: var(--omatic-status-error);
+  border: 1px solid var(--omatic-status-error);
   cursor: pointer;
   transition: background-color 0.15s ease, color 0.15s ease;
 
@@ -71,8 +71,8 @@
   }
 
   &:hover {
-    background-color: var(--omaticc-status-error);
-    color: var(--omaticc-text-inverse);
+    background-color: var(--omatic-status-error);
+    color: var(--omatic-text-inverse);
   }
 }
 
@@ -82,15 +82,15 @@
   cursor: pointer;
   padding: 0.25rem;
   border-radius: 50%;
-  color: var(--omaticc-text-secondary);
+  color: var(--omatic-text-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
   transition: background-color 0.15s ease, color 0.15s ease;
 
   &:hover {
-    background-color: var(--omaticc-status-error-subtle-hover);
-    color: var(--omaticc-status-error);
+    background-color: var(--omatic-status-error-subtle-hover);
+    color: var(--omatic-status-error);
   }
 
   mat-icon {
@@ -104,7 +104,7 @@
   margin: 0;
   font-size: 0.875rem;
   line-height: 1.45;
-  color: var(--omaticc-text-secondary);
+  color: var(--omatic-text-secondary);
 }
 
 .invalid-params-section {
@@ -117,29 +117,29 @@
 .invalid-params-title {
   font-size: 0.8125rem;
   font-weight: 600;
-  color: var(--omaticc-text-primary);
+  color: var(--omatic-text-primary);
 }
 
 .invalid-params-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.8125rem;
-  background-color: var(--omaticc-bg-card);
-  border: 1px solid var(--omaticc-border);
-  border-radius: var(--omaticc-radius-sm);
+  background-color: var(--omatic-bg-card);
+  border: 1px solid var(--omatic-border);
+  border-radius: var(--omatic-radius-sm);
   overflow: hidden;
 
   th,
   td {
     padding: 0.5rem 0.75rem;
     text-align: left;
-    border-bottom: 1px solid var(--omaticc-border);
+    border-bottom: 1px solid var(--omatic-border);
   }
 
   th {
-    background-color: var(--omaticc-bg-page);
+    background-color: var(--omatic-bg-page);
     font-weight: 600;
-    color: var(--omaticc-text-secondary);
+    color: var(--omatic-text-secondary);
   }
 
   tr:last-child td {
@@ -148,13 +148,13 @@
 
   .param-name code {
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    color: var(--omaticc-accent-blue);
+    color: var(--omatic-accent-blue);
     font-weight: 600;
     font-size: 0.8125rem;
   }
 
   .param-reason {
-    color: var(--omaticc-text-secondary);
+    color: var(--omatic-text-secondary);
   }
 }
 

@@ -298,13 +298,13 @@ describe('CustomerApiService', () => {
 
     it('should fetch lightweight read-model projections with fields=lite', () => {
       const mockLiteList = [
-        { id: 'c1', companyName: 'omaticc Corp', country: 'ES' },
+        { id: 'c1', companyName: 'Omatic Corp', country: 'ES' },
         { id: 'c2', companyName: 'Berlin Cloud', country: 'DE' },
       ];
 
       service.getRecentLite(2).subscribe((res) => {
         expect(res.items).toEqual(mockLiteList);
-        expect(res.items[0].companyName).toBe('omaticc Corp');
+        expect(res.items[0].companyName).toBe('Omatic Corp');
       });
 
       const req = httpTesting.expectOne(

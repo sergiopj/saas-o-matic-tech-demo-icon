@@ -53,18 +53,18 @@ describe('SaaS-O-Matic E2E Integration Suite', () => {
       const response = await request(app.getHttpServer())
         .post('/customers')
         .send({
-          companyName: 'omaticc Corp S.L.',
+          companyName: 'Omatic Corp S.L.',
           taxId: 'B-12345674',
-          email: 'finance@omaticc.es',
+          email: 'finance@omatic.es',
           country: 'ES',
           selectedPlan: 'Enterprise Scale',
         })
         .expect(201);
 
       expect(response.body).toHaveProperty('id');
-      expect(response.body.companyName).toBe('omaticc Corp S.L.');
+      expect(response.body.companyName).toBe('Omatic Corp S.L.');
       expect(response.body.taxId).toBe('B12345674');
-      expect(response.body.email).toBe('finance@omaticc.es');
+      expect(response.body.email).toBe('finance@omatic.es');
       expect(response.body.country).toBe('ES');
       expect(response.body.selectedPlan).toBe('Enterprise Scale');
       expect(response.body).toHaveProperty('createdAt');
@@ -97,9 +97,9 @@ describe('SaaS-O-Matic E2E Integration Suite', () => {
       const response = await request(app.getHttpServer())
         .post('/customers')
         .send({
-          companyName: 'Duplicate omaticc',
+          companyName: 'Duplicate Omatic',
           taxId: 'b 12345674',
-          email: 'dup@omaticc.es',
+          email: 'dup@omatic.es',
           country: 'ES',
           selectedPlan: 'Pro',
         })
@@ -113,12 +113,12 @@ describe('SaaS-O-Matic E2E Integration Suite', () => {
 
     it('GET /customers - should search customers by company name', async () => {
       const response = await request(app.getHttpServer())
-        .get('/customers?search=omaticc')
+        .get('/customers?search=omatic')
         .expect(200);
 
       expect(Array.isArray(response.body)).toBe(true);
       expect(response.body.length).toBeGreaterThanOrEqual(1);
-      expect(response.body[0].companyName).toBe('omaticc Corp S.L.');
+      expect(response.body[0].companyName).toBe('Omatic Corp S.L.');
     });
 
     it('GET /customers - should search customers by taxId even with hyphens', async () => {
@@ -153,7 +153,7 @@ describe('SaaS-O-Matic E2E Integration Suite', () => {
         .expect(200);
 
       expect(response.body.id).toBe(createdCustomerEsId);
-      expect(response.body.companyName).toBe('omaticc Corp S.L.');
+      expect(response.body.companyName).toBe('Omatic Corp S.L.');
     });
 
     it('GET /customers/:id - should return 404 with RFC 7807 for non-existent customer', async () => {
