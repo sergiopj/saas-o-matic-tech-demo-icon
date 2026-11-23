@@ -19,7 +19,8 @@ yarn-error.log*
 *.sqlite-wal
 *.sqlite-shm
 database.sqlite
-data/
+/data/
+!src/**/data/
 
 # Environment variables
 .env

@@ -28,6 +28,7 @@ database.sqlite
 /data/
 mic-saas-omatic/data/
 !spa-saas-omatic/src/**/data/
+!mic-saas-omatic/src/**/data/
 
 # IDE & OS
 .idea/
