@@ -195,7 +195,7 @@ jobs:
 
       - name: Publish frontend coverage summary table
         if: always()
-        run: node scripts/coverage-summary.mjs "Frontend (Angular / Vitest)" spa-saas-omatic/coverage/dashboard/clover.xml
+        run: node scripts/coverage-summary.mjs "Frontend (Angular / Vitest)" spa-saas-omatic/coverage/dashboard/coverage-summary.json
 
       - name: Upload frontend coverage report artifact
         uses: actions/upload-artifact@v4

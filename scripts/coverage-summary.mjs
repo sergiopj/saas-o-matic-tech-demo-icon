@@ -16,9 +16,16 @@ const summaryFile = process.env.GITHUB_STEP_SUMMARY;
 
 let resolvedPath = coveragePath;
 if (!existsSync(resolvedPath)) {
-  const fallback = resolvedPath.replace('/dashboard/clover.xml', '/clover.xml');
-  if (existsSync(fallback)) {
-    resolvedPath = fallback;
+  const candidates = [
+    resolvedPath.replace('/dashboard/clover.xml', '/clover.xml'),
+    resolvedPath.replace('clover.xml', 'coverage-summary.json'),
+    resolvedPath.replace('/dashboard/clover.xml', '/dashboard/coverage-summary.json'),
+    resolvedPath.replace('/clover.xml', '/coverage-summary.json'),
+    resolvedPath.replace('clover.xml', 'dashboard/coverage-summary.json'),
+  ];
+  const found = candidates.find((c) => existsSync(c));
+  if (found) {
+    resolvedPath = found;
   } else {
     console.log(`[coverage-summary] File not found: ${coveragePath} (skipping table generation)`);
     process.exit(0);
@@ -26,10 +33,10 @@ if (!existsSync(resolvedPath)) {
 }
 
 try {
-  const content = readFileSync(coveragePath, 'utf8');
+  const content = readFileSync(resolvedPath, 'utf8');
   let metrics = null;
 
-  if (coveragePath.endsWith('.xml')) {
+  if (resolvedPath.endsWith('.xml')) {
     // Parse clover.xml
     const match = content.match(/<metrics\s+([^>]+)>/i);
     if (match) {
@@ -52,7 +59,7 @@ try {
         functions: { total: methods, covered: coveredMethods, pct: methods > 0 ? Number(((coveredMethods / methods) * 100).toFixed(2)) : 100 },
       };
     }
-  } else if (coveragePath.endsWith('.json')) {
+  } else if (resolvedPath.endsWith('.json')) {
     const data = JSON.parse(content);
     if (data.total) {
       metrics = {
@@ -64,7 +71,7 @@ try {
   }
 
   if (!metrics) {
-    console.log('[coverage-summary] Could not extract metrics from', coveragePath);
+    console.log('[coverage-summary] Could not extract metrics from', resolvedPath);
     process.exit(0);
   }
 

@@ -4736,3 +4736,25 @@ Una vez consolidada la bitácora de auditoría en la carpeta del proyecto, se di
   - Oxlint: **0 errores y 0 advertencias** en ambos módulos.
 - **Valor para la evaluación:**
   Refuerza la robustez de la arquitectura Hexagonal y la interoperabilidad declarativa entre capas (NestJS `ValidationPipe`, `class-transformer` y Angular Reactive Forms), erradicando puntos ciegos de validación y garantizando un feedback visual granular al usuario final.
+
+
+---
+
+### 6.229. Corrección del Resumen de Cobertura en CI/CD: Soporte de `coverage-summary.json` en Vitest / Angular
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Contexto / Desafío:**
+  En el flujo de GitHub Actions (`ci-cd.yml`), en el paso *«Publish frontend coverage summary table»*, el script emitía el aviso:
+  `[coverage-summary] File not found: spa-saas-omatic/coverage/dashboard/clover.xml (skipping table generation)`.
+- **Diagnóstico Técnico de Causa Raíz:**
+  1. *Restricción de Esquema en Angular CLI (`@angular/build:unit-test`):* El builder oficial de Angular con Vitest sólo admite los reporteros `"html"`, `"lcov"`, `"lcovonly"`, `"text"`, `"text-summary"`, `"cobertura"`, `"json"` y `"json-summary"`. No soporta `"clover"` (rechaza la configuración en `angular.json` con error de validación de esquema).
+  2. *Ubicación del Reporte en Vitest:* Al configurar `"json-summary"`, el runner genera `spa-saas-omatic/coverage/dashboard/coverage-summary.json`.
+  3. *Error de Ruta en `scripts/coverage-summary.mjs`:* El script leía la variable original `coveragePath` en lugar de la variable resuelta `resolvedPath`, y no disponía de candidatos de fallback para resolver `clover.xml` hacia `coverage-summary.json`.
+- **Decisión de Arquitectura y Solución Aplicada:**
+  1. *Normalización en Workflow CI/CD (`.github/workflows/ci-cd.yml`):* Se actualizó la invocación del paso frontend para apuntar directamente a `spa-saas-omatic/coverage/dashboard/coverage-summary.json`.
+  2. *Resiliencia Multiformato en `scripts/coverage-summary.mjs`:* Se incorporó búsqueda automática de candidatos (`clover.xml` $\to$ `coverage-summary.json` en raíz o subdirectorio `dashboard/`) y se corrigió la lectura hacia `resolvedPath`.
+- **Resultados de Verificación:**
+  - Ejecución local del paso frontend: **Statements 96.45%**, **Functions 95.84%**, **Branches 88.78%** (Quality Gate 100% verde).
+  - Ejecución local del paso backend: **Statements 96.65%**, **Functions 96.35%**, **Branches 83.06%** (Quality Gate 100% verde).
+- **Valor para la evaluación:**
+  Garantiza que el resumen ejecutivo de cobertura se publique íntegramente en `$GITHUB_STEP_SUMMARY` en cada push o pull request, ofreciendo métricas transparentes y auditables de calidad de software a los evaluadores técnicos.
