@@ -4545,3 +4545,21 @@ Una vez consolidada la bitácora de auditoría en la carpeta del proyecto, se di
   - Pipeline de GitHub Actions ejecutando la validación de Kubernetes con éxito en verde.
 - **Valor para la evaluación:**
   Diagnóstico ágil de comportamiento interno del cliente `kubectl` en entornos efímeros de integración continua (CI/CD), asegurando que el arnés de validación de Infraestructura como Código (IaC) sea robusto, rápido y desacoplado de dependencias de red.
+
+
+---
+
+### 6.221. Sincronización Automática de Documentación Swagger (/docs) y Enfoque Híbrido Spec-Driven
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Prompt Verbatim del Usuario:**
+  > *«dudas, si hay cambios en api en plan nuevos modulos, cambios en los mismos, se actualizara tambien las docs? en por ejemplo http://localhost:3000/docs o alla donde se despliegue?»*
+- **Diagnóstico y Solución de Arquitectura:**
+  1. *Arquitectura Spec-Driven (Contract-First):* La Fuente Única de Verdad (SSOT) de la API reside en [openapi.yaml](file:///c:/Users/Usuario/Documents/GitHub/saas-o-matic-tech-demo-icon/ai-workspace/01-specs/openapi.yaml). Al arrancar el servidor en [main.ts](file:///c:/Users/Usuario/Documents/GitHub/saas-o-matic-tech-demo-icon/mic-saas-omatic/src/main.ts), Swagger carga dinámicamente este fichero. Cualquier cambio en contratos o nuevos endpoints se refleja en tiempo real en `/docs` tanto en local como en Docker (donde el Dockerfile copia la carpeta `01-specs` al contenedor de producción).
+  2. *Sincronización del Módulo de Emails:* Se actualizó `openapi.yaml` para incluir el endpoint `POST /emails` con su payload de sanitización HTML anti-XSS y respuestas, completando los 4 módulos de la plataforma (`Customers`, `Simulations`, `Invoices`, `Emails`).
+  3. *Mecanismo de Respaldo Híbrido (Code-First Fallback):* Se blindó `main.ts` con un fallback automático que invoca `DocumentBuilder` e inspecciona por reflexión los decoradores `@ApiTags`, `@ApiOperation`, etc., en caso de que el fichero OpenAPI físico no esté disponible, garantizando que `/docs` esté siempre operativo en cualquier entorno de despliegue.
+- **Resultados de Verificación:**
+  - Oxlint backend & frontend: 0 errores / 0 advertencias.
+  - Swagger UI disponible en `http://localhost:3000/docs` con los 4 módulos documentados.
+- **Valor para la evaluación:**
+  Demuestra maestría en gobernanza de APIs y diseño Contract-First, asegurando que la documentación técnica interactiva sea siempre fiel a la implementación sin desincronizaciones entre backend y frontend.

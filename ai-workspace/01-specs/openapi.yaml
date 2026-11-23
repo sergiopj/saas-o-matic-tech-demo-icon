@@ -348,6 +348,54 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
+  /emails:
+    post:
+      summary: Envía una propuesta comercial o factura por correo electrónico con sanitización anti-XSS
+      operationId: sendEmail
+      tags:
+        - Emails
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - to
+                - subject
+                - htmlBody
+              properties:
+                to:
+                  type: string
+                  format: email
+                  example: billing@acme.com
+                subject:
+                  type: string
+                  maxLength: 200
+                  example: 'SaaS-O-Matic: Propuesta Comercial'
+                htmlBody:
+                  type: string
+                  example: '<p>Estimado cliente, adjuntamos la propuesta de optimización.</p>'
+      responses:
+        '200':
+          description: Correo procesado, sanitizado y enviado correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  messageId:
+                    type: string
+                    example: msg-12345-67890
+                  timestamp:
+                    type: string
+                    format: date-time
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
 components:
   schemas:
     CustomerCreate:

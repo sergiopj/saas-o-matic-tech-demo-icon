@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
-import { SwaggerModule } from '@nestjs/swagger';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { parse } from 'yaml';
@@ -43,6 +43,14 @@ async function bootstrap() {
     const yamlContent = readFileSync(openApiPath, 'utf8');
     const openApiDocument = parse(yamlContent) as Parameters<typeof SwaggerModule.setup>[2];
     SwaggerModule.setup('docs', app, openApiDocument);
+  } else {
+    const config = new DocumentBuilder()
+      .setTitle('SaaS-O-Matic API')
+      .setDescription('Dynamic Billing & Subscription Optimizer API')
+      .setVersion('1.0.0')
+      .build();
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('docs', app, document);
   }
 
   const port = process.env.PORT ?? 3000;
