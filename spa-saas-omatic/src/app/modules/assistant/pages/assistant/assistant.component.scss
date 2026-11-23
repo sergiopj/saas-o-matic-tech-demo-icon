@@ -99,44 +99,6 @@
     margin: 0;
     max-width: 720px;
   }
-
-  .status-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    padding: 0.45rem 0.9rem;
-    border-radius: var(--omatic-radius-full, 9999px);
-    background: var(--omatic-status-success-subtle);
-    border: 1px solid var(--omatic-border-light);
-    color: var(--omatic-status-success);
-    font-size: 0.8125rem;
-    font-weight: 600;
-    white-space: nowrap;
-
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background-color: var(--omatic-status-success);
-      box-shadow: 0 0 0 0 var(--omatic-status-success);
-      animation: pulse-status 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
-    }
-  }
-}
-
-@keyframes pulse-status {
-  0% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--omatic-status-success) 70%, transparent);
-  }
-  70% {
-    transform: scale(1);
-    box-shadow: 0 0 0 6px color-mix(in srgb, var(--omatic-status-success) 0%, transparent);
-  }
-  100% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--omatic-status-success) 0%, transparent);
-  }
 }
 
 /* Quick Prompts Section */

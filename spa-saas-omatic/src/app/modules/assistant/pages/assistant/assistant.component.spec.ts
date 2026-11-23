@@ -36,7 +36,7 @@ describe('AssistantComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should render header with badge, 3D robot image, title and status pill', () => {
+  it('should render header with badge, 3D robot image and title', () => {
     const el = fixture.nativeElement as HTMLElement;
     const badge = el.querySelector('.header-badge');
     expect(badge?.textContent).toContain('SaaS-O-Matic AI Core v2.0');
@@ -48,9 +48,6 @@ describe('AssistantComponent', () => {
 
     const title = el.querySelector('.header-title');
     expect(title?.textContent).toContain('Asistente Inteligente');
-
-    const statusPill = el.querySelector('.status-pill');
-    expect(statusPill?.textContent).toContain('En línea');
   });
 
   it('should render quick prompt buttons', () => {
