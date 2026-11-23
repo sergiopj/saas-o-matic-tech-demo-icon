@@ -15,7 +15,7 @@ export class PdfkitInvoicePdfGeneratorAdapter implements InvoicePdfGeneratorPort
           size: 'A4',
           margin: 48,
           info: {
-            Title: `Factura ${invoice.getInvoiceNumber()}`,
+            Title: `Invoice ${invoice.getInvoiceNumber()}`,
             Author: 'SaaS-O-Matic',
             Subject: invoice.getConcept(),
           },
@@ -49,8 +49,22 @@ export class PdfkitInvoicePdfGeneratorAdapter implements InvoicePdfGeneratorPort
         doc.fillColor('#1061e2').fontSize(12).font('Helvetica-Bold').text(invoice.getInvoiceNumber(), 48, 136);
 
         // Status pill
-        const statusLabel = invoice.getStatus() === 'PAID' ? 'PAGADA / PAID' : (invoice.getStatus() === 'CANCELLED' ? 'CANCELADA / CANCELLED' : 'EMITIDA / ISSUED');
-        const statusColor = invoice.getStatus() === 'PAID' ? '#16a34a' : (invoice.getStatus() === 'CANCELLED' ? '#dc2626' : '#2563eb');
+        // cspell:ignore CANCELADA EMITIDA
+        let statusLabel: string;
+        let statusColor: string;
+        switch (invoice.getStatus()) {
+          case 'PAID':
+            statusLabel = 'PAGADA / PAID';
+            statusColor = '#16a34a';
+            break;
+          case 'CANCELLED':
+            statusLabel = 'CANCELADA / CANCELLED';
+            statusColor = '#dc2626';
+            break;
+          default:
+            statusLabel = 'EMITIDA / ISSUED';
+            statusColor = '#2563eb';
+        }
         doc.roundedRect(doc.page.width - 150, 118, 102, 22, 4).fill(statusColor);
         doc.fillColor('#ffffff').fontSize(8.5).font('Helvetica-Bold').text(statusLabel, doc.page.width - 150, 124, { width: 102, align: 'center' });
 

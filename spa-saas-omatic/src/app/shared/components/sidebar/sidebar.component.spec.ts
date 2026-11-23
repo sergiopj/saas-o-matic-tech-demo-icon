@@ -26,7 +26,7 @@ describe('SidebarComponent', () => {
 
   it('should render all navigation items', () => {
     const navLinks = fixture.nativeElement.querySelectorAll('.nav-link');
-    expect(navLinks.length).toBe(4);
+    expect(navLinks.length).toBe(6);
   });
 
   it('should toggle collapse state on button click', () => {

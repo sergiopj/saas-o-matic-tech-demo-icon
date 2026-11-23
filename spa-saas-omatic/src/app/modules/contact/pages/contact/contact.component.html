@@ -1,0 +1,203 @@
+<section class="contact-container" aria-labelledby="contact-heading">
+  <!-- Top Header -->
+  <header class="contact-header">
+    <div class="header-badge">
+      <mat-icon class="badge-icon">support_agent</mat-icon>
+      <span class="badge-text">{{ 'contact.header.badge' | translate }}</span>
+    </div>
+    <h1 id="contact-heading" class="header-title">{{ 'contact.header.title' | translate }}</h1>
+    <p class="header-subtitle">{{ 'contact.header.subtitle' | translate }}</p>
+  </header>
+
+  <!-- 2-Column Split: Corporate Info & Contact Form -->
+  <div class="contact-grid">
+    <!-- Left Column: Corporate Brand & Info -->
+    <aside class="contact-info-card">
+      <div class="badge-illustration-wrapper">
+        <img
+          src="/images/email-dispatch-badge.jpg"
+          [alt]="'contact.info.imageAlt' | translate"
+          class="info-badge-img"
+          loading="lazy"
+        />
+      </div>
+
+      <div class="info-content">
+        <h2 class="info-title">{{ 'contact.info.title' | translate }}</h2>
+        <p class="info-desc">{{ 'contact.info.desc' | translate }}</p>
+
+        <div class="info-channels">
+          <div class="channel-item">
+            <div class="channel-icon-wrapper">
+              <mat-icon class="channel-icon">email</mat-icon>
+            </div>
+            <div class="channel-text">
+              <span class="channel-label">{{ 'contact.info.emailLabel' | translate }}</span>
+              <a href="mailto:soporte@omatic.es" class="channel-value">soporte@omatic.es</a>
+            </div>
+          </div>
+
+          <div class="channel-item">
+            <div class="channel-icon-wrapper">
+              <mat-icon class="channel-icon">schedule</mat-icon>
+            </div>
+            <div class="channel-text">
+              <span class="channel-label">{{ 'contact.info.hoursLabel' | translate }}</span>
+              <span class="channel-value">{{ 'contact.info.hoursValue' | translate }}</span>
+            </div>
+          </div>
+
+          <div class="channel-item">
+            <div class="channel-icon-wrapper">
+              <mat-icon class="channel-icon">bolt</mat-icon>
+            </div>
+            <div class="channel-text">
+              <span class="channel-label">{{ 'contact.info.slaLabel' | translate }}</span>
+              <span class="channel-value">{{ 'contact.info.slaValue' | translate }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-footer">
+          <mat-icon class="security-icon">verified_user</mat-icon>
+          <span class="security-text">{{ 'contact.info.securityNote' | translate }}</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Right Column: Interactive Contact Form -->
+    <main class="contact-form-card">
+      @if (submitted()) {
+        <output class="form-alert success-alert" aria-live="polite">
+          <mat-icon class="alert-icon">check_circle</mat-icon>
+          <div class="alert-body">
+            <strong class="alert-title">{{ 'contact.form.successTitle' | translate }}</strong>
+            <p class="alert-message">{{ 'contact.form.successMessage' | translate }}</p>
+            <button mat-stroked-button type="button" class="btn-new-inquiry" (click)="resetSubmittedState()">
+              <mat-icon>replay</mat-icon>
+              <span>{{ 'contact.form.sendAnother' | translate }}</span>
+            </button>
+          </div>
+        </output>
+      }
+
+      @if (errorMessage()) {
+        <output class="form-alert error-alert" aria-live="polite">
+          <mat-icon class="alert-icon">error_outline</mat-icon>
+          <span class="alert-text">{{ errorMessage() }}</span>
+        </output>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" id="contact-form" class="contact-form" novalidate>
+        <div class="form-row-duo">
+          <!-- Full Name -->
+          <mat-form-field appearance="outline" class="form-field" subscriptSizing="dynamic" floatLabel="always">
+            <mat-label>{{ 'contact.form.nameLabel' | translate }}</mat-label>
+            <input
+              matInput
+              type="text"
+              formControlName="fullName"
+              [errorStateMatcher]="matcher"
+              [placeholder]="'contact.form.namePlaceholder' | translate"
+              required
+            />
+            <mat-icon matPrefix class="field-icon">person</mat-icon>
+            @if (form.get('fullName')?.hasError('required')) {
+              <mat-error>{{ 'contact.form.errNameRequired' | translate }}</mat-error>
+            } @else if (form.get('fullName')?.hasError('minlength')) {
+              <mat-error>{{ 'contact.form.errNameMinLength' | translate }}</mat-error>
+            }
+          </mat-form-field>
+
+          <!-- Email -->
+          <mat-form-field appearance="outline" class="form-field" subscriptSizing="dynamic" floatLabel="always">
+            <mat-label>{{ 'contact.form.emailLabel' | translate }}</mat-label>
+            <input
+              matInput
+              type="email"
+              formControlName="email"
+              [errorStateMatcher]="matcher"
+              [placeholder]="'contact.form.emailPlaceholder' | translate"
+              required
+            />
+            <mat-icon matPrefix class="field-icon">mail</mat-icon>
+            @if (form.get('email')?.hasError('required')) {
+              <mat-error>{{ 'contact.form.errEmailRequired' | translate }}</mat-error>
+            } @else if (form.get('email')?.hasError('invalidEmail')) {
+              <mat-error>{{ 'contact.form.errEmailInvalid' | translate }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <div class="form-row-duo">
+          <!-- Company Name -->
+          <mat-form-field appearance="outline" class="form-field" subscriptSizing="dynamic" floatLabel="always">
+            <mat-label>{{ 'contact.form.companyLabel' | translate }}</mat-label>
+            <input
+              matInput
+              type="text"
+              formControlName="companyName"
+              [placeholder]="'contact.form.companyPlaceholder' | translate"
+            />
+            <mat-icon matPrefix class="field-icon">business</mat-icon>
+          </mat-form-field>
+
+          <!-- Inquiry Type -->
+          <mat-form-field appearance="outline" class="form-field" subscriptSizing="dynamic" floatLabel="always">
+            <mat-label>{{ 'contact.form.inquiryLabel' | translate }}</mat-label>
+            <mat-select formControlName="inquiryType" required>
+              @for (opt of inquiryOptions; track opt.value) {
+                <mat-option [value]="opt.value">{{ opt.labelKey | translate }}</mat-option>
+              }
+            </mat-select>
+            <mat-icon matPrefix class="field-icon">category</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <!-- Message -->
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field" subscriptSizing="dynamic" floatLabel="always">
+            <mat-label>{{ 'contact.form.messageLabel' | translate }}</mat-label>
+            <textarea
+              matInput
+              rows="4"
+              formControlName="message"
+              [errorStateMatcher]="matcher"
+              [placeholder]="'contact.form.messagePlaceholder' | translate"
+              required
+            ></textarea>
+            <mat-icon matPrefix class="field-icon">chat</mat-icon>
+            @if (form.get('message')?.hasError('required')) {
+              <mat-error>{{ 'contact.form.errMessageRequired' | translate }}</mat-error>
+            } @else if (form.get('message')?.hasError('minlength')) {
+              <mat-error>{{ 'contact.form.errMessageMinLength' | translate }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="form-actions">
+          <button
+            mat-flat-button
+            color="primary"
+            type="submit"
+            class="submit-btn"
+            [disabled]="form.invalid || submitting()"
+            [attr.aria-disabled]="form.invalid || submitting()"
+            [attr.title]="form.invalid ? ('contact.form.disabledHint' | translate) : null"
+          >
+            @if (submitting()) {
+              <mat-spinner diameter="18" class="btn-spinner"></mat-spinner>
+              <span>{{ 'contact.form.sending' | translate }}</span>
+            } @else {
+              <ng-container>
+                <mat-icon>send</mat-icon>
+                <span>{{ 'contact.form.submit' | translate }}</span>
+              </ng-container>
+            }
+          </button>
+        </div>
+      </form>
+    </main>
+  </div>
+</section>

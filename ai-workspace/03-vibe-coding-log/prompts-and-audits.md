@@ -4610,3 +4610,33 @@ Una vez consolidada la bitácora de auditoría en la carpeta del proyecto, se di
   - Oxlint: 0 errores / 0 advertencias en frontend y backend.
 - **Valor para la evaluación:**
   Demuestra refinamiento en ergonomía visual y accesibilidad (W3C A11y), previniendo trampas de interacción sutiles y ofreciendo micro-optimizaciones comerciales que deleitan al usuario final.
+
+
+---
+
+### 6.224. Creación de Módulos de Usuario: Guía de la Plataforma (/guide) y Formulario de Contacto (/contact)
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Prompt Verbatim del Usuario:**
+  > *«Creo que esto va a ser muy fácil. Me gustaría un par de módulos más. Uno que sea de documentación para entender la plataforma, que te lleve a una página donde haya documentación de cómo utilizar la página y para qué sirve cada funcionalidad, muy resumido a nivel de usuario, no tiene que ser súper técnico. Y luego otro módulo más, que se va a ver también en el panel de la izquierda, que sea de contact us, pues una especie de texto introductorio y pones un formulario para contactar, pero que quede bonito y que esté alineado con los estilos que tenemos ya en el proyecto. Si necesitas poner alguna imagen estaría bien en el contact us para que no quede tan frío, una imagen corporativa así chula, bonita. Y si tienes que poner una imagen también en el tema del otro módulo, el de información de cómo manejar la plataforma, documentación, también estaría bien.»*
+- **Decisión de Arquitectura y Solución Aplicada:**
+  1. *Módulo de Guía de Usuario (`/guide`):*
+     - Creado en `src/app/modules/guide/` con lazy loading vía `guide.routes.ts`.
+     - Hero banner con badge interactivo e ilustración corporativa 3D (`/images/simulations-illustration.jpg`).
+     - Flujo de trabajo comercial en 3 pasos interactivos: Alta de Cliente $\to$ Simulación a 60 FPS $\to$ Emisión y Descarga PDF.
+     - Matriz de 6 capacidades explicadas en lenguaje de negocio (Dashboard, Clientes, Simulaciones, Facturas, Multidivisa, Seguridad y Arquitectura).
+     - Bloque de Preguntas Frecuentes (FAQ) para resolución inmediata de dudas comerciales.
+  2. *Módulo de Contacto Corporativo (`/contact`):*
+     - Creado en `src/app/modules/contact/` con lazy loading vía `contact.routes.ts`.
+     - Layout split en 2 columnas: tarjeta corporativa con ilustración 3D (`/images/email-dispatch-badge.jpg`), canal directo (`soporte@omatic.es`), SLA de respuesta (< 24h) y sello de seguridad OWASP.
+     - Formulario reactivo tipado con `fullName`, `email` (validador RFC 5322), `companyName`, `inquiryType` y `message`.
+     - Integración con `EmailApiService` (`POST /emails`), validación `ShowOnDirtyErrorStateMatcher`, notificación centralizada con `ToastService` y alerta de estado nativa accesible `<output aria-live="polite">`.
+  3. *Navegación e Internacionalización Completa:*
+     - Actualizada la barra lateral (`SidebarComponent`) y menú móvil (`NavbarComponent`) incorporando `/guide` (icono `menu_book`) y `/contact` (icono `support_agent`).
+     - Diccionario de traducciones enriquecido con más de 90 claves en los 4 idiomas oficiales (`es`, `en`, `de`, `fr`).
+- **Resultados de Verificación:**
+  - Frontend: **327 tests unitarios pasando al 100% (38 test suites)**.
+  - Backend: **226 tests unitarios pasando al 100% (54 test suites)**.
+  - Oxlint: **0 errores y 0 advertencias** en los 93 ficheros de frontend y 125 de backend.
+- **Valor para la evaluación:**
+  Cierra el producto digital de extremo a extremo, dotando a SaaS-O-Matic de una experiencia de autoservicio para el usuario y canal de soporte corporativo con un diseño pulido y alineado con los design tokens de Omatic.

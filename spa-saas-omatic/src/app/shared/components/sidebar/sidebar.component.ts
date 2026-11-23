@@ -33,6 +33,16 @@ export const APP_NAV_ITEMS: readonly NavItem[] = [
     labelKey: 'sidebar.invoices',
     icon: 'receipt_long',
   },
+  {
+    path: '/guide',
+    labelKey: 'sidebar.guide',
+    icon: 'menu_book',
+  },
+  {
+    path: '/contact',
+    labelKey: 'sidebar.contact',
+    icon: 'support_agent',
+  },
 ] as const;
 
 @Component({

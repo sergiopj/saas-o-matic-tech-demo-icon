@@ -3,6 +3,11 @@ import { InvoiceTypeOrmEntity } from './invoice.typeorm-entity';
 
 export class InvoicePersistenceMapper {
   static toDomain(entity: InvoiceTypeOrmEntity): Invoice {
+    let paidAt: Date | null = null;
+    if (entity.paidAt) {
+      paidAt = entity.paidAt instanceof Date ? entity.paidAt : new Date(entity.paidAt);
+    }
+
     return Invoice.reconstitute({
       id: entity.id,
       invoiceNumber: entity.invoiceNumber,
@@ -20,7 +25,7 @@ export class InvoicePersistenceMapper {
       status: entity.status,
       issueDate: entity.issueDate instanceof Date ? entity.issueDate : new Date(entity.issueDate),
       dueDate: entity.dueDate instanceof Date ? entity.dueDate : new Date(entity.dueDate),
-      paidAt: entity.paidAt ? (entity.paidAt instanceof Date ? entity.paidAt : new Date(entity.paidAt)) : null,
+      paidAt,
       notes: entity.notes,
       createdAt: entity.createdAt instanceof Date ? entity.createdAt : new Date(entity.createdAt),
       updatedAt: entity.updatedAt instanceof Date ? entity.updatedAt : new Date(entity.updatedAt),

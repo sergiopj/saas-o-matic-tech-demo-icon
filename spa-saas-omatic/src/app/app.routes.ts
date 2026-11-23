@@ -35,6 +35,20 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'guide',
+    loadChildren: () =>
+      import('./modules/guide/guide.routes').then(
+        (m) => m.GUIDE_ROUTES
+      ),
+  },
+  {
+    path: 'contact',
+    loadChildren: () =>
+      import('./modules/contact/contact.routes').then(
+        (m) => m.CONTACT_ROUTES
+      ),
+  },
+  {
     path: '**',
     redirectTo: 'home',
   },

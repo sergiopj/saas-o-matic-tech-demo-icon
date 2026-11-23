@@ -79,7 +79,7 @@ describe('NavbarComponent', () => {
     expect(fixture.nativeElement.querySelector('.mobile-nav-panel')).toBeTruthy();
 
     const navLinks = fixture.nativeElement.querySelectorAll('.mobile-nav-link');
-    expect(navLinks.length).toBe(4);
+    expect(navLinks.length).toBe(6);
 
     menuBtn.click();
     fixture.detectChanges();

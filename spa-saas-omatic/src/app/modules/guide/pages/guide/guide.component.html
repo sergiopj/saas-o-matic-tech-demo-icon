@@ -1,0 +1,110 @@
+<section class="guide-container" aria-labelledby="guide-title">
+  <!-- Hero Banner -->
+  <header class="guide-hero">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <mat-icon class="badge-icon">menu_book</mat-icon>
+        <span class="badge-text">{{ 'guide.hero.badge' | translate }}</span>
+      </div>
+      <h1 id="guide-title" class="hero-title">{{ 'guide.hero.title' | translate }}</h1>
+      <p class="hero-subtitle">{{ 'guide.hero.subtitle' | translate }}</p>
+      <div class="hero-actions">
+        <a mat-flat-button color="primary" routerLink="/customers" class="cta-primary-btn">
+          <mat-icon>play_circle</mat-icon>
+          <span>{{ 'guide.hero.ctaCustomers' | translate }}</span>
+        </a>
+        <a mat-stroked-button routerLink="/contact" class="cta-secondary-btn">
+          <mat-icon>support_agent</mat-icon>
+          <span>{{ 'guide.hero.ctaContact' | translate }}</span>
+        </a>
+      </div>
+    </div>
+    <div class="hero-media">
+      <img
+        src="/images/simulations-illustration.jpg"
+        [alt]="'guide.hero.imageAlt' | translate"
+        class="hero-illustration"
+        loading="lazy"
+      />
+    </div>
+  </header>
+
+  <!-- 3-Step Commercial Workflow -->
+  <section class="guide-section" aria-labelledby="workflow-title">
+    <div class="section-header">
+      <span class="section-badge">{{ 'guide.workflow.badge' | translate }}</span>
+      <h2 id="workflow-title" class="section-title">{{ 'guide.workflow.title' | translate }}</h2>
+      <p class="section-subtitle">{{ 'guide.workflow.subtitle' | translate }}</p>
+    </div>
+
+    <div class="steps-grid">
+      @for (step of steps; track step.stepNumber) {
+        <article class="step-card">
+          <div class="step-header">
+            <span class="step-number">{{ step.stepNumber }}</span>
+            <div class="step-icon-wrapper">
+              <mat-icon class="step-icon">{{ step.icon }}</mat-icon>
+            </div>
+          </div>
+          <h3 class="step-title">{{ step.titleKey | translate }}</h3>
+          <p class="step-desc">{{ step.descKey | translate }}</p>
+          <a mat-button [routerLink]="step.route" class="step-action-link">
+            <span>{{ step.routeLabelKey | translate }}</span>
+            <mat-icon class="link-arrow">arrow_forward</mat-icon>
+          </a>
+        </article>
+      }
+    </div>
+  </section>
+
+  <!-- Feature Matrix Grid -->
+  <section class="guide-section" aria-labelledby="features-title">
+    <div class="section-header">
+      <span class="section-badge">{{ 'guide.features.badge' | translate }}</span>
+      <h2 id="features-title" class="section-title">{{ 'guide.features.title' | translate }}</h2>
+      <p class="section-subtitle">{{ 'guide.features.subtitle' | translate }}</p>
+    </div>
+
+    <div class="features-grid">
+      @for (feat of features; track feat.titleKey) {
+        <article class="feature-card">
+          <div class="feature-top">
+            <div class="feature-icon-wrapper">
+              <mat-icon class="feature-icon">{{ feat.icon }}</mat-icon>
+            </div>
+            <span class="feature-tag">{{ feat.tagKey | translate }}</span>
+          </div>
+          <h3 class="feature-title">{{ feat.titleKey | translate }}</h3>
+          <p class="feature-desc">{{ feat.descKey | translate }}</p>
+          @if (feat.route) {
+            <a mat-button [routerLink]="feat.route" class="feature-link">
+              <span>{{ 'guide.features.explore' | translate }}</span>
+              <mat-icon class="link-arrow">open_in_new</mat-icon>
+            </a>
+          }
+        </article>
+      }
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="guide-section" aria-labelledby="faq-title">
+    <div class="section-header">
+      <span class="section-badge">{{ 'guide.faq.badge' | translate }}</span>
+      <h2 id="faq-title" class="section-title">{{ 'guide.faq.title' | translate }}</h2>
+      <p class="section-subtitle">{{ 'guide.faq.subtitle' | translate }}</p>
+    </div>
+
+    <div class="faq-grid">
+      @for (faq of faqs; track faq.questionKey) {
+        <article class="faq-card">
+          <div class="faq-q-wrapper">
+            <mat-icon class="faq-icon">{{ faq.icon }}</mat-icon>
+            <h3 class="faq-question">{{ faq.questionKey | translate }}</h3>
+          </div>
+          <p class="faq-answer">{{ faq.answerKey | translate }}</p>
+        </article>
+      }
+    </div>
+  </section>
+</section>
