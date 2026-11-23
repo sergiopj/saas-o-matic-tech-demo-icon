@@ -7,6 +7,7 @@ import { InvoiceListComponent } from './invoice-list.component';
 import { InvoiceApiService } from '../../services/invoice-api.service';
 import { ToastService } from '../../../../core/services/toast.service';
 import { I18nService } from '../../../../core/services/i18n.service';
+import { ConfirmService } from '../../../../core/services/confirm.service';
 import { Invoice } from '../../models/invoice.model';
 
 describe('InvoiceListComponent', () => {
@@ -22,6 +23,9 @@ describe('InvoiceListComponent', () => {
     success: ReturnType<typeof vi.fn>;
     error: ReturnType<typeof vi.fn>;
     show: ReturnType<typeof vi.fn>;
+  };
+  let confirmService: {
+    confirm: ReturnType<typeof vi.fn>;
   };
 
   const mockInvoices: Invoice[] = [
@@ -83,11 +87,16 @@ describe('InvoiceListComponent', () => {
       show: vi.fn(),
     };
 
+    confirmService = {
+      confirm: vi.fn().mockReturnValue(of(true)),
+    };
+
     await TestBed.configureTestingModule({
       imports: [InvoiceListComponent],
       providers: [
         { provide: InvoiceApiService, useValue: invoiceApi },
         { provide: ToastService, useValue: toastService },
+        { provide: ConfirmService, useValue: confirmService },
         provideHttpClient(),
         provideHttpClientTesting(),
         I18nService,
@@ -179,5 +188,34 @@ describe('InvoiceListComponent', () => {
     component.downloadPdf(mockInvoices[0]);
 
     expect(toastService.error).toHaveBeenCalled();
+  });
+
+  it('should cancel invoice when confirmed via confirm dialog and notify via toast', () => {
+    confirmService.confirm.mockReturnValue(of(true));
+    invoiceApi.updateStatus.mockReturnValue(
+      of({ ...mockInvoices[0], status: 'CANCELLED' }),
+    );
+
+    component.cancelInvoice(mockInvoices[0]);
+
+    expect(confirmService.confirm).toHaveBeenCalledWith(
+      expect.objectContaining({
+        isDestructive: true,
+        icon: 'block',
+      }),
+    );
+    expect(invoiceApi.updateStatus).toHaveBeenCalledWith('inv-1', 'CANCELLED');
+    expect(toastService.success).toHaveBeenCalled();
+    const updated = component.invoices().find((inv) => inv.id === 'inv-1');
+    expect(updated?.status).toBe('CANCELLED');
+  });
+
+  it('should not cancel invoice when confirm dialog is dismissed', () => {
+    confirmService.confirm.mockReturnValue(of(false));
+
+    component.cancelInvoice(mockInvoices[0]);
+
+    expect(confirmService.confirm).toHaveBeenCalled();
+    expect(invoiceApi.updateStatus).not.toHaveBeenCalledWith('inv-1', 'CANCELLED');
   });
 });

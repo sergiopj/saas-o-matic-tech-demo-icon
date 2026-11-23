@@ -19,6 +19,7 @@ import { InvoiceApiService } from '../../services/invoice-api.service';
 import { Invoice, InvoiceStatus } from '../../models/invoice.model';
 import { ToastService } from '../../../../core/services/toast.service';
 import { I18nService } from '../../../../core/services/i18n.service';
+import { ConfirmService } from '../../../../core/services/confirm.service';
 import { InvoiceCreateDialogComponent } from '../../components/invoice-create-dialog/invoice-create-dialog.component';
 
 @Component({
@@ -42,6 +43,7 @@ export class InvoiceListComponent implements OnInit {
   private readonly toast = inject(ToastService);
   private readonly i18n = inject(I18nService);
   private readonly dialog = inject(MatDialog);
+  private readonly confirm = inject(ConfirmService);
 
   readonly invoices = signal<Invoice[]>([]);
   readonly totalInvoices = signal<number>(0);
@@ -121,20 +123,32 @@ export class InvoiceListComponent implements OnInit {
   }
 
   cancelInvoice(invoice: Invoice): void {
-    if (!window.confirm(this.i18n.t('invoices.actions.cancelConfirm'))) {
-      return;
-    }
-    this.invoiceApi.updateStatus(invoice.id, 'CANCELLED').subscribe({
-      next: (updated) => {
-        this.toast.success(this.i18n.t('invoices.actions.cancelSuccess'));
-        this.invoices.update((list) =>
-          list.map((inv) => (inv.id === updated.id ? updated : inv)),
-        );
-        if (this.selectedInvoice()?.id === updated.id) {
-          this.selectedInvoice.set(updated);
+    this.confirm
+      .confirm({
+        title: 'invoices.actions.cancelTitle',
+        message: 'invoices.actions.cancelConfirm',
+        detail: 'invoices.actions.cancelWarning',
+        confirmLabel: 'invoices.actions.cancel',
+        cancelLabel: 'common.cancel',
+        icon: 'block',
+        isDestructive: true,
+      })
+      .subscribe((confirmed) => {
+        if (!confirmed) {
+          return;
         }
-      },
-    });
+        this.invoiceApi.updateStatus(invoice.id, 'CANCELLED').subscribe({
+          next: (updated) => {
+            this.toast.success(this.i18n.t('invoices.actions.cancelSuccess'));
+            this.invoices.update((list) =>
+              list.map((inv) => (inv.id === updated.id ? updated : inv)),
+            );
+            if (this.selectedInvoice()?.id === updated.id) {
+              this.selectedInvoice.set(updated);
+            }
+          },
+        });
+      });
   }
 
   downloadPdf(invoice: Invoice): void {

@@ -64,6 +64,13 @@ body {
     color: var(--omatic-text-primary);
   }
 
+  .omatic-confirm-dialog-panel .mdc-dialog__surface {
+    border-radius: var(--omatic-radius-lg);
+    border: 1px solid var(--omatic-border);
+    box-shadow: var(--omatic-shadow-lg);
+    overflow: hidden;
+  }
+
   .mat-mdc-menu-panel {
     background-color: var(--omatic-surface);
     border: 1px solid var(--omatic-border);

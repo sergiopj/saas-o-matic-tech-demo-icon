@@ -1,0 +1,50 @@
+<div class="confirm-dialog-container" [class.is-destructive]="isDestructive">
+  <header class="dialog-header">
+    <div class="header-icon-badge" [class.destructive-badge]="isDestructive" aria-hidden="true">
+      <mat-icon class="badge-icon">{{ icon }}</mat-icon>
+    </div>
+    <div class="header-text">
+      <h2 mat-dialog-title class="dialog-title" id="confirm-dialog-title">{{ title | translate }}</h2>
+    </div>
+    <button
+      type="button"
+      mat-icon-button
+      class="close-btn"
+      (click)="onCancel()"
+      [attr.aria-label]="'common.close' | translate"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </header>
+
+  <mat-dialog-content class="dialog-content">
+    <p class="dialog-message" id="confirm-dialog-desc">{{ message | translate }}</p>
+    @if (detail) {
+      <div class="detail-box" [class.destructive-detail]="isDestructive">
+        <mat-icon class="detail-icon" aria-hidden="true">{{ isDestructive ? 'info' : 'lightbulb' }}</mat-icon>
+        <span class="detail-text">{{ detail | translate }}</span>
+      </div>
+    }
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="dialog-actions">
+    <button
+      mat-button
+      type="button"
+      class="action-btn cancel-btn"
+      (click)="onCancel()"
+    >
+      {{ cancelLabel | translate }}
+    </button>
+    <button
+      mat-flat-button
+      type="button"
+      class="action-btn confirm-btn"
+      [class.destructive-btn]="isDestructive"
+      (click)="onConfirm()"
+      cdkFocusInitial
+    >
+      {{ confirmLabel | translate }}
+    </button>
+  </mat-dialog-actions>
+</div>
