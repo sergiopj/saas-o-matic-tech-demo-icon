@@ -2,10 +2,6 @@ import { Pipe, PipeTransform, inject } from '@angular/core';
 import { I18nService } from '../../core/services/i18n.service';
 import { TranslationKey } from '../../core/i18n/translations';
 
-/**
- * Pure template pipe for localized text retrieval with optional token interpolation.
- * English comments and clean code architecture.
- */
 @Pipe({
   name: 'translate',
   pure: false,
