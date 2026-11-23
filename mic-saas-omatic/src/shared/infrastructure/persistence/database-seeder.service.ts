@@ -628,10 +628,10 @@ export class DatabaseSeederService implements OnApplicationBootstrap {
       this.logger.log(`Invoices seeding finished: +${invoicesCount} invoices.`);
     }
 
-    // Seed AI knowledge topics if knowledge table is empty
+    // Seed AI knowledge topics if knowledge table is empty or missing topics
     if (this.knowledgeRepository) {
       const existingTopics = await this.knowledgeRepository.count();
-      if (force || existingTopics === 0) {
+      if (force || existingTopics < SEED_KNOWLEDGE_TOPICS.length) {
         this.logger.log(`Seeding database with ${SEED_KNOWLEDGE_TOPICS.length} knowledge topics...`);
         const topics = SEED_KNOWLEDGE_TOPICS.map((def) => KnowledgeTopic.create(def));
         await this.knowledgeRepository.saveAll(topics);

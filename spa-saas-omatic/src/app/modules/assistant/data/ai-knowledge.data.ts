@@ -1,9 +1,5 @@
 import { QuickPrompt } from '../models/ai-assistant.model';
 
-/**
- * Suggested quick prompts presented to users for one-click exploration.
- * All question labels are translated reactively using i18n keys.
- */
 export const QUICK_PROMPTS: readonly QuickPrompt[] = [
   {
     id: 'prompt_pricing',

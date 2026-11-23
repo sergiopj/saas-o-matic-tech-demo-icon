@@ -679,4 +679,206 @@ Le document est généré instantanément avec le détail des paliers, la TVA et
     ],
     sources: ['ai-workspace/01-specs/functional-specs.md (Sec. 2.2)'],
   },
+  {
+    id: 'challenge_criteria',
+    keywords: {
+      es: [
+        'criterios',
+        'criterio',
+        'evaluacion',
+        'evaluación',
+        'evaluar',
+        'rubrica',
+        'rúbrica',
+        'porcentajes',
+        '35%',
+        '25%',
+        '30%',
+        '10%',
+        'puntuacion',
+        'puntuación',
+        'nota',
+        'prueba tecnica',
+        'prueba técnica',
+        'reto tecnico',
+        'reto técnico',
+        'como se evalua',
+        'cómo se evalúa',
+        'objetivos',
+        'objetivo',
+        'objetivos y criterios',
+      ],
+      en: [
+        'criteria',
+        'criterion',
+        'evaluation',
+        'evaluate',
+        'rubric',
+        'scoring',
+        'weights',
+        'percentage',
+        'percentages',
+        '35%',
+        '25%',
+        '30%',
+        '10%',
+        'technical challenge',
+        'how is it evaluated',
+        'assessment',
+        'goals',
+        'objectives',
+      ],
+      fr: [
+        'critères',
+        'criteres',
+        'évaluation',
+        'evaluation',
+        'rubrique',
+        'pourcentages',
+        '35%',
+        '25%',
+        '30%',
+        '10%',
+        'défi technique',
+        'defi technique',
+        'bareme',
+        'objectifs',
+      ],
+    },
+    titles: {
+      es: 'Criterios de Evaluación y Objetivos del Reto',
+      en: 'Official Challenge Evaluation Criteria & Goals',
+      fr: 'Critères d’Évaluation et Objectifs du Défi',
+    },
+    content: {
+      es: `Los criterios oficiales de evaluación del reto técnico se dividen en 4 áreas clave:
+
+• **Planificación y Diseño (35%):** Desglose de reglas de negocio, modelos y contratos OpenAPI antes de programar (*Spec-Driven Development* en \`ai-workspace/01-specs/\`).
+• **Calidad del Software Entregado (30%):** Robustez del backend (cálculo de tramos, validación estricta AEAT de DNI/CIF, persistencia SQLite WAL) y frontend (Angular 22, reactividad con Signals, responsive).
+• **Criterio Técnico y Control de Calidad (25%):** Rol de "director de orquesta", auditando a la IA (*Vibe Coding*), eliminando deuda técnica y garantizando 0 errores y >96% cobertura.
+• **README y Despliegue (10%):** Instrucciones sin fricción para levantar frontend y backend en local o en un comando con Docker Compose.`,
+      en: `The official technical challenge evaluation criteria are weighted into 4 key areas:
+
+• **Planning & Design (35%):** Prior breakdown of functional specifications, models, and API contracts before coding (*Spec-Driven Development* in \`ai-workspace/01-specs/\`).
+• **Software Quality (30%):** Backend robustness (tiered calculation, strict AEAT DNI/CIF validation, SQLite WAL) and frontend responsiveness (Angular 22, Signals, responsive design).
+• **Technical Judgment & QA (25%):** Your role as "orchestra conductor", auditing AI output in real time (*Vibe Coding*), eliminating technical debt, and ensuring zero errors and >96% coverage.
+• **README & Frictionless Deployment (10%):** Clear instructions to run frontend and backend locally or with a single Docker Compose command.`,
+      fr: `Les critères d'évaluation officiels du défi technique se divisent en 4 axes majeurs :
+
+• **Planification et Design (35%) :** Décomposition préalable des spécifications et contrats d'API (*Spec-Driven Development* dans \`ai-workspace/01-specs/\`).
+• **Qualité du Logiciel (30%) :** Robustesse du backend (calcul par paliers, validation stricte AEAT, SQLite WAL) et réactivité frontend (Angular 22, Signals).
+• **Jugement Technique et QA (25%) :** Rôle de "chef d'orchestre", audit en temps réel de l'IA (*Vibe Coding*) et élimination de la dette technique.
+• **README et Déploiement (10%) :** Instructions claires pour lancer le projet en local ou avec Docker Compose.`,
+    },
+    actions: [
+      {
+        labels: {
+          es: 'Ver Guía y Despliegue',
+          en: 'View Guide & Deployment',
+          fr: 'Voir le Guide',
+        },
+        route: '/guide',
+        icon: 'military_tech',
+      },
+    ],
+    sources: ['Prueba_Devs_con_IA.docx (Sec. 4)', 'ai-workspace/01-specs/functional-specs.md'],
+  },
+  {
+    id: 'architecture_hexagonal',
+    keywords: {
+      es: [
+        'arquitectura',
+        'hexagonal',
+        'backend',
+        'frontend',
+        'nestjs',
+        'angular',
+        'sqlite',
+        'wal',
+        'puertos',
+        'adaptadores',
+        'ports',
+        'adapters',
+        'como esta estructurada',
+        'cómo está estructurada',
+        'estructura',
+        'patron',
+        'patrón',
+        'rfc 7807',
+        'signals',
+      ],
+      en: [
+        'architecture',
+        'hexagonal',
+        'backend',
+        'frontend',
+        'nestjs',
+        'angular',
+        'sqlite',
+        'wal',
+        'ports',
+        'adapters',
+        'structure',
+        'how is it structured',
+        'pattern',
+        'rfc 7807',
+        'signals',
+      ],
+      fr: [
+        'architecture',
+        'hexagonale',
+        'backend',
+        'frontend',
+        'nestjs',
+        'angular',
+        'sqlite',
+        'wal',
+        'ports',
+        'adaptateurs',
+        'structure',
+        'comment est structure',
+        'comment est structurée',
+      ],
+    },
+    titles: {
+      es: 'Arquitectura Hexagonal (Puertos y Adaptadores)',
+      en: 'Hexagonal Architecture (Ports & Adapters)',
+      fr: 'Architecture Hexagonale (Ports et Adaptateurs)',
+    },
+    content: {
+      es: `La plataforma SaaS-O-Matic implementa **Arquitectura Hexagonal (Puertos y Adaptadores)** estricta:
+
+• **Dominio Inmaculado:** Entidades puras en TypeScript (\`Customer\`, \`Simulation\`, \`Invoice\`, \`KnowledgeTopic\`) sin dependencias de frameworks ni TypeORM.
+• **Puertos de Entrada/Salida:** Interfaces que definen los casos de uso (\`in/\`) y los contratos de repositorios o servicios externos (\`out/\`).
+• **Adaptadores:** Controladores REST en NestJS (primarios) y repositorios TypeORM con SQLite en modo WAL y errores RFC 7807 (secundarios).
+• **Frontend:** Angular 22 standalone puro con Signals, tokens de diseño CSS centralizados (\`--omatic-*\`) y cero Tailwind.`,
+      en: `SaaS-O-Matic implements strict **Hexagonal Architecture (Ports & Adapters)**:
+
+• **Immaculate Domain:** Pure TypeScript domain entities (\`Customer\`, \`Simulation\`, \`Invoice\`, \`KnowledgeTopic\`) free of framework or TypeORM dependencies.
+• **In/Out Ports:** Strict interfaces defining use cases (\`in/\`) and repository or external service contracts (\`out/\`).
+• **Adapters:** NestJS REST controllers (primary) and TypeORM persistence with SQLite WAL mode and RFC 7807 Problem Details (secondary).
+• **Frontend:** Pure Angular 22 standalone with Signals, centralized CSS design tokens (\`--omatic-*\`), and zero Tailwind.`,
+      fr: `La plateforme SaaS-O-Matic implémente une **Architecture Hexagonale (Ports et Adaptateurs)** stricte :
+
+• **Domaine Immaculé :** Entités TypeScript pures (\`Customer\`, \`Simulation\`, \`Invoice\`, \`KnowledgeTopic\`) sans dépendance TypeORM ni NestJS.
+• **Ports d'Entrée/Sortie :** Interfaces définissant les cas d'utilisation (\`in/\`) et les contrats de dépôts (\`out/\`).
+• **Adaptateurs :** Contrôleurs REST NestJS (primaires) et dépôts TypeORM avec SQLite WAL et Problem Details RFC 7807 (secondaires).
+• **Frontend :** Angular 22 standalone avec Signals, tokens CSS centralisés (\`--omatic-*\`) et zéro Tailwind.`,
+    },
+    actions: [
+      {
+        labels: {
+          es: 'Ver Guía de Arquitectura',
+          en: 'View Architecture Guide',
+          fr: 'Voir le Guide d’Architecture',
+        },
+        route: '/guide',
+        icon: 'lan',
+      },
+    ],
+    sources: [
+      'ai-workspace/02-architecture/architecture-guidelines.md',
+      'ai-workspace/01-specs/functional-specs.md',
+    ],
+  },
 ];

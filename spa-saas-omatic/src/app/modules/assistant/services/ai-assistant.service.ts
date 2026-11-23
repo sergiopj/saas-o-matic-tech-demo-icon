@@ -69,10 +69,14 @@ export class AiAssistantService {
         delayPromise,
       ]);
 
+      const resolvedContent = (!reply.matched || !reply.content?.trim())
+        ? (reply.content?.trim() || this.i18n.t('assistant.fallback' as TranslationKey))
+        : reply.content;
+
       const assistantMessage: ChatMessage = {
         id: `msg-${Date.now()}-assistant`,
         sender: 'assistant',
-        content: reply.content,
+        content: resolvedContent,
         timestamp: new Date(),
         actions: reply.action ? [reply.action] : undefined,
         sources: reply.sources && reply.sources.length > 0 ? reply.sources : undefined,

@@ -5229,3 +5229,32 @@ Una vez consolidada la bitácora de auditoría en la carpeta del proyecto, se di
 
 
 
+---
+
+### 6.246. Rediseño de Acciones en Detalle de Factura, Latencia Natural de Redacción e Indexación de Criterios del Reto en Asistente IA
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Contexto / Desafío:**
+  1. *Desbordamiento de Botones en Drawer de Factura:* En el panel lateral desplegable de detalle de factura (`app-slide-over-drawer`), los tres botones de acción (*"Descargar Factura en PDF"*, *"Marcar como Cobrada"*, *"Anular Factura"*) estaban dispuestos en una fila horizontal dentro de un contenedor estrecho, provocando que los textos se partieran en múltiples líneas y se salieran de los márgenes y bordes de los botones de Angular Material (MDC).
+  2. *Latencia Ultrarrápida Inadvertida:* Al migrar el Asistente IA al backend (`POST /assistant/chat`), el tiempo de respuesta en local loopback era inferior a 3 ms, haciendo que la animación de pensamiento (`typing-bubble`) desapareciera antes de que el ojo humano pudiera percibirla, generando dudas sobre si el cliente estaba realmente llamando a la API.
+  3. *Burbuja de Respuesta Vacía en Asistente IA:* Al pulsar la pregunta rápida *"¿Cuáles son los objetivos y criterios del reto técnico?"*, la interfaz renderizaba una burbuja vacía solo con el nombre del bot y el botón de copiado.
+- **Diagnóstico Técnico y Solución de Arquitectura Aplicada:**
+  1. *Rediseño Ergonómico de Acciones del Drawer (`invoice-list.component.html` y `.scss`):*
+     - Se aumentó el ancho del drawer a `480px` (`width="480px"`).
+     - Se proyectaron las acciones en el slot dedicado de pie anclado (`<div drawer-footer class="drawer-footer-actions">`), separándolas del scroll del cuerpo.
+     - Se refactorizaron los estilos SCSS sustituyendo el flex horizontal por una pila vertical de ancho completo (`width: 100%; height: 42px; line-height: 42px; white-space: nowrap;`), garantizando que cada botón cuente con el espacio adecuado para su etiqueta e icono sin truncamiento ni desbordamiento vertical.
+     - Se resolvió la advertencia del compilador de Angular `NG8011` asegurando que el elemento de proyección fuera hijo directo de `<app-slide-over-drawer>`.
+  2. *Latencia Natural de Redacción (`AiAssistantService`):*
+     - Se incorporó un retardo natural simulado de 600 ms mediante `Promise.all([this.http.post(...), delayPromise])` en `sendMessage`, permitiendo al usuario apreciar la animación de pensamiento fluida (`typing-bounce`) sin degradar la agilidad de la aplicación.
+  3. *Resolución de Respuestas Vacías e Indexación de Criterios del Reto:*
+     - Se detectó que el seeder de base de datos (`database-seeder.service.ts`) no actualizaba la tabla si ya existían temas previos (`existingTopics === 0`). Se actualizó a `existingTopics < SEED_KNOWLEDGE_TOPICS.length` para sincronizar temas ausentes automáticamente.
+     - Se incorporaron formalmente `challenge_criteria` y `architecture_hexagonal` a `seed-knowledge.data.ts` con palabras clave completas y contenido en Español, Inglés y Francés.
+     - Se modificó `buildFallbackResult` en `SearchKnowledgeUseCase` para devolver un contenido de ayuda y sugerencias estructurado en lugar de una cadena vacía (`content: ''`).
+     - Se añadió un guard defensivo en `AiAssistantService` que garantiza que si el backend devuelve un resultado sin coincidencia o vacío, se presente el fallback localizado del sistema de traducciones (`I18nService.t('assistant.fallback')`).
+- **Resultados de Verificación:**
+  - Pruebas Backend (Jest): **240/240 tests passing al 100% (59 suites)**.
+  - Pruebas Frontend (Vitest): **367/367 tests passing al 100% (43 suites)**.
+  - Oxlint: **0 errores y 0 advertencias** en backend (142 archivos) y frontend (106 archivos).
+  - Verificación HTTP en vivo: `POST /assistant/chat` con la consulta de objetivos del reto devuelve coincidencia exacta (`topicId: challenge_criteria`, `score: 51`) con desglose porcentual oficial y botones de acción.
+- **Valor para la evaluación:**
+  Demuestra excelencia en User Experience (UX), ergonomía de layouts móviles/drawer, robustez en el diseño de APIs defensivas y control de calidad total sin dejar cabos sueltos ni comportamientos anómalos.

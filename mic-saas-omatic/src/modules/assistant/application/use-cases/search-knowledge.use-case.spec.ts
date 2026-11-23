@@ -68,7 +68,7 @@ describe('SearchKnowledgeUseCase', () => {
     const result = await useCase.execute({ query: 'receta de paella valenciana', language: 'es' });
     expect(result.matched).toBe(false);
     expect(result.topicId).toBe('fallback');
-    expect(result.content).toBe('');
+    expect(result.content).toContain('No he encontrado una coincidencia exacta');
   });
 
   it('should return fallback result when query is empty', async () => {
@@ -76,5 +76,6 @@ describe('SearchKnowledgeUseCase', () => {
     expect(result.matched).toBe(false);
     expect(result.topicId).toBe('fallback');
     expect(result.title).toBe('Help & Suggestions');
+    expect(result.content).toContain("I couldn't find a direct match");
   });
 });
