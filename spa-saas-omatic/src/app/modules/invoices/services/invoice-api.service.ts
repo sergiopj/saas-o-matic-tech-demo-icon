@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
-import { Observable, catchError, finalize, map, tap, throwError } from 'rxjs';
+import { Observable, catchError, finalize, map, throwError } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import {
   Invoice,
@@ -121,5 +121,11 @@ export class InvoiceApiService {
         }),
         finalize(() => this.loading.set(false)),
       );
+  }
+
+  downloadPdf(id: string): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/${id}/pdf`, {
+      responseType: 'blob',
+    });
   }
 }

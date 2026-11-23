@@ -4,6 +4,7 @@ import { CreateInvoiceUseCase } from '../../../../application/use-cases/create-i
 import { ListInvoicesUseCase } from '../../../../application/use-cases/list-invoices.use-case';
 import { GetInvoiceDetailUseCase } from '../../../../application/use-cases/get-invoice-detail.use-case';
 import { UpdateInvoiceStatusUseCase } from '../../../../application/use-cases/update-invoice-status.use-case';
+import { GenerateInvoicePdfUseCase } from '../../../../application/use-cases/generate-invoice-pdf.use-case';
 import { Invoice } from '../../../../domain/entities/invoice.entity';
 import { InvoiceStatus } from '../../../../domain/enums/invoice-status.enum';
 import { CreateInvoiceDto } from './dto/create-invoice.dto';
@@ -16,6 +17,7 @@ describe('InvoiceController (Primary Adapter)', () => {
   let listInvoicesUseCase: jest.Mocked<ListInvoicesUseCase>;
   let getInvoiceDetailUseCase: jest.Mocked<GetInvoiceDetailUseCase>;
   let updateInvoiceStatusUseCase: jest.Mocked<UpdateInvoiceStatusUseCase>;
+  let generateInvoicePdfUseCase: jest.Mocked<GenerateInvoicePdfUseCase>;
 
   const mockInvoice = Invoice.reconstitute({
     id: 'inv-123',
@@ -71,6 +73,15 @@ describe('InvoiceController (Primary Adapter)', () => {
             execute: jest.fn().mockResolvedValue(mockInvoice),
           },
         },
+        {
+          provide: GenerateInvoicePdfUseCase,
+          useValue: {
+            execute: jest.fn().mockResolvedValue({
+              buffer: Buffer.from('%PDF-1.4 mock content'),
+              filename: 'INV-2026-00001.pdf',
+            }),
+          },
+        },
       ],
     }).compile();
 
@@ -79,6 +90,7 @@ describe('InvoiceController (Primary Adapter)', () => {
     listInvoicesUseCase = module.get(ListInvoicesUseCase);
     getInvoiceDetailUseCase = module.get(GetInvoiceDetailUseCase);
     updateInvoiceStatusUseCase = module.get(UpdateInvoiceStatusUseCase);
+    generateInvoicePdfUseCase = module.get(GenerateInvoicePdfUseCase);
   });
 
   it('should be defined', () => {
@@ -156,6 +168,25 @@ describe('InvoiceController (Primary Adapter)', () => {
       const result = await controller.updateStatus('inv-123', dto);
       expect(updateInvoiceStatusUseCase.execute).toHaveBeenCalledWith('inv-123', InvoiceStatus.PAID);
       expect(result.id).toBe('inv-123');
+    });
+  });
+
+  describe('downloadPdf', () => {
+    it('should delegate to GenerateInvoicePdfUseCase and set attachment headers', async () => {
+      const setHeaderMock = jest.fn();
+      const endMock = jest.fn();
+      const mockRes = {
+        setHeader: setHeaderMock,
+        end: endMock,
+      } as any;
+
+      await controller.downloadPdf('inv-123', mockRes);
+
+      expect(generateInvoicePdfUseCase.execute).toHaveBeenCalledWith('inv-123');
+      expect(setHeaderMock).toHaveBeenCalledWith('Content-Type', 'application/pdf');
+      expect(setHeaderMock).toHaveBeenCalledWith('Content-Disposition', 'attachment; filename="INV-2026-00001.pdf"');
+      expect(setHeaderMock).toHaveBeenCalledWith('Content-Length', expect.any(String));
+      expect(endMock).toHaveBeenCalledWith(expect.any(Buffer));
     });
   });
 });

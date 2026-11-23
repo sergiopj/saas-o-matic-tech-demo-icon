@@ -1,8 +1,8 @@
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Repository } from 'typeorm';
 import { InvoicePersistenceAdapter } from './invoice-persistence.adapter';
 import { InvoiceTypeOrmEntity } from './invoice.typeorm-entity';
-import { Invoice } from '../../../domain/entities/invoice.entity';
-import { InvoiceStatus } from '../../../domain/enums/invoice-status.enum';
+import { Invoice } from '../../../../domain/entities/invoice.entity';
+import { InvoiceStatus } from '../../../../domain/enums/invoice-status.enum';
 
 describe('InvoicePersistenceAdapter', () => {
   let adapter: InvoicePersistenceAdapter;

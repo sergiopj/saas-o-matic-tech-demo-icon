@@ -1,6 +1,6 @@
 import { InvoiceResponseDto } from './invoice-response.dto';
-import { Invoice } from '../../../../domain/entities/invoice.entity';
-import { InvoiceStatus } from '../../../../domain/enums/invoice-status.enum';
+import { Invoice } from '../../../../../domain/entities/invoice.entity';
+import { InvoiceStatus } from '../../../../../domain/enums/invoice-status.enum';
 
 describe('InvoiceResponseDto', () => {
   it('should map domain Invoice to InvoiceResponseDto correctly', () => {

@@ -1,7 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
 import { InvoiceListComponent } from './invoice-list.component';
 import { InvoiceApiService } from '../../services/invoice-api.service';
 import { ToastService } from '../../../../core/services/toast.service';
@@ -11,8 +12,17 @@ import { Invoice } from '../../models/invoice.model';
 describe('InvoiceListComponent', () => {
   let component: InvoiceListComponent;
   let fixture: ComponentFixture<InvoiceListComponent>;
-  let invoiceApi: jasmine.SpyObj<InvoiceApiService> | any;
-  let toastService: jasmine.SpyObj<ToastService> | any;
+  let invoiceApi: {
+    search: ReturnType<typeof vi.fn>;
+    updateStatus: ReturnType<typeof vi.fn>;
+    downloadPdf: ReturnType<typeof vi.fn>;
+    loading: () => boolean;
+  };
+  let toastService: {
+    success: ReturnType<typeof vi.fn>;
+    error: ReturnType<typeof vi.fn>;
+    show: ReturnType<typeof vi.fn>;
+  };
 
   const mockInvoices: Invoice[] = [
     {
@@ -63,6 +73,7 @@ describe('InvoiceListComponent', () => {
     invoiceApi = {
       search: vi.fn().mockReturnValue(of({ items: mockInvoices, total: 2 })),
       updateStatus: vi.fn().mockReturnValue(of({ ...mockInvoices[0], status: 'PAID' })),
+      downloadPdf: vi.fn().mockReturnValue(of(new Blob(['mock pdf data'], { type: 'application/pdf' }))),
       loading: () => false,
     };
 
@@ -134,5 +145,39 @@ describe('InvoiceListComponent', () => {
     expect(toastService.success).toHaveBeenCalled();
     const updated = component.invoices().find((inv) => inv.id === 'inv-1');
     expect(updated?.status).toBe('PAID');
+  });
+
+  it('should open create invoice dialog and reload invoices if created', () => {
+    const dialog = fixture.debugElement.injector.get(MatDialog);
+    const dialogSpy = vi.spyOn(dialog, 'open').mockReturnValue({
+      afterClosed: () => of(mockInvoices[0]),
+    } as any);
+
+    component.openCreateDialog();
+    expect(dialogSpy).toHaveBeenCalled();
+    expect(invoiceApi.search).toHaveBeenCalledTimes(2);
+  });
+
+  it('should download invoice PDF and show success toast', () => {
+    const createObjectURLSpy = vi.spyOn(window.URL, 'createObjectURL').mockReturnValue('blob:http://localhost/test-uuid');
+    const revokeObjectURLSpy = vi.spyOn(window.URL, 'revokeObjectURL').mockImplementation(() => {});
+
+    component.downloadPdf(mockInvoices[0]);
+
+    expect(invoiceApi.downloadPdf).toHaveBeenCalledWith('inv-1');
+    expect(createObjectURLSpy).toHaveBeenCalled();
+    expect(revokeObjectURLSpy).toHaveBeenCalled();
+    expect(toastService.success).toHaveBeenCalled();
+
+    createObjectURLSpy.mockRestore();
+    revokeObjectURLSpy.mockRestore();
+  });
+
+  it('should show error toast if PDF download fails', () => {
+    invoiceApi.downloadPdf.mockReturnValue(throwError(() => new Error('Download failed')));
+
+    component.downloadPdf(mockInvoices[0]);
+
+    expect(toastService.error).toHaveBeenCalled();
   });
 });

@@ -288,6 +288,30 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
+  /invoices/{id}/pdf:
+    get:
+      summary: Descarga el documento oficial de la factura en formato PDF
+      operationId: downloadInvoicePdf
+      tags:
+        - Invoices
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Archivo binario PDF de la factura
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '404':
+          $ref: '#/components/responses/NotFound'
+
   /invoices/{id}/status:
     patch:
       summary: Actualiza el estado de una factura (marcar como cobrada o anulada)

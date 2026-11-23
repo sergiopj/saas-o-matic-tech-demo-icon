@@ -1,5 +1,5 @@
 import { IsEnum, IsNotEmpty } from 'class-validator';
-import { InvoiceStatus } from '../../../../domain/enums/invoice-status.enum';
+import { InvoiceStatus } from '../../../../../domain/enums/invoice-status.enum';
 
 export class UpdateInvoiceStatusDto {
   @IsEnum(InvoiceStatus, {

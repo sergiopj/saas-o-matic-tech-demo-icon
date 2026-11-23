@@ -6,7 +6,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule, DatePipe, DecimalPipe, PercentPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -34,6 +34,7 @@ import { SlideOverDrawerComponent } from '../../../../shared/components/slide-ov
 import { PaginatorComponent } from '../../../../shared/components/paginator/paginator.component';
 import { I18nService } from '../../../../core/services/i18n.service';
 import { EmailComposerService } from '../../../../core/services/email-composer.service';
+import { InvoiceCreateDialogComponent } from '../../../invoices/components/invoice-create-dialog/invoice-create-dialog.component';
 
 /**
  * Customer Detail view and Interactive Simulation Studio.
@@ -71,6 +72,7 @@ import { EmailComposerService } from '../../../../core/services/email-composer.s
 })
 export class CustomerDetailComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly dialog = inject(MatDialog);
   private readonly toast = inject(ToastService);
   private readonly i18n = inject(I18nService);
@@ -412,5 +414,51 @@ export class CustomerDetailComponent implements OnInit {
     const val = (event.target as HTMLInputElement).value;
     this.filterMaxApiCalls.set(val === '' ? null : Number(val));
     this.historyPage.set(1);
+  }
+
+  createInvoiceFromSimulation(sim: Simulation): void {
+    const cust = this.customer();
+    if (!cust) return;
+
+    const dialogRef = this.dialog.open(InvoiceCreateDialogComponent, {
+      width: '620px',
+      maxWidth: '95vw',
+      panelClass: 'corporate-dialog-panel',
+      data: {
+        customerId: cust.id,
+        simulationId: sim.id,
+        concept: `${cust.companyName} - Suscripción (${sim.activeUsers} usuarios)`,
+        subtotal: sim.monthlyBaseCost,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((created) => {
+      if (created) {
+        void this.router.navigate(['/invoices']);
+      }
+    });
+  }
+
+  createInvoiceFromCurrentProjection(): void {
+    const cust = this.customer();
+    if (!cust) return;
+
+    const proj = this.projection();
+    const dialogRef = this.dialog.open(InvoiceCreateDialogComponent, {
+      width: '620px',
+      maxWidth: '95vw',
+      panelClass: 'corporate-dialog-panel',
+      data: {
+        customerId: cust.id,
+        concept: `${cust.companyName} - Suscripción (${this.activeUsers()} usuarios)`,
+        subtotal: proj.monthlyBaseCostEur,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((created) => {
+      if (created) {
+        void this.router.navigate(['/invoices']);
+      }
+    });
   }
 }

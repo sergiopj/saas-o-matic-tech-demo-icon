@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { ActivatedRoute, provideRouter } from '@angular/router';
+import { ActivatedRoute, Router, provideRouter } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { of } from 'rxjs';
@@ -678,6 +678,52 @@ describe('CustomerDetailComponent', () => {
 
       component.onApiCallsChange(25000);
       expect(component.apiCalls()).toBe(25000);
+    });
+
+    it('should open invoice dialog with simulation data and navigate on success', () => {
+      const dialog = TestBed.inject(MatDialog);
+      const router = TestBed.inject(Router);
+      const navigateSpy = vi.spyOn(router, 'navigate');
+      const dialogSpy = vi.spyOn(dialog, 'open').mockReturnValue({
+        afterClosed: () => of({ id: 'inv-123' }),
+      } as any);
+
+      component.customer.set(mockCustomer);
+      component.createInvoiceFromSimulation(mockSimulations[0]);
+
+      expect(dialogSpy).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          data: expect.objectContaining({
+            customerId: mockCustomer.id,
+            simulationId: mockSimulations[0].id,
+            subtotal: mockSimulations[0].monthlyBaseCost,
+          }),
+        }),
+      );
+      expect(navigateSpy).toHaveBeenCalledWith(['/invoices']);
+    });
+
+    it('should open invoice dialog from current projection and navigate on success', () => {
+      const dialog = TestBed.inject(MatDialog);
+      const router = TestBed.inject(Router);
+      const navigateSpy = vi.spyOn(router, 'navigate');
+      const dialogSpy = vi.spyOn(dialog, 'open').mockReturnValue({
+        afterClosed: () => of({ id: 'inv-123' }),
+      } as any);
+
+      component.customer.set(mockCustomer);
+      component.createInvoiceFromCurrentProjection();
+
+      expect(dialogSpy).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          data: expect.objectContaining({
+            customerId: mockCustomer.id,
+          }),
+        }),
+      );
+      expect(navigateSpy).toHaveBeenCalledWith(['/invoices']);
     });
   });
 });

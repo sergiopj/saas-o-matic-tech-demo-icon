@@ -1,7 +1,6 @@
 import { InvoicePersistenceMapper } from './invoice-persistence.mapper';
-import { Invoice } from '../../../domain/entities/invoice.entity';
-import { InvoiceTypeOrmEntity } from './invoice.typeorm-entity';
-import { InvoiceStatus } from '../../../domain/enums/invoice-status.enum';
+import { Invoice } from '../../../../domain/entities/invoice.entity';
+import { InvoiceStatus } from '../../../../domain/enums/invoice-status.enum';
 
 describe('InvoicePersistenceMapper', () => {
   it('should map between domain Invoice and TypeORM entity bidirectionally', () => {

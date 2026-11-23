@@ -1,6 +1,5 @@
 import { ListInvoicesUseCase } from './list-invoices.use-case';
 import { InvoiceRepositoryPort } from '../ports/out/invoice-repository.port';
-import { Invoice } from '../../domain/entities/invoice.entity';
 
 describe('ListInvoicesUseCase', () => {
   let useCase: ListInvoicesUseCase;

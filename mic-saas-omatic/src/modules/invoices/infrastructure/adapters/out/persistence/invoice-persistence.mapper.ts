@@ -1,4 +1,4 @@
-import { Invoice } from '../../../domain/entities/invoice.entity';
+import { Invoice } from '../../../../domain/entities/invoice.entity';
 import { InvoiceTypeOrmEntity } from './invoice.typeorm-entity';
 
 export class InvoicePersistenceMapper {

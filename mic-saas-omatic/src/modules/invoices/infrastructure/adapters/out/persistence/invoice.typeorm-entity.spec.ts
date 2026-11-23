@@ -1,5 +1,5 @@
 import { InvoiceTypeOrmEntity } from './invoice.typeorm-entity';
-import { InvoiceStatus } from '../../../domain/enums/invoice-status.enum';
+import { InvoiceStatus } from '../../../../domain/enums/invoice-status.enum';
 
 describe('InvoiceTypeOrmEntity', () => {
   it('should instantiate an InvoiceTypeOrmEntity with valid properties', () => {

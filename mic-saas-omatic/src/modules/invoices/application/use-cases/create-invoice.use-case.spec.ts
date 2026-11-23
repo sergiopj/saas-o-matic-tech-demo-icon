@@ -1,8 +1,8 @@
 import { NotFoundException } from '@nestjs/common';
 import { CreateInvoiceUseCase } from './create-invoice.use-case';
 import { InvoiceRepositoryPort } from '../ports/out/invoice-repository.port';
-import { CustomerRepositoryPort } from '../../customers/application/ports/out/customer-repository.port';
-import { Customer } from '../../customers/domain/entities/customer.entity';
+import { CustomerRepositoryPort } from '../../../customers/application/ports/out/customer-repository.port';
+import { Customer } from '../../../customers/domain/entities/customer.entity';
 import { Invoice } from '../../domain/entities/invoice.entity';
 
 describe('CreateInvoiceUseCase', () => {

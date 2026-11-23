@@ -168,14 +168,26 @@
           </output>
         }
 
-        <button
-          mat-flat-button
-          class="save-simulation-btn"
-          [disabled]="isSaving()"
-          (click)="saveSimulation()"
-        >
-          <span>{{ (isSaving() ? 'simulation.form.saving' : 'simulation.form.saveBtn') | translate }}</span>
-        </button>
+        <div class="studio-buttons-group">
+          <button
+            mat-flat-button
+            class="save-simulation-btn"
+            [disabled]="isSaving()"
+            (click)="saveSimulation()"
+          >
+            <span>{{ (isSaving() ? 'simulation.form.saving' : 'simulation.form.saveBtn') | translate }}</span>
+          </button>
+          <button
+            mat-stroked-button
+            type="button"
+            class="invoice-projection-btn"
+            (click)="createInvoiceFromCurrentProjection()"
+            [attr.aria-label]="'simulation.form.invoiceBtn' | translate"
+          >
+            <mat-icon aria-hidden="true">receipt_long</mat-icon>
+            <span>{{ 'simulation.form.invoiceBtn' | translate }}</span>
+          </button>
+        </div>
       </section>
 
       <!-- Right Column: Live Projection Breakdown -->
@@ -375,6 +387,16 @@
                       [matTooltip]="'simulation.history.loadBtn' | translate"
                     >
                       <mat-icon aria-hidden="true">settings_backup_restore</mat-icon>
+                    </button>
+                    <button
+                      type="button"
+                      mat-icon-button
+                      class="invoice-sim-btn"
+                      (click)="createInvoiceFromSimulation(sim)"
+                      [attr.aria-label]="'simulation.history.invoiceBtn' | translate"
+                      [matTooltip]="'simulation.history.invoiceBtn' | translate"
+                    >
+                      <mat-icon aria-hidden="true">receipt_long</mat-icon>
                     </button>
                   </td>
                 </tr>

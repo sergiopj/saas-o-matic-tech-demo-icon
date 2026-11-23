@@ -15,6 +15,7 @@ import { CreateInvoiceUseCase } from '../../../../application/use-cases/create-i
 import { ListInvoicesUseCase } from '../../../../application/use-cases/list-invoices.use-case';
 import { GetInvoiceDetailUseCase } from '../../../../application/use-cases/get-invoice-detail.use-case';
 import { UpdateInvoiceStatusUseCase } from '../../../../application/use-cases/update-invoice-status.use-case';
+import { GenerateInvoicePdfUseCase } from '../../../../application/use-cases/generate-invoice-pdf.use-case';
 import { CreateInvoiceDto } from './dto/create-invoice.dto';
 import { ListInvoicesQueryDto } from './dto/list-invoices-query.dto';
 import { UpdateInvoiceStatusDto } from './dto/update-invoice-status.dto';
@@ -27,6 +28,7 @@ export class InvoiceController {
     private readonly listInvoicesUseCase: ListInvoicesUseCase,
     private readonly getInvoiceDetailUseCase: GetInvoiceDetailUseCase,
     private readonly updateInvoiceStatusUseCase: UpdateInvoiceStatusUseCase,
+    private readonly generateInvoicePdfUseCase: GenerateInvoicePdfUseCase,
   ) {}
 
   @Post()
@@ -71,6 +73,18 @@ export class InvoiceController {
   async findById(@Param('id') id: string): Promise<InvoiceResponseDto> {
     const invoice = await this.getInvoiceDetailUseCase.execute(id);
     return InvoiceResponseDto.fromDomain(invoice);
+  }
+
+  @Get(':id/pdf')
+  async downloadPdf(
+    @Param('id') id: string,
+    @Res() res: Response,
+  ): Promise<void> {
+    const { buffer, filename } = await this.generateInvoicePdfUseCase.execute(id);
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.setHeader('Content-Length', buffer.length.toString());
+    res.end(buffer);
   }
 
   @Patch(':id/status')

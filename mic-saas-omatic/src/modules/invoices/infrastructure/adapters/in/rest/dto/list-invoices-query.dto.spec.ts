@@ -1,6 +1,7 @@
+import 'reflect-metadata';
 import { validate } from 'class-validator';
 import { ListInvoicesQueryDto } from './list-invoices-query.dto';
-import { InvoiceStatus } from '../../../../domain/enums/invoice-status.enum';
+import { InvoiceStatus } from '../../../../../domain/enums/invoice-status.enum';
 
 describe('ListInvoicesQueryDto', () => {
   it('should validate empty or valid query parameters', async () => {

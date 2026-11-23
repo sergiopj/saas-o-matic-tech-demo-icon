@@ -1,8 +1,8 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { INVOICE_REPOSITORY_PORT } from '../ports/out/invoice-repository.port';
 import type { InvoiceRepositoryPort } from '../ports/out/invoice-repository.port';
-import { CUSTOMER_REPOSITORY_PORT } from '../../customers/application/ports/out/customer-repository.port';
-import type { CustomerRepositoryPort } from '../../customers/application/ports/out/customer-repository.port';
+import { CUSTOMER_REPOSITORY_PORT } from '../../../customers/application/ports/out/customer-repository.port';
+import type { CustomerRepositoryPort } from '../../../customers/application/ports/out/customer-repository.port';
 import { Invoice } from '../../domain/entities/invoice.entity';
 
 export interface CreateInvoiceCommand {

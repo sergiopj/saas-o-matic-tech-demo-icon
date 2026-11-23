@@ -1,0 +1,168 @@
+<div class="invoice-dialog-container">
+  <header class="dialog-header">
+    <div class="header-badge-wrapper">
+      <mat-icon class="header-icon">receipt_long</mat-icon>
+    </div>
+    <div class="header-text">
+      <h2 mat-dialog-title class="dialog-title">
+        {{ 'invoices.create.dialogTitle' | translate }}
+      </h2>
+      <p class="dialog-subtitle">
+        {{ 'invoices.create.dialogSubtitle' | translate }}
+      </p>
+    </div>
+    <button
+      mat-icon-button
+      type="button"
+      class="close-btn"
+      (click)="onCancel()"
+      [attr.aria-label]="'invoices.create.closeAria' | translate"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </header>
+
+  @if (errorMessage()) {
+    <output class="form-alert error-alert" aria-live="polite">
+      <mat-icon class="alert-icon">error_outline</mat-icon>
+      <span class="alert-text">{{ errorMessage() }}</span>
+    </output>
+  }
+
+  <mat-dialog-content class="dialog-content">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" id="invoice-create-form" class="invoice-form" novalidate>
+      <!-- Customer Selector -->
+      <div class="form-row full-width">
+        <mat-form-field appearance="outline" class="form-field" subscriptSizing="dynamic" floatLabel="always">
+          <mat-label>{{ 'invoices.create.customerLabel' | translate }}</mat-label>
+          <mat-select
+            formControlName="customerId"
+            [errorStateMatcher]="matcher"
+            [placeholder]="'invoices.create.customerPlaceholder' | translate"
+            required
+          >
+            @for (cust of customers(); track cust.id) {
+              <mat-option [value]="cust.id">
+                <span class="customer-option">
+                  <span class="option-name">{{ cust.companyName }}</span>
+                  <span class="option-tax">({{ cust.taxId }} - {{ cust.country }})</span>
+                </span>
+              </mat-option>
+            }
+          </mat-select>
+          <mat-icon matPrefix class="field-icon">business</mat-icon>
+          @if (form.get('customerId')?.hasError('required')) {
+            <mat-error>{{ 'invoices.create.errCustomerRequired' | translate }}</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <!-- Concept -->
+      <div class="form-row full-width">
+        <mat-form-field appearance="outline" class="form-field" subscriptSizing="dynamic" floatLabel="always">
+          <mat-label>{{ 'invoices.create.conceptLabel' | translate }}</mat-label>
+          <input
+            matInput
+            type="text"
+            formControlName="concept"
+            [errorStateMatcher]="matcher"
+            [placeholder]="'invoices.create.conceptPlaceholder' | translate"
+            required
+          />
+          <mat-icon matPrefix class="field-icon">description</mat-icon>
+          @if (form.get('concept')?.hasError('required')) {
+            <mat-error>{{ 'invoices.create.errConceptRequired' | translate }}</mat-error>
+          } @else if (form.get('concept')?.hasError('minlength')) {
+            <mat-error>{{ 'invoices.create.errConceptMinLength' | translate }}</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <!-- Subtotal -->
+      <div class="form-row half-width">
+        <mat-form-field appearance="outline" class="form-field" subscriptSizing="dynamic" floatLabel="always">
+          <mat-label>{{ 'invoices.create.subtotalLabel' | translate }}</mat-label>
+          <input
+            matInput
+            type="number"
+            step="0.01"
+            min="0.01"
+            formControlName="subtotal"
+            [errorStateMatcher]="matcher"
+            [placeholder]="'invoices.create.subtotalPlaceholder' | translate"
+            required
+          />
+          <span matSuffix class="field-suffix">€</span>
+          <mat-icon matPrefix class="field-icon">euro</mat-icon>
+          @if (form.get('subtotal')?.hasError('required')) {
+            <mat-error>{{ 'invoices.create.errSubtotalRequired' | translate }}</mat-error>
+          } @else if (form.get('subtotal')?.hasError('min')) {
+            <mat-error>{{ 'invoices.create.errSubtotalMin' | translate }}</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <!-- Tax & Total Preview Panel -->
+      <div class="tax-calculation-panel">
+        <div class="calc-row">
+          <span class="calc-label">{{ 'invoices.create.subtotal' | translate }}:</span>
+          <span class="calc-value">{{ currentSubtotal() | number:'1.2-2' }} €</span>
+        </div>
+        <div class="calc-row">
+          <span class="calc-label">
+            {{ 'invoices.create.taxRate' | translate }}
+            @if (selectedCustomer()) {
+              ({{ selectedCustomer()?.country }}: {{ (taxRate() * 100) | number:'1.0-1' }}%):
+            } @else {
+              ({{ (taxRate() * 100) | number:'1.0-1' }}%):
+            }
+          </span>
+          <span class="calc-value">{{ taxAmount() | number:'1.2-2' }} €</span>
+        </div>
+        <div class="calc-divider"></div>
+        <div class="calc-row calc-row--total">
+          <span class="calc-label-total">{{ 'invoices.create.totalAmount' | translate }}:</span>
+          <span class="calc-value-total">{{ totalAmount() | number:'1.2-2' }} €</span>
+        </div>
+      </div>
+
+      <!-- Notes -->
+      <div class="form-row full-width">
+        <mat-form-field appearance="outline" class="form-field" subscriptSizing="dynamic" floatLabel="always">
+          <mat-label>{{ 'invoices.create.notesLabel' | translate }}</mat-label>
+          <textarea
+            matInput
+            rows="2"
+            formControlName="notes"
+            [placeholder]="'invoices.create.notesPlaceholder' | translate"
+          ></textarea>
+          <mat-icon matPrefix class="field-icon">notes</mat-icon>
+        </mat-form-field>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="dialog-actions" align="end">
+    <button
+      mat-button
+      type="button"
+      class="cancel-btn"
+      (click)="onCancel()"
+      [disabled]="submitting()"
+    >
+      {{ 'common.cancel' | translate }}
+    </button>
+    <button
+      mat-flat-button
+      type="submit"
+      form="invoice-create-form"
+      class="submit-btn"
+      [disabled]="form.invalid || submitting()"
+    >
+      @if (submitting()) {
+        <mat-spinner diameter="18" class="btn-spinner"></mat-spinner>
+      }
+      <span>{{ 'invoices.create.submit' | translate }}</span>
+    </button>
+  </mat-dialog-actions>
+</div>

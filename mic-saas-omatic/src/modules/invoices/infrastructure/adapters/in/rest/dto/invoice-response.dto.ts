@@ -1,5 +1,5 @@
-import { Invoice } from '../../../../domain/entities/invoice.entity';
-import { InvoiceStatus } from '../../../../domain/enums/invoice-status.enum';
+import { Invoice } from '../../../../../domain/entities/invoice.entity';
+import { InvoiceStatus } from '../../../../../domain/enums/invoice-status.enum';
 
 export class InvoiceResponseDto {
   id: string;

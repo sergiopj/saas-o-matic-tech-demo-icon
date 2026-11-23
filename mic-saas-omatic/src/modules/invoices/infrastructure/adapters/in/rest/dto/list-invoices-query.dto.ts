@@ -1,6 +1,6 @@
 import { IsOptional, IsEnum, IsInt, Min, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
-import { InvoiceStatus } from '../../../../domain/enums/invoice-status.enum';
+import { InvoiceStatus } from '../../../../../domain/enums/invoice-status.enum';
 
 export class ListInvoicesQueryDto {
   @IsOptional()

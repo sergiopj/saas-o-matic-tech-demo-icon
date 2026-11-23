@@ -1,6 +1,6 @@
 import { validate } from 'class-validator';
 import { UpdateInvoiceStatusDto } from './update-invoice-status.dto';
-import { InvoiceStatus } from '../../../../domain/enums/invoice-status.enum';
+import { InvoiceStatus } from '../../../../../domain/enums/invoice-status.enum';
 
 describe('UpdateInvoiceStatusDto', () => {
   it('should validate correct status', async () => {

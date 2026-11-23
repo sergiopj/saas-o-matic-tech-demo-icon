@@ -1,13 +1,16 @@
-import { DatabaseSeederService, SEED_CUSTOMERS } from './database-seeder.service';
+import { DatabaseSeederService, SEED_CUSTOMERS, SEED_INVOICES } from './database-seeder.service';
 import type { CustomerRepositoryPort } from '../../../modules/customers/application/ports/out/customer-repository.port';
 import type { SimulationRepositoryPort } from '../../../modules/simulations/application/ports/out/simulation-repository.port';
+import type { InvoiceRepositoryPort } from '../../../modules/invoices/application/ports/out/invoice-repository.port';
 import { Customer } from '../../../modules/customers/domain/entities/customer.entity';
 import { Simulation } from '../../../modules/simulations/domain/entities/simulation.entity';
+import { Invoice } from '../../../modules/invoices/domain/entities/invoice.entity';
 
 describe('DatabaseSeederService', () => {
   let service: DatabaseSeederService;
   let mockCustomerRepo: jest.Mocked<CustomerRepositoryPort>;
   let mockSimulationRepo: jest.Mocked<SimulationRepositoryPort>;
+  let mockInvoiceRepo: jest.Mocked<InvoiceRepositoryPort>;
 
   beforeEach(() => {
     mockCustomerRepo = {
@@ -22,11 +25,19 @@ describe('DatabaseSeederService', () => {
       findByCustomerId: jest.fn().mockResolvedValue([]),
     };
 
-    service = new DatabaseSeederService(mockCustomerRepo, mockSimulationRepo);
+    mockInvoiceRepo = {
+      save: jest.fn().mockImplementation((inv: Invoice) => Promise.resolve(inv)),
+      findById: jest.fn().mockResolvedValue(null),
+      findByCustomerId: jest.fn().mockResolvedValue([]),
+      search: jest.fn().mockResolvedValue({ items: [], total: 0 }),
+    };
+
+    service = new DatabaseSeederService(mockCustomerRepo, mockSimulationRepo, mockInvoiceRepo);
   });
 
-  it('should skip seeding if database already has customers and force is default false', async () => {
+  it('should skip customer seeding if database already has customers and force is default false, but seed invoices if empty', async () => {
     mockCustomerRepo.search.mockResolvedValueOnce({ items: [], total: 10 });
+    mockInvoiceRepo.search.mockResolvedValueOnce({ items: [], total: 5 });
 
     const result = await service.seed();
 
@@ -36,10 +47,18 @@ describe('DatabaseSeederService', () => {
     expect(mockSimulationRepo.save).not.toHaveBeenCalled();
   });
 
-  it('should seed all customers and simulations when database is empty', async () => {
+  it('should seed all customers, simulations, and invoices when database is empty', async () => {
     mockCustomerRepo.search.mockResolvedValueOnce({ items: [], total: 0 });
-    mockCustomerRepo.findById.mockResolvedValue(null);
+    const savedCustomers = new Map<string, Customer>();
+    mockCustomerRepo.save.mockImplementation((c: Customer) => {
+      savedCustomers.set(c.getId(), c);
+      return Promise.resolve(c);
+    });
+    mockCustomerRepo.findById.mockImplementation((id: string) =>
+      Promise.resolve(savedCustomers.get(id) ?? null),
+    );
     mockSimulationRepo.findByCustomerId.mockResolvedValue([]);
+    mockInvoiceRepo.search.mockResolvedValueOnce({ items: [], total: 0 });
 
     const result = await service.seed(false);
 
@@ -47,10 +66,14 @@ describe('DatabaseSeederService', () => {
     expect(mockCustomerRepo.save).toHaveBeenCalledTimes(SEED_CUSTOMERS.length);
     expect(result.simulationsCount).toBeGreaterThan(0);
     expect(mockSimulationRepo.save).toHaveBeenCalledTimes(result.simulationsCount);
+    expect(result.invoicesCount).toBe(SEED_INVOICES.length);
+    expect(mockInvoiceRepo.save).toHaveBeenCalledTimes(SEED_INVOICES.length);
   });
 
   it('should call seed(false) on onApplicationBootstrap', async () => {
-    const seedSpy = jest.spyOn(service, 'seed').mockResolvedValue({ customersCount: 5, simulationsCount: 2 });
+    const seedSpy = jest
+      .spyOn(service, 'seed')
+      .mockResolvedValue({ customersCount: 5, simulationsCount: 2, invoicesCount: 3 });
 
     await service.onApplicationBootstrap();
 

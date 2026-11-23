@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { InvoiceRepositoryPort } from '../../../application/ports/out/invoice-repository.port';
-import { Invoice } from '../../../domain/entities/invoice.entity';
+import { InvoiceRepositoryPort } from '../../../../application/ports/out/invoice-repository.port';
+import { Invoice } from '../../../../domain/entities/invoice.entity';
 import { InvoiceTypeOrmEntity } from './invoice.typeorm-entity';
 import { InvoicePersistenceMapper } from './invoice-persistence.mapper';
 import {
   InvoiceSearchCriteria,
   PaginatedInvoicesResult,
-} from '../../../domain/models/invoice-search-criteria.model';
+} from '../../../../domain/models/invoice-search-criteria.model';
 
 @Injectable()
 export class InvoicePersistenceAdapter implements InvoiceRepositoryPort {

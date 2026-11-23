@@ -1,8 +1,8 @@
-import type { Invoice } from '../../domain/entities/invoice.entity';
+import type { Invoice } from '../../../domain/entities/invoice.entity';
 import type {
   InvoiceSearchCriteria,
   PaginatedInvoicesResult,
-} from '../../domain/models/invoice-search-criteria.model';
+} from '../../../domain/models/invoice-search-criteria.model';
 
 export const INVOICE_REPOSITORY_PORT = Symbol('INVOICE_REPOSITORY_PORT');
 

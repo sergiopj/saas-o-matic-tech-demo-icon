@@ -7,8 +7,14 @@ import {
   SIMULATION_REPOSITORY_PORT,
 } from '../../../modules/simulations/application/ports/out/simulation-repository.port';
 import type { SimulationRepositoryPort } from '../../../modules/simulations/application/ports/out/simulation-repository.port';
+import {
+  INVOICE_REPOSITORY_PORT,
+} from '../../../modules/invoices/application/ports/out/invoice-repository.port';
+import type { InvoiceRepositoryPort } from '../../../modules/invoices/application/ports/out/invoice-repository.port';
 import { Customer } from '../../../modules/customers/domain/entities/customer.entity';
 import { Simulation } from '../../../modules/simulations/domain/entities/simulation.entity';
+import { Invoice } from '../../../modules/invoices/domain/entities/invoice.entity';
+import { InvoiceStatus } from '../../../modules/invoices/domain/enums/invoice-status.enum';
 
 export interface SeedCustomerDefinition {
   id: string;
@@ -361,6 +367,122 @@ export const SEED_CUSTOMERS: SeedCustomerDefinition[] = [
   },
 ];
 
+export interface SeedInvoiceDefinition {
+  id: string;
+  invoiceNumber: string;
+  customerId: string;
+  simulationId?: string | null;
+  concept: string;
+  subtotal: number;
+  taxRate: number;
+  status: InvoiceStatus;
+  issueDate: Date;
+  dueDate: Date;
+  paidAt: Date | null;
+  notes?: string | null;
+}
+
+export const SEED_INVOICES: SeedInvoiceDefinition[] = [
+  {
+    id: 'b1111111-1111-4111-8111-111111111111',
+    invoiceNumber: 'INV-2026-0001',
+    customerId: '45a8f147-2aca-4238-9b52-e91a6a343678',
+    simulationId: '4f743918-acf5-4635-b1a4-312df082ff57',
+    concept: 'SaaS Enterprise Scale - Trimestre Q3 2026',
+    subtotal: 1250.00,
+    taxRate: 0.21,
+    status: InvoiceStatus.PAID,
+    issueDate: new Date('2026-09-10T10:00:00Z'),
+    dueDate: new Date('2026-10-10T10:00:00Z'),
+    paidAt: new Date('2026-09-25T14:30:00Z'),
+    notes: 'Pago liquidado mediante transferencia bancaria SEPA.',
+  },
+  {
+    id: 'b2222222-2222-4222-8222-222222222222',
+    invoiceNumber: 'INV-2026-0002',
+    customerId: '45a8f147-2aca-4238-9b52-e91a6a343678',
+    simulationId: 'f6d7094a-8379-4857-872f-9669e59caaf1',
+    concept: 'SaaS Enterprise Scale - Trimestre Q4 2026',
+    subtotal: 1450.00,
+    taxRate: 0.21,
+    status: InvoiceStatus.ISSUED,
+    issueDate: new Date('2026-10-15T09:30:00Z'),
+    dueDate: new Date('2026-11-15T09:30:00Z'),
+    paidAt: null,
+    notes: 'Emisión periódica con vencimiento a 30 días.',
+  },
+  {
+    id: 'b3333333-3333-4333-8333-333333333333',
+    invoiceNumber: 'INV-2026-0003',
+    customerId: '00cfb1c8-7a9e-4219-ac29-5673f1121580',
+    simulationId: '9225a3f8-ae69-46ba-cd33-497a027e6612',
+    concept: 'Licencias Scale Enterprise (75 usuarios activos)',
+    subtotal: 3420.00,
+    taxRate: 0.21,
+    status: InvoiceStatus.PAID,
+    issueDate: new Date('2026-09-05T11:00:00Z'),
+    dueDate: new Date('2026-10-05T11:00:00Z'),
+    paidAt: new Date('2026-09-20T16:15:00Z'),
+    notes: 'Facturación anual bonificada con acuerdo corporativo.',
+  },
+  {
+    id: 'b4444444-4444-4444-8444-444444444444',
+    invoiceNumber: 'INV-2026-0004',
+    customerId: '00b14cae-4bb4-4db4-9b58-3fd764614bd0',
+    simulationId: '8114f2e7-9d58-45a9-bc22-386f916d5501',
+    concept: 'SaaS Enterprise Unlimited Tier 3',
+    subtotal: 5800.00,
+    taxRate: 0.21,
+    status: InvoiceStatus.ISSUED,
+    issueDate: new Date('2026-08-25T08:00:00Z'),
+    dueDate: new Date('2026-09-25T08:00:00Z'),
+    paidAt: null,
+    notes: 'Servicio cloud dedicado con alta disponibilidad multi-región.',
+  },
+  {
+    id: 'b5555555-5555-4555-8555-555555555555',
+    invoiceNumber: 'INV-2026-0005',
+    customerId: 'bb0f92d1-f28e-4e3c-b801-1639e1dc882d',
+    simulationId: '3cc54d32-4869-4054-6733-4974ac720612',
+    concept: 'SaaS Growth Plan - German Region (DE 19%)',
+    subtotal: 890.00,
+    taxRate: 0.19,
+    status: InvoiceStatus.PAID,
+    issueDate: new Date('2026-09-15T12:00:00Z'),
+    dueDate: new Date('2026-10-15T12:00:00Z'),
+    paidAt: new Date('2026-10-01T09:45:00Z'),
+    notes: 'Abonado por domiciliación europea SEPA B2B.',
+  },
+  {
+    id: 'b6666666-6666-4666-8666-666666666666',
+    invoiceNumber: 'INV-2026-0006',
+    customerId: '7f5083bb-377e-4c56-2f23-2c43d5689066',
+    simulationId: '5ee76f54-608b-4276-8955-6b96ce942834',
+    concept: 'Healthcare Scale Package - French Cloud (FR 20%)',
+    subtotal: 1950.00,
+    taxRate: 0.20,
+    status: InvoiceStatus.ISSUED,
+    issueDate: new Date('2026-09-22T15:00:00Z'),
+    dueDate: new Date('2026-10-22T15:00:00Z'),
+    paidAt: null,
+    notes: 'Factura proforma confirmada pendiente de remesa bancaria.',
+  },
+  {
+    id: 'b7777777-7777-4777-8777-777777777777',
+    invoiceNumber: 'INV-2026-0007',
+    customerId: '9d8a0bc2-799f-40b1-98cd-e1c8346b1be3',
+    simulationId: null,
+    concept: 'Consultoría y Optimización de Facturación Dinámica',
+    subtotal: 2100.00,
+    taxRate: 0.21,
+    status: InvoiceStatus.PAID,
+    issueDate: new Date('2026-09-18T10:30:00Z'),
+    dueDate: new Date('2026-10-18T10:30:00Z'),
+    paidAt: new Date('2026-10-02T11:00:00Z'),
+    notes: 'Servicio profesional paquetizado complementario.',
+  },
+];
+
 @Injectable()
 export class DatabaseSeederService implements OnApplicationBootstrap {
   private readonly logger = new Logger(DatabaseSeederService.name);
@@ -370,6 +492,8 @@ export class DatabaseSeederService implements OnApplicationBootstrap {
     private readonly customerRepository: CustomerRepositoryPort,
     @Inject(SIMULATION_REPOSITORY_PORT)
     private readonly simulationRepository: SimulationRepositoryPort,
+    @Inject(INVOICE_REPOSITORY_PORT)
+    private readonly invoiceRepository: InvoiceRepositoryPort,
   ) {}
 
   async onApplicationBootstrap(): Promise<void> {
@@ -379,40 +503,40 @@ export class DatabaseSeederService implements OnApplicationBootstrap {
     await this.seed(false);
   }
 
-  async seed(force = false): Promise<{ customersCount: number; simulationsCount: number }> {
+  async seed(
+    force = false,
+  ): Promise<{ customersCount: number; simulationsCount: number; invoicesCount: number }> {
     const existing = await this.customerRepository.search({ page: 1, limit: 1 });
-    if (!force && existing.total > 0) {
-      this.logger.log(`Database already populated (${existing.total} customers). Skipping auto-seed.`);
-      return { customersCount: existing.total, simulationsCount: 0 };
-    }
-
-    this.logger.log(`Seeding database with ${SEED_CUSTOMERS.length} corporate customers and simulations...`);
-
-    let customersCount = 0;
+    let customersCount = existing.total;
     let simulationsCount = 0;
+    let invoicesCount = 0;
 
-    for (const def of SEED_CUSTOMERS) {
-      let customer = await this.customerRepository.findById(def.id);
-      if (!customer) {
-        customer = await this.customerRepository.findByTaxId(def.taxId);
-      }
+    if (force || existing.total === 0) {
+      this.logger.log(`Seeding database with ${SEED_CUSTOMERS.length} corporate customers and simulations...`);
+      customersCount = 0;
 
-      if (!customer) {
-        customer = Customer.reconstitute({
-          id: def.id,
-          companyName: def.companyName,
-          taxId: def.taxId,
-          email: def.email,
-          country: def.country,
-          selectedPlan: def.selectedPlan,
-          createdAt: def.createdAt,
-        });
-        await this.customerRepository.save(customer);
-        customersCount++;
-      }
+      for (const def of SEED_CUSTOMERS) {
+        let customer = await this.customerRepository.findById(def.id);
+        if (!customer) {
+          customer = await this.customerRepository.findByTaxId(def.taxId);
+        }
 
-      const existingSimulations = await this.simulationRepository.findByCustomerId(customer.getId());
-      const existingSimIds = new Set(existingSimulations.map((s) => s.getId()));
+        if (!customer) {
+          customer = Customer.reconstitute({
+            id: def.id,
+            companyName: def.companyName,
+            taxId: def.taxId,
+            email: def.email,
+            country: def.country,
+            selectedPlan: def.selectedPlan,
+            createdAt: def.createdAt,
+          });
+          await this.customerRepository.save(customer);
+          customersCount++;
+        }
+
+        const existingSimulations = await this.simulationRepository.findByCustomerId(customer.getId());
+        const existingSimIds = new Set(existingSimulations.map((s) => s.getId()));
 
         for (const simDef of def.simulations) {
           if (!existingSimIds.has(simDef.id)) {
@@ -432,10 +556,55 @@ export class DatabaseSeederService implements OnApplicationBootstrap {
         }
       }
 
-    this.logger.log(
-      `Database seeding finished successfully: +${customersCount} customers, +${simulationsCount} simulations.`,
-    );
+      this.logger.log(
+        `Customer & simulation seeding finished: +${customersCount} customers, +${simulationsCount} simulations.`,
+      );
+    } else {
+      this.logger.log(`Database already populated (${existing.total} customers). Checking invoices...`);
+    }
 
-    return { customersCount, simulationsCount };
+    // Seed invoices if invoices table is empty or on force
+    const existingInvoices = await this.invoiceRepository.search({ limit: 1 });
+    if (force || existingInvoices.total === 0) {
+      this.logger.log(`Seeding database with ${SEED_INVOICES.length} invoices...`);
+      for (const invDef of SEED_INVOICES) {
+        const customer = await this.customerRepository.findById(invDef.customerId);
+        if (!customer) continue;
+
+        const subtotal = invDef.subtotal;
+        const taxRate = invDef.taxRate;
+        const taxAmount = Math.round(subtotal * taxRate * 100) / 100;
+        const totalAmount = Math.round((subtotal + taxAmount) * 100) / 100;
+
+        const invoice = Invoice.reconstitute({
+          id: invDef.id,
+          invoiceNumber: invDef.invoiceNumber,
+          customerId: customer.getId(),
+          customerCompanyName: customer.getCompanyName(),
+          customerTaxId: customer.getTaxId(),
+          customerCountry: customer.getCountry(),
+          simulationId: invDef.simulationId ?? null,
+          concept: invDef.concept,
+          subtotal,
+          taxRate,
+          taxAmount,
+          totalAmount,
+          currency: 'EUR',
+          status: invDef.status,
+          issueDate: invDef.issueDate,
+          dueDate: invDef.dueDate,
+          paidAt: invDef.paidAt ?? null,
+          notes: invDef.notes ?? null,
+          createdAt: invDef.issueDate,
+          updatedAt: invDef.paidAt ?? invDef.issueDate,
+        });
+
+        await this.invoiceRepository.save(invoice);
+        invoicesCount++;
+      }
+      this.logger.log(`Invoices seeding finished: +${invoicesCount} invoices.`);
+    }
+
+    return { customersCount, simulationsCount, invoicesCount };
   }
 }

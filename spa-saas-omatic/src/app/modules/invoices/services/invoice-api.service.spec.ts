@@ -112,9 +112,24 @@ describe('InvoiceApiService', () => {
     req.flush(updatedInvoice);
   });
 
+  it('should download invoice PDF as blob', () => {
+    const mockBlob = new Blob(['%PDF-1.4 mock pdf data'], { type: 'application/pdf' });
+
+    service.downloadPdf('inv-123').subscribe((blob) => {
+      expect(blob).toEqual(mockBlob);
+    });
+
+    const req = httpMock.expectOne(`${baseUrl}/inv-123/pdf`);
+    expect(req.request.method).toBe('GET');
+    expect(req.request.responseType).toBe('blob');
+    req.flush(mockBlob);
+  });
+
   it('should set error signal on HTTP failure', () => {
     service.getById('not-found').subscribe({
-      next: () => fail('Should have failed'),
+      next: () => {
+        throw new Error('Should have failed');
+      },
       error: (err) => {
         expect(err.status).toBe(404);
         expect(service.error()?.status).toBe(404);

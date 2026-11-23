@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatDialog } from '@angular/material/dialog';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { PaginatorComponent } from '../../../../shared/components/paginator/paginator.component';
 import { SlideOverDrawerComponent } from '../../../../shared/components/slide-over-drawer/slide-over-drawer.component';
@@ -18,6 +19,7 @@ import { InvoiceApiService } from '../../services/invoice-api.service';
 import { Invoice, InvoiceStatus } from '../../models/invoice.model';
 import { ToastService } from '../../../../core/services/toast.service';
 import { I18nService } from '../../../../core/services/i18n.service';
+import { InvoiceCreateDialogComponent } from '../../components/invoice-create-dialog/invoice-create-dialog.component';
 
 @Component({
   selector: 'app-invoice-list',
@@ -39,6 +41,7 @@ export class InvoiceListComponent implements OnInit {
   private readonly invoiceApi = inject(InvoiceApiService);
   private readonly toast = inject(ToastService);
   private readonly i18n = inject(I18nService);
+  private readonly dialog = inject(MatDialog);
 
   readonly invoices = signal<Invoice[]>([]);
   readonly totalInvoices = signal<number>(0);
@@ -114,6 +117,38 @@ export class InvoiceListComponent implements OnInit {
           this.selectedInvoice.set(updated);
         }
       },
+    });
+  }
+
+  downloadPdf(invoice: Invoice): void {
+    this.invoiceApi.downloadPdf(invoice.id).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${invoice.invoiceNumber}.pdf`;
+        link.click();
+        window.URL.revokeObjectURL(url);
+        this.toast.success(this.i18n.t('invoices.actions.pdfDownloaded'));
+      },
+      error: () => {
+        this.toast.error(this.i18n.t('invoices.actions.pdfDownloadError'));
+      },
+    });
+  }
+
+  openCreateDialog(): void {
+    const dialogRef = this.dialog.open(InvoiceCreateDialogComponent, {
+      width: '620px',
+      maxWidth: '95vw',
+      panelClass: 'corporate-dialog-panel',
+    });
+
+    dialogRef.afterClosed().subscribe((created) => {
+      if (created) {
+        this.currentPage.set(1);
+        this.loadInvoices();
+      }
     });
   }
 }

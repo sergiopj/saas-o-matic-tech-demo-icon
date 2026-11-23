@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryColumn, Index } from 'typeorm';
-import { InvoiceStatus } from '../../../domain/enums/invoice-status.enum';
+import { InvoiceStatus } from '../../../../domain/enums/invoice-status.enum';
 
 @Entity('invoices')
 export class InvoiceTypeOrmEntity {
