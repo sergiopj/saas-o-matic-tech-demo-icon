@@ -4983,6 +4983,32 @@ Una vez consolidada la bitácora de auditoría en la carpeta del proyecto, se di
 - **Valor para la evaluación:**
   Demuestra maestría en principios SOLID (Single Responsibility y Open/Closed), desacoplamiento de capas de datos y empatía con usuarios internacionales en entornos empresariales globales.
 
+---
+
+### 6.238. Refinamiento Conversacional Humano del Asistente IA: Respuestas Concisas, Sub-Intenciones Específicas (Descarga y Anulación) y Eliminación de Fricción Enciclopédica
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Contexto / Desafío:**
+  Al consultar al asistente en lenguaje natural *«¿dónde descargo el pdf de una factura?»*, el sistema devolvió un extenso bloque técnico con el ciclo de vida mercantil completo (`DRAFT` $\to$ `ISSUED` $\to$ `PAID`), regex de numeración correlativa, anulación segura y generación binaria en PDFKit. El usuario señaló con agudeza el exceso de información (*"demasiada info no? donde descargo el pdf de una factura"*), evidenciando la necesidad de respuestas operativas directas, prácticas y concisas.
+- **Diagnóstico Técnico y Solución de Arquitectura Aplicada:**
+  1. *Descomposición en Sub-Intenciones Específicas (`src/app/modules/assistant/data/ai-knowledge.data.ts`):*
+     - Se separó el tema monolítico `invoices_pdf` en tres intenciones especializadas:
+       - **`download_invoice_pdf`:** Orientada específicamente a descargas y localización del documento PDF (*"descargar pdf"*, *"donde descargo"*, *"download pdf"*, *"rechnung herunterladen"*, *"télécharger facture"*). Responde en 2 pasos claros indicando la sección y el icono de descarga en la tabla, con botón de acceso directo `[Ir a Facturas y Cobros]`.
+       - **`cancel_invoice`:** Orientada a la anulación de facturas (*"anular factura"*, *"cancel invoice"*, *"stornieren"*, *"annuler"*), explicando los pasos exactos y el diálogo de confirmación seguro.
+       - **`invoices_pdf` (Visión General):** Reservada para preguntas globales sobre el módulo de facturación comercial.
+  2. *Síntesis y Tono Humano de Producto (Erradicación del Wall of Text):*
+     - Se depuraron y sintetizaron todos los temas de la base de conocimiento para presentar entre 2 y 4 viñetas operativas breves, eliminando jerga interna irrelevante para el usuario de negocio.
+  3. *Pie de Documentación Discreto:*
+     - Se rediseñó el bloque de fuentes referenciadas en `assistant.component.html` y `.scss`: se eliminó el título superior en mayúsculas («FUENTES Y ESPECIFICACIONES REFERENCIADAS:») que generaba saturación visual, reemplazándolo por una nota al pie minimalista con icono y texto atenuado (`var(--omatic-text-muted)`).
+- **Resultados de Verificación:**
+  - Pruebas Frontend (Vitest): **382 tests passing al 100% (43 suites)** (+2 tests nuevos verificando sub-intenciones de descarga y anulación).
+  - Quality Gate de Cobertura Frontend: **Statements: 96.18%**, **Functions: 95.90%**, **Lines: 97.03%**, **Branches: 88.19%**.
+  - Pruebas Backend (Jest): **227 tests passing al 100% (54 suites)**.
+  - Oxlint: **0 errores y 0 advertencias** en 105 archivos inspeccionados.
+- **Valor para la evaluación:**
+  Muestra una alta capacidad de escucha activa, empatía con el usuario final (User Experience Centricity) y sofisticación en procesamiento de intenciones conversacionales en frontend moderno.
+
+
 
 
 

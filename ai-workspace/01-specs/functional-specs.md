@@ -431,7 +431,10 @@ El módulo de Asistente IA (`/assistant`), accesible directamente bajo «Contact
 
 ### 10.1. Base de Conocimiento de Dominio Desacoplada y Multilingüe (`AiAssistantService` y `ai-knowledge.data.ts`)
 Siguiendo los principios de Responsabilidad Única y separación de datos y lógica, el corpus de conocimiento está desacoplado del servicio en un módulo de datos tipado (`src/app/modules/assistant/data/ai-knowledge.data.ts`), indexado con **palabras clave multilingües nativas** para los 4 idiomas soportados (`es`, `en`, `de`, `fr`):
-1. **Indexación Políglota de Palabras Clave (`keywords: { es, en, de, fr }`):**
+1. **Sub-Intenciones Específicas y Respuestas Concisas:**
+   - En lugar de respuestas enciclopédicas genéricas que saturen al usuario con jerga técnica innecesaria, el corpus desglosa intenciones operativas atómicas (ej. `download_invoice_pdf`, `cancel_invoice`, `pricing_tiers`, `fiscal_aeat`).
+   - Consultas prácticas como *«¿dónde descargo el pdf de una factura?»* responden directamente con los 2 pasos claros de navegación visual hacia el botón de descarga en la tabla, acompañadas de un acceso rápido `[Ir a Facturas y Cobros]` y una nota sutil al pie.
+2. **Indexación Políglota de Palabras Clave (`keywords: { es, en, de, fr }`):**
    - El motor semántico pondera las palabras clave en el idioma activo del usuario con peso prioritario ($1.5\times$), apoyándose en las variantes secundarias como mecanismo de fallback si se formulan preguntas cruzadas.
    - Discrimina siglas cortas de $\le 3$ caracteres (`ci`, `cd`, `dni`, `nie`, `cif`, `eur`, `usd`, `vat`) mediante verificación estricta de límites léxicos/tokens, erradicando falsos positivos en términos como *desconocido*.
 2. **Motor de Facturación por Tramos:** Reglas de cálculo progresivo marginal (€10, €8, €5), almacenamiento adicional y llamadas API, con desglose matemático de ejemplos reales (ej. 60 usuarios = 470 €) y enlace directo al simulador.

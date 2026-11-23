@@ -504,43 +504,33 @@
 
 /* Sources in Assistant Message */
 .sources-wrapper {
-  margin-top: 0.75rem;
-  padding-top: 0.5rem;
+  margin-top: 0.6rem;
+  padding-top: 0.4rem;
   border-top: 1px solid var(--omatic-border-light);
   display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-
-  .sources-title {
-    font-size: 0.6875rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--omatic-text-secondary);
-  }
+  align-items: center;
 
   .sources-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.4rem;
+    gap: 0.35rem;
   }
 
   .source-item {
     display: inline-flex;
     align-items: center;
-    gap: 0.3rem;
+    gap: 0.25rem;
     font-size: 0.6875rem;
-    color: var(--omatic-text-secondary);
-    background: var(--omatic-bg-page);
-    padding: 0.2rem 0.5rem;
-    border-radius: var(--omatic-radius-sm);
-    border: 1px solid var(--omatic-border-light);
+    color: var(--omatic-text-muted);
+    background: transparent;
+    padding: 0;
+    border: none;
 
     .source-tag-icon {
-      font-size: 12px;
-      width: 12px;
-      height: 12px;
-      color: var(--omatic-accent-blue);
+      font-size: 13px;
+      width: 13px;
+      height: 13px;
+      color: var(--omatic-text-muted);
     }
   }
 }

@@ -74,15 +74,29 @@ describe('AiAssistantService', () => {
   it('should resolve fiscal validation answer with AEAT details and customer link', () => {
     const answer = service.resolveAnswer('¿Cómo valida el CIF y NIF de la AEAT?', 'es');
     expect(answer.content).toContain('DNI');
-    expect(answer.content).toContain('TRWAGMYFPDXBNJZSQVHLCKE');
+    expect(answer.content).toContain('módulo 23');
     expect(answer.content).toContain('CIF');
     expect(answer.actions?.[0].route).toBe('/customers');
   });
 
-  it('should resolve invoice lifecycle and PDF generation details', () => {
-    const answer = service.resolveAnswer('¿Cómo descargo la factura en PDF o cómo la anulo?', 'es');
+  it('should resolve specific practical answer for downloading invoice PDF', () => {
+    const answer = service.resolveAnswer('donde descargo el pdf de una factura', 'es');
+    expect(answer.content).toContain('descargar el PDF oficial de cualquier factura en 2 pasos');
+    expect(answer.content).toContain('Descargar PDF');
+    expect(answer.actions?.[0].route).toBe('/invoices');
+  });
+
+  it('should resolve specific practical answer for cancelling an invoice', () => {
+    const answer = service.resolveAnswer('¿Cómo anulo una factura emitida?', 'es');
+    expect(answer.content).toContain('Para anular una factura');
+    expect(answer.content).toContain('CANCELLED');
+    expect(answer.actions?.[0].route).toBe('/invoices');
+  });
+
+  it('should resolve general invoice overview for general queries', () => {
+    const answer = service.resolveAnswer('¿Cómo es el ciclo de estados de las facturas?', 'es');
     expect(answer.content).toContain('INV-YYYY-XXXX');
-    expect(answer.content).toContain('ConfirmDialogComponent');
+    expect(answer.content).toContain('DRAFT');
     expect(answer.actions?.[0].route).toBe('/invoices');
   });
 
@@ -90,19 +104,19 @@ describe('AiAssistantService', () => {
     const answer = service.resolveAnswer('¿Qué divisas soportáis y qué pasa offline?', 'es');
     expect(answer.content).toContain('EUR');
     expect(answer.content).toContain('USD');
-    expect(answer.content).toContain('Resiliencia Offline');
+    expect(answer.content).toContain('Modo Offline');
   });
 
   it('should resolve hexagonal architecture details', () => {
     const answer = service.resolveAnswer('Explícame la arquitectura hexagonal y NestJS', 'es');
-    expect(answer.content).toContain('Dominio Puro');
-    expect(answer.content).toContain('SQLite WAL Mode');
+    expect(answer.content).toContain('Dominio inmaculado');
+    expect(answer.content).toContain('modo WAL');
     expect(answer.content).toContain('RFC 7807');
   });
 
   it('should resolve CI/CD and test coverage details', () => {
     const answer = service.resolveAnswer('¿Cómo es el pipeline de CI/CD y los tests de GitHub Actions?', 'es');
-    expect(answer.content).toContain('8 Jobs Paralelos');
+    expect(answer.content).toContain('8 jobs paralelos');
     expect(answer.content).toContain('Oxlint');
   });
 
@@ -114,7 +128,7 @@ describe('AiAssistantService', () => {
 
   it('should resolve contact and support inquiry details', () => {
     const answer = service.resolveAnswer('Necesito ayuda con el formulario de soporte técnico y contacto', 'es');
-    expect(answer.content).toContain('Formulario Especializado');
+    expect(answer.content).toContain('Contacto y Soporte');
     expect(answer.actions?.[0].route).toBe('/contact');
   });
 
