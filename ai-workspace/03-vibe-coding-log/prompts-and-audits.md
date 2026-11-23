@@ -4664,3 +4664,25 @@ Una vez consolidada la bitácora de auditoría en la carpeta del proyecto, se di
   - Oxlint: 0 advertencias y 0 errores.
 - **Valor para la evaluación:**
   Muestra una mirada clínica para la detección de deuda técnica sutil (magic numbers, metadatos y código imperativo), elevando el backend a un nivel de pulcritud artesanal.
+
+
+---
+
+### 6.226. Jerarquía Visual en Barra Lateral: Anclaje Inferior de Guía y Soporte (/guide y /contact)
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Prompt Verbatim del Usuario:**
+  > *«guia y documentacion y contacto y soporte ponlo abajo del todo dentro del panel lateral»*
+- **Diagnóstico y Decisión de UX:**
+  - En la barra lateral (`SidebarComponent`), los accesos a "Guía y Documentación" (`/guide`) y "Contacto y Soporte" (`/contact`) estaban mezclados con los elementos de negocio primarios (`Dashboard`, `Clientes`, `Simulaciones`, `Facturas`).
+  - Para seguir las mejores prácticas de diseño de software SaaS B2B, la navegación primaria de negocio debe situarse en la parte superior, mientras que las secciones utilitarias de documentación y ayuda deben anclarse abajo del todo (`margin-top: auto`) separadas por un divisor sutil, justo antes del pie corporativo.
+- **Solución Aplicada:**
+  1. *Desacoplamiento de Listas en `sidebar.component.ts`:* Se dividió la navegación en `MAIN_NAV_ITEMS` (los 4 módulos de negocio) y `BOTTOM_NAV_ITEMS` (`/guide` y `/contact`), manteniendo `APP_NAV_ITEMS` como unión inmutable para el menú móvil.
+  2. *Estructura HTML Semántica:* Se añadió un contenedor `<nav class="sidebar-bottom-section">` con un divisor `<div class="bottom-divider"></div>` y lista dedicada.
+  3. *Estilos SCSS Flexbox:* Con `flex: 1` en el cuerpo central y `margin-top: auto` en la sección inferior, los dos enlaces quedan anclados abajo tanto en estado expandido como colapsado.
+  4. *Tests Actualizados:* Nueva prueba unitaria en `sidebar.component.spec.ts` verificando que los 4 enlaces principales se renderizan en `.sidebar-nav` y los 2 secundarios en `.sidebar-bottom-section`.
+- **Resultados de Verificación:**
+  - Tests Frontend: **328 tests passing al 100% (38 suites)**.
+  - Oxlint: 0 errores y 0 advertencias.
+- **Valor para la evaluación:**
+  Estructura de navegación pulida y ergonómica propia de plataformas SaaS profesionales (como GitHub, Stripe o Vercel), donde el soporte y la ayuda están siempre accesibles sin restar protagonismo a la operativa de negocio.

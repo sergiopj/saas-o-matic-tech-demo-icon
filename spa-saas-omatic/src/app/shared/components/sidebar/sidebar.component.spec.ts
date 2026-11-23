@@ -29,6 +29,14 @@ describe('SidebarComponent', () => {
     expect(navLinks.length).toBe(6);
   });
 
+  it('should render primary items in main nav and secondary items in bottom section', () => {
+    const mainLinks = fixture.nativeElement.querySelectorAll('.sidebar-nav .nav-link');
+    expect(mainLinks.length).toBe(4);
+
+    const bottomLinks = fixture.nativeElement.querySelectorAll('.sidebar-bottom-section .nav-link');
+    expect(bottomLinks.length).toBe(2);
+  });
+
   it('should toggle collapse state on button click', () => {
     expect(component.isCollapsed()).toBe(false);
     component.toggleCollapse();

@@ -12,7 +12,7 @@ export interface NavItem {
   badge?: string;
 }
 
-export const APP_NAV_ITEMS: readonly NavItem[] = [
+export const MAIN_NAV_ITEMS: readonly NavItem[] = [
   {
     path: '/home',
     labelKey: 'sidebar.home',
@@ -33,6 +33,9 @@ export const APP_NAV_ITEMS: readonly NavItem[] = [
     labelKey: 'sidebar.invoices',
     icon: 'receipt_long',
   },
+] as const;
+
+export const BOTTOM_NAV_ITEMS: readonly NavItem[] = [
   {
     path: '/guide',
     labelKey: 'sidebar.guide',
@@ -43,6 +46,11 @@ export const APP_NAV_ITEMS: readonly NavItem[] = [
     labelKey: 'sidebar.contact',
     icon: 'support_agent',
   },
+] as const;
+
+export const APP_NAV_ITEMS: readonly NavItem[] = [
+  ...MAIN_NAV_ITEMS,
+  ...BOTTOM_NAV_ITEMS,
 ] as const;
 
 @Component({
@@ -62,6 +70,8 @@ export const APP_NAV_ITEMS: readonly NavItem[] = [
 export class SidebarComponent {
   readonly isCollapsed = signal<boolean>(false);
   readonly currentYear = new Date().getFullYear();
+  readonly mainNavItems = MAIN_NAV_ITEMS;
+  readonly bottomNavItems = BOTTOM_NAV_ITEMS;
   readonly navItems = APP_NAV_ITEMS;
 
   toggleCollapse(): void {
