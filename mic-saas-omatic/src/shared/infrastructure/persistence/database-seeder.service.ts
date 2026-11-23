@@ -628,15 +628,11 @@ export class DatabaseSeederService implements OnApplicationBootstrap {
       this.logger.log(`Invoices seeding finished: +${invoicesCount} invoices.`);
     }
 
-    // Seed AI knowledge topics if knowledge table is empty or missing topics
+    // Sync AI knowledge topics with seed definitions
     if (this.knowledgeRepository) {
-      const existingTopics = await this.knowledgeRepository.count();
-      if (force || existingTopics < SEED_KNOWLEDGE_TOPICS.length) {
-        this.logger.log(`Seeding database with ${SEED_KNOWLEDGE_TOPICS.length} knowledge topics...`);
-        const topics = SEED_KNOWLEDGE_TOPICS.map((def) => KnowledgeTopic.create(def));
-        await this.knowledgeRepository.saveAll(topics);
-        this.logger.log(`Knowledge topics seeding finished: +${topics.length} topics.`);
-      }
+      const topics = SEED_KNOWLEDGE_TOPICS.map((def) => KnowledgeTopic.create(def));
+      await this.knowledgeRepository.saveAll(topics);
+      this.logger.log(`Knowledge topics synchronized: ${topics.length} topics in database.`);
     }
 
     return { customersCount, simulationsCount, invoicesCount };

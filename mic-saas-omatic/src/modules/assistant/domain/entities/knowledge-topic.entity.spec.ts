@@ -65,4 +65,10 @@ describe('KnowledgeTopic Entity', () => {
     expect(topic.calculateMatchScore('', 'es')).toBe(0);
     expect(topic.calculateMatchScore('astronauta en marte', 'es')).toBe(0);
   });
+
+  it('should ignore grammatical stop words and prevent false partial substring collisions', () => {
+    const topic = KnowledgeTopic.create(validProps);
+    // "si", "de", "el", "la" should not match keywords like "tramo" or "tarifa"
+    expect(topic.calculateMatchScore('si de el la', 'es')).toBe(0);
+  });
 });

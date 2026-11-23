@@ -462,6 +462,13 @@ Le document est généré instantanément avec le détail des paliers, la TVA et
         'sincronización',
         'offline',
         'cache',
+        'sin internet',
+        'internet',
+        'sin conexion',
+        'sin conexión',
+        'soportadas',
+        'soportan',
+        'divisas soportadas',
       ],
       en: [
         'currency',
@@ -654,17 +661,17 @@ Le document est généré instantanément avec le détail des paliers, la TVA et
 
 1. **Ajuste Dinámico:** Usa los sliders de usuarios activos (1–500), almacenamiento en GB y llamadas API estimadas.
 2. **Proyección en Vivo:** Desglose visual de tramos y conversión instantánea a EUR, USD, GBP o CHF.
-3. **Persistencia:** Guarda la simulación en SQLite (\`POST /simulations\`) vinculada al cliente seleccionado.`,
+3. **Persistencia:** Guarda la proyección vinculada a la cuenta del cliente corporativo para auditoría y consulta histórica.`,
       en: `The **Interactive Simulator** enables the sales team to project subscription costs in real time:
 
 1. **Dynamic Controls:** Adjust active users slider (1–500), storage in GB, and estimated API calls.
 2. **Live Projection:** Visual tier breakdown and instant currency conversion (EUR, USD, GBP, CHF).
-3. **Persistence:** Save the calculation to SQLite (\`POST /simulations\`) linked to the selected corporate customer.`,
+3. **Persistence:** Save the calculation linked to the selected corporate customer for auditing and historical review.`,
       fr: `Le **Simulateur Interactif** permet de projeter les coûts d'abonnement en temps réel :
 
 1. **Contrôles dynamiques :** Curseurs pour utilisateurs (1–500), stockage en Go et appels API.
 2. **Projection en direct :** Détail par paliers et conversion instantanée (EUR, USD, GBP, CHF).
-3. **Persistance :** Enregistrement dans SQLite (\`POST /simulations\`) lié au client.`,
+3. **Persistance :** Enregistrement de la proposition liée au compte client pour audit et historique.`,
     },
     actions: [
       {
@@ -879,6 +886,96 @@ Le document est généré instantanément avec le détail des paliers, la TVA et
     sources: [
       'ai-workspace/02-architecture/architecture-guidelines.md',
       'ai-workspace/01-specs/functional-specs.md',
+    ],
+  },
+  {
+    id: 'contact_support',
+    keywords: {
+      es: [
+        'contacto',
+        'soporte',
+        'modulo de contacto',
+        'para que sirve contacto',
+        'contacto y soporte',
+        'modulo de contacto y soporte',
+        'enviar correo',
+        'mandar correo',
+        'enviar email',
+        'mandar email',
+        'formulario de contacto',
+        'atencion al cliente',
+        'asistencia',
+        'ayuda',
+        'mensaje',
+        'propuesta comercial',
+      ],
+      en: [
+        'contact',
+        'support',
+        'contact module',
+        'what is contact for',
+        'contact and support',
+        'send email',
+        'send mail',
+        'contact form',
+        'customer support',
+        'help',
+        'assistance',
+        'message',
+        'commercial proposal',
+      ],
+      fr: [
+        'contact',
+        'support',
+        'module contact',
+        'a quoi sert le contact',
+        'contact et support',
+        'envoyer email',
+        'envoyer courriel',
+        'formulaire de contact',
+        'service client',
+        'aide',
+        'assistance',
+        'message',
+        'proposition commerciale',
+      ],
+    },
+    titles: {
+      es: 'Módulo de Contacto y Soporte Comercial',
+      en: 'Contact and Sales Support Module',
+      fr: 'Module de Contact et Support Commercial',
+    },
+    content: {
+      es: `El módulo de **Contacto y Soporte** permite al equipo comercial y a los clientes comunicarse de forma directa y segura:
+
+1. **Envío de Propuestas:** Redacta y despacha propuestas comerciales personalizadas utilizando el editor de texto enriquecido con formato profesional.
+2. **Consultas y Asistencia:** Canaliza dudas sobre facturas emitidas, tramos de tarificación o soporte de cuentas corporativas sin salir de la plataforma.
+3. **Seguridad y Validación:** Todas las comunicaciones cuentan con sanitización anti-XSS y validación estricta de direcciones de correo conforme al estándar RFC 5322.`,
+      en: `The **Contact and Support** module enables sales reps and customers to communicate directly and securely:
+
+1. **Proposal Dispatch:** Draft and dispatch tailored commercial proposals using the rich-text WYSIWYG editor.
+2. **Inquiries & Assistance:** Resolve questions regarding invoices, pricing tiers, or corporate account management.
+3. **Security & Validation:** All messages feature anti-XSS sanitization and strict RFC 5322 email validation.`,
+      fr: `Le module de **Contact et Support** permet à l'équipe commerciale et aux clients d'échanger directement :
+
+1. **Envoi de Propositions :** Rédigez et envoyez des propositions commerciales personnalisées avec l'éditeur de texte enrichi.
+2. **Assistance et Questions :** Posez vos questions sur les factures, les paliers de tarification ou les comptes clients.
+3. **Sécurité et Validation :** Toutes les communications bénéficient d'une désinfection anti-XSS et d'une validation stricte RFC 5322.`,
+    },
+    actions: [
+      {
+        labels: {
+          es: 'Ir a Contacto y Soporte',
+          en: 'Go to Contact & Support',
+          fr: 'Aller à Contact et Support',
+        },
+        route: '/contact',
+        icon: 'contact_support',
+      },
+    ],
+    sources: [
+      'ai-workspace/01-specs/functional-specs.md (Sec. 2.5)',
+      'ai-workspace/02-architecture/architecture-guidelines.md (Sec. 3.12)',
     ],
   },
 ];
