@@ -29,32 +29,120 @@
     </div>
   </header>
 
-  <!-- 3-Step Commercial Workflow -->
-  <section class="guide-section" aria-labelledby="workflow-title">
-    <div class="section-header">
-      <span class="section-badge">{{ 'guide.workflow.badge' | translate }}</span>
-      <h2 id="workflow-title" class="section-title">{{ 'guide.workflow.title' | translate }}</h2>
-      <p class="section-subtitle">{{ 'guide.workflow.subtitle' | translate }}</p>
+  <!-- Video Player Section (Explanatory Platform Overview) -->
+  <section class="video-showcase-section" aria-labelledby="video-section-title">
+    <div class="section-header text-center">
+      <span class="section-badge">{{ 'guide.video.badge' | translate }}</span>
+      <h2 id="video-section-title" class="section-title">{{ 'guide.video.title' | translate }}</h2>
+      <p class="section-subtitle">{{ 'guide.video.subtitle' | translate }}</p>
     </div>
 
-    <div class="steps-grid">
-      @for (step of steps; track step.stepNumber) {
-        <article class="step-card">
-          <div class="step-header">
-            <span class="step-number">{{ step.stepNumber }}</span>
-            <div class="step-icon-wrapper">
-              <mat-icon class="step-icon">{{ step.icon }}</mat-icon>
-            </div>
-          </div>
-          <h3 class="step-title">{{ step.titleKey | translate }}</h3>
-          <p class="step-desc">{{ step.descKey | translate }}</p>
-          <a mat-button [routerLink]="step.route" class="step-action-link">
-            <span>{{ step.routeLabelKey | translate }}</span>
-            <mat-icon class="link-arrow">arrow_forward</mat-icon>
-          </a>
-        </article>
+    <div class="video-wrapper">
+      <app-video-player
+        src="/videos/saas-omatic-intro.mp4"
+        poster="/images/hero-illustration.jpg"
+        [title]="'guide.video.title' | translate"
+        [badge]="'guide.video.tag' | translate"
+        [caption]="'guide.video.caption' | translate"
+      />
+    </div>
+  </section>
+
+  <!-- Interactive Step-by-Step Slide Card -->
+  <section class="guide-section" aria-labelledby="workflow-title">
+    <div class="section-header text-center">
+      <span class="section-badge">{{ 'guide.slides.badge' | translate }}</span>
+      <h2 id="workflow-title" class="section-title">{{ 'guide.slides.title' | translate }}</h2>
+      <p class="section-subtitle">{{ 'guide.slides.subtitle' | translate }}</p>
+    </div>
+
+    <!-- Step Indicator Tabs / Progress Dots -->
+    <div class="slide-indicators-bar" role="tablist" [attr.aria-label]="'guide.slides.title' | translate">
+      @for (step of steps; track step.stepNumber; let idx = $index) {
+        <button
+          type="button"
+          role="tab"
+          class="step-indicator-pill"
+          [class.is-active]="idx === currentSlide()"
+          (click)="goToSlide(idx)"
+          [attr.aria-selected]="idx === currentSlide()"
+          [attr.aria-label]="'guide.slides.stepAria' | translate: { index: idx + 1 }"
+        >
+          <span class="indicator-number">{{ step.stepNumber }}</span>
+          <span class="indicator-title">{{ step.titleKey | translate }}</span>
+        </button>
       }
     </div>
+
+    <!-- Big Slide Card -->
+    <article class="slide-card-hero">
+      <div class="slide-card-header">
+        <div class="slide-badge-row">
+          <span class="slide-step-number">{{ currentStep().stepNumber }}</span>
+          <div class="slide-icon-box">
+            <mat-icon class="slide-icon">{{ currentStep().icon }}</mat-icon>
+          </div>
+        </div>
+        <div class="slide-header-text">
+          <h3 class="slide-title">{{ currentStep().titleKey | translate }}</h3>
+          <p class="slide-desc">{{ currentStep().descKey | translate }}</p>
+        </div>
+      </div>
+
+      <!-- Highlights / Benefits Checklist -->
+      <div class="slide-benefits-container">
+        <h4 class="benefits-heading">{{ 'guide.slides.keyBenefits' | translate }}</h4>
+        <ul class="benefits-list">
+          @for (benefit of currentStep().benefits; track benefit) {
+            <li class="benefit-item">
+              <mat-icon class="benefit-icon">check_circle</mat-icon>
+              <span class="benefit-text">{{ benefit | translate }}</span>
+            </li>
+          }
+        </ul>
+      </div>
+
+      <!-- Action Button Link -->
+      <div class="slide-cta-wrapper">
+        <a mat-flat-button color="primary" [routerLink]="currentStep().route" class="slide-action-btn">
+          <span>{{ currentStep().routeLabelKey | translate }}</span>
+          <mat-icon class="link-arrow">arrow_forward</mat-icon>
+        </a>
+      </div>
+
+      <!-- Slide Card Footer Navigation -->
+      <footer class="slide-card-footer">
+        <span class="slide-counter-badge">
+          {{ 'guide.slides.counter' | translate: { current: currentSlide() + 1, total: totalSlides() } }}
+        </span>
+
+        <div class="slide-nav-buttons">
+          <button
+            mat-stroked-button
+            type="button"
+            class="slide-nav-btn prev-btn"
+            (click)="prevSlide()"
+            [disabled]="isFirstSlide()"
+            [attr.aria-label]="'guide.slides.prev' | translate"
+          >
+            <mat-icon>arrow_back</mat-icon>
+            <span>{{ 'guide.slides.prev' | translate }}</span>
+          </button>
+
+          <button
+            mat-flat-button
+            color="primary"
+            type="button"
+            class="slide-nav-btn next-btn"
+            (click)="nextSlide()"
+            [attr.aria-label]="'guide.slides.next' | translate"
+          >
+            <span>{{ 'guide.slides.next' | translate }}</span>
+            <mat-icon>{{ isLastSlide() ? 'replay' : 'arrow_forward' }}</mat-icon>
+          </button>
+        </div>
+      </footer>
+    </article>
   </section>
 
   <!-- Feature Matrix Grid -->

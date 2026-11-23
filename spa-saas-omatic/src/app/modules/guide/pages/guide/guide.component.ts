@@ -1,10 +1,16 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
+import { VideoPlayerComponent } from '../../../../shared/components/video-player/video-player.component';
 
 export interface GuideStep {
   stepNumber: string;
@@ -13,6 +19,7 @@ export interface GuideStep {
   icon: string;
   route: string;
   routeLabelKey: string;
+  benefits: readonly string[];
 }
 
 export interface GuideFeature {
@@ -38,12 +45,15 @@ export interface GuideFaq {
     MatIconModule,
     MatButtonModule,
     TranslatePipe,
+    VideoPlayerComponent,
   ],
   templateUrl: './guide.component.html',
   styleUrl: './guide.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GuideComponent {
+  readonly currentSlide = signal<number>(0);
+
   readonly steps: readonly GuideStep[] = [
     {
       stepNumber: '01',
@@ -52,6 +62,7 @@ export class GuideComponent {
       icon: 'domain',
       route: '/customers',
       routeLabelKey: 'guide.step1.action',
+      benefits: ['guide.step1.benefit1', 'guide.step1.benefit2'],
     },
     {
       stepNumber: '02',
@@ -60,6 +71,7 @@ export class GuideComponent {
       icon: 'tune',
       route: '/simulations',
       routeLabelKey: 'guide.step2.action',
+      benefits: ['guide.step2.benefit1', 'guide.step2.benefit2'],
     },
     {
       stepNumber: '03',
@@ -68,8 +80,34 @@ export class GuideComponent {
       icon: 'receipt_long',
       route: '/invoices',
       routeLabelKey: 'guide.step3.action',
+      benefits: ['guide.step3.benefit1', 'guide.step3.benefit2'],
     },
   ];
+
+  readonly totalSlides = computed(() => this.steps.length);
+  readonly isFirstSlide = computed(() => this.currentSlide() === 0);
+  readonly isLastSlide = computed(() => this.currentSlide() === this.totalSlides() - 1);
+  readonly currentStep = computed(() => this.steps[this.currentSlide()]);
+
+  nextSlide(): void {
+    if (this.isLastSlide()) {
+      this.currentSlide.set(0);
+    } else {
+      this.currentSlide.set(this.currentSlide() + 1);
+    }
+  }
+
+  prevSlide(): void {
+    if (!this.isFirstSlide()) {
+      this.currentSlide.set(this.currentSlide() - 1);
+    }
+  }
+
+  goToSlide(index: number): void {
+    if (index >= 0 && index < this.totalSlides()) {
+      this.currentSlide.set(index);
+    }
+  }
 
   readonly features: readonly GuideFeature[] = [
     {

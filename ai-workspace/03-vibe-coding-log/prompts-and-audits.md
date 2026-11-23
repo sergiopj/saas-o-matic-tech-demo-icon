@@ -4856,4 +4856,32 @@ Una vez consolidada la bitácora de auditoría en la carpeta del proyecto, se di
 - **Valor para la evaluación:**
   Asegura consistencia y familiaridad ergonómica en la navegación principal del usuario conforme a los patrones visuales estándar de interfaz.
 
+---
+
+### 6.234. Innovación Multimedia e Interactividad en Documentación: Reproductor de Vídeo Ligero (`VideoPlayerComponent`) y Carrusel de Diapositivas Comercial
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Contexto / Desafío:**
+  El usuario solicitó potenciar el módulo de Guía y Documentación incorporando un reproductor de vídeo superior de poco peso que explique el propósito de la plataforma SaaS-O-Matic, seguido de una tarjeta de diapositiva más grande con navegación interactiva mediante botones de avanzar y retroceder (*"en el modulo de guia y documentacion haz un componente de video player superior que tenga un video que ocupe poco, ese video explica para que sirve nuestra app y luego el resto de pasos que hay que sea una card mas grande y tipo slide que pasemos de diapositiva y que haya dos botones abajo de avanzar y retroceder"*).
+- **Diagnóstico Técnico y Solución de Arquitectura:**
+  1. *Componente Reutilizable `VideoPlayerComponent` (`src/app/shared/components/video-player/`):*
+     - Componente multimedia standalone responsivo (16:9) con diseño corporativo estricto (`--omatic-primary-dark`, `--omatic-border`, `--omatic-shadow-lg`).
+     - Soporta vídeo MP4 nativo ultra-ligero (`public/videos/saas-omatic-intro.mp4`, 593 KB) sin dependencias externas ni descargas pesadas.
+     - Barra de controles personalizada con cálculo de tiempo reactivo (`mm:ss`), barra de progreso/timeline navegable con gradiente cyan/azul, control de reproducción/pausa, botón de mute, botón de pantalla completa y accesos rápidos por teclado (Espacio/K, M, F).
+  2. *Refactorización a Diapositiva Comercial Interactiva en `GuideComponent`:*
+     - Se sustituyó la cuadrícula estática por un visor de diapositiva destacada (`.slide-card-hero`) con diseño espacioso.
+     - Barra de indicadores interactiva con pestañas de progreso (`.step-indicator-pill`) que permite saltos directos a cualquier fase.
+     - Cada diapositiva desglosa número de paso en gran formato, icono ilustrativo, título, descripción funcional completa, lista de beneficios clave con iconos de verificación (`check_circle`) y enlace de acción directo al módulo correspondiente.
+     - Pie de tarjeta con contador dinámico (*Paso X de Y*) y botones de navegación ergonómicos: `[ ⬅️ Retroceder ]` y `[ Avanzar ➡️ ]`, gestionados con Angular Signals (`currentSlide`, `isFirstSlide`, `isLastSlide`, `nextSlide()`, `prevSlide()`).
+  3. *Ampliación de Internacionalización (i18n):*
+     - Claves de subtítulos, descripciones del reproductor de vídeo y textos de diapositivas en los 4 idiomas (`es`, `en`, `de`, `fr`).
+- **Resultados de Verificación:**
+  - Pruebas Frontend (Vitest): **346 tests passing al 100% (41 suites)**.
+  - Quality Gate de Cobertura Frontend: **Statements: 96.03%**, **Functions: 95.65%**, **Branches: 88.19%** (100% verde).
+  - Pruebas Backend (Jest): **227 tests passing al 100% (54 suites)**.
+  - Oxlint: **0 errores y 0 advertencias** en 99 archivos inspeccionados.
+- **Valor para la evaluación:**
+  Demuestra sofisticación en diseño de producto y experiencia de onboarding interactiva (Product-Led Onboarding), combinando rendimiento óptico (vídeo ultra-ligero de 593 KB) con arquitectura declarativa en Angular 22.
+
+
 

@@ -1,0 +1,113 @@
+<div
+  #playerContainer
+  class="video-player-container"
+  [class.is-playing]="isPlaying()"
+  [class.is-fullscreen]="isFullscreen()"
+  (keydown)="onContainerKeyDown($event)"
+  tabindex="0"
+  role="region"
+  [attr.aria-label]="title() || ('guide.video.title' | translate)"
+>
+  <div class="video-media-wrapper" (click)="togglePlay()">
+    <video
+      #videoRef
+      class="video-element"
+      [src]="src()"
+      [poster]="poster()"
+      preload="metadata"
+      playsinline
+      (timeupdate)="onTimeUpdate()"
+      (loadedmetadata)="onLoadedMetadata()"
+      (ended)="onVideoEnded()"
+    >
+      <track kind="captions" />
+    </video>
+
+    <!-- Top Badge / Header Overlay -->
+    @if (badge() || title()) {
+      <div class="video-top-bar" (click)="$event.stopPropagation()">
+        @if (badge()) {
+          <span class="video-badge">{{ badge() | translate }}</span>
+        }
+        @if (title()) {
+          <h3 class="video-title">{{ title() | translate }}</h3>
+        }
+      </div>
+    }
+
+    <!-- Big Center Play Button (Visible when paused) -->
+    @if (!isPlaying()) {
+      <button
+        type="button"
+        class="center-play-btn"
+        (click)="togglePlay(); $event.stopPropagation()"
+        [attr.aria-label]="'guide.video.play' | translate"
+      >
+        <mat-icon class="center-play-icon">play_arrow</mat-icon>
+      </button>
+    }
+  </div>
+
+  <!-- Bottom Controls Bar -->
+  <div class="video-controls-bar" [class.show-controls]="controlsVisible()">
+    <!-- Timeline Scrubber -->
+    <div class="timeline-container">
+      <div class="timeline-track">
+        <div class="timeline-fill" [style.width.%]="progressPercent()"></div>
+      </div>
+      <input
+        type="range"
+        class="timeline-range"
+        min="0"
+        max="100"
+        step="0.1"
+        [value]="progressPercent()"
+        (input)="onSeek($event)"
+        [attr.aria-label]="'guide.video.title' | translate"
+      />
+    </div>
+
+    <!-- Controls Row -->
+    <div class="controls-row">
+      <div class="controls-left">
+        <button
+          type="button"
+          mat-icon-button
+          class="control-btn"
+          (click)="togglePlay()"
+          [attr.aria-label]="(isPlaying() ? 'guide.video.pause' : 'guide.video.play') | translate"
+        >
+          <mat-icon>{{ isPlaying() ? 'pause' : 'play_arrow' }}</mat-icon>
+        </button>
+
+        <button
+          type="button"
+          mat-icon-button
+          class="control-btn"
+          (click)="toggleMute()"
+          [attr.aria-label]="(isMuted() ? 'guide.video.unmute' : 'guide.video.mute') | translate"
+        >
+          <mat-icon>{{ isMuted() ? 'volume_off' : 'volume_up' }}</mat-icon>
+        </button>
+
+        <span class="time-label">{{ timeDisplay() }}</span>
+      </div>
+
+      <div class="controls-right">
+        @if (caption()) {
+          <span class="caption-pill">{{ caption() | translate }}</span>
+        }
+
+        <button
+          type="button"
+          mat-icon-button
+          class="control-btn"
+          (click)="toggleFullscreen()"
+          [attr.aria-label]="'guide.video.fullscreen' | translate"
+        >
+          <mat-icon>{{ isFullscreen() ? 'fullscreen_exit' : 'fullscreen' }}</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

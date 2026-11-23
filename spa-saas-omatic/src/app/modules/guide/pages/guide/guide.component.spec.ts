@@ -18,26 +18,63 @@ describe('GuideComponent', () => {
 
     fixture = TestBed.createComponent(GuideComponent);
     component = fixture.componentInstance;
+    const i18n = TestBed.inject(I18nService);
+    i18n.setLanguage('es');
     fixture.detectChanges();
   });
 
   it('should create the guide component', () => {
     expect(component).toBeTruthy();
+    expect(component.currentSlide()).toBe(0);
+    expect(component.totalSlides()).toBe(3);
+    expect(component.isFirstSlide()).toBe(true);
+    expect(component.isLastSlide()).toBe(false);
   });
 
-  it('should render the hero section with illustration and title', () => {
+  it('should render the hero section and video player', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const titleEl = compiled.querySelector('#guide-title');
     expect(titleEl).toBeTruthy();
-    const heroImg = compiled.querySelector('.hero-illustration');
-    expect(heroImg).toBeTruthy();
+    const videoEl = compiled.querySelector('app-video-player');
+    expect(videoEl).toBeTruthy();
   });
 
-  it('should contain 3 commercial workflow steps', () => {
-    expect(component.steps.length).toBe(3);
+  it('should navigate through slides with nextSlide, prevSlide, and goToSlide', () => {
+    expect(component.currentSlide()).toBe(0);
+    expect(component.currentStep().stepNumber).toBe('01');
+
+    component.nextSlide();
+    expect(component.currentSlide()).toBe(1);
+    expect(component.currentStep().stepNumber).toBe('02');
+    expect(component.isFirstSlide()).toBe(false);
+
+    component.nextSlide();
+    expect(component.currentSlide()).toBe(2);
+    expect(component.isLastSlide()).toBe(true);
+
+    // Looping on last slide
+    component.nextSlide();
+    expect(component.currentSlide()).toBe(0);
+
+    // Direct jump
+    component.goToSlide(2);
+    expect(component.currentSlide()).toBe(2);
+
+    // Previous slide
+    component.prevSlide();
+    expect(component.currentSlide()).toBe(1);
+  });
+
+  it('should render the big slide card with benefits checklist', () => {
     const compiled = fixture.nativeElement as HTMLElement;
-    const stepCards = compiled.querySelectorAll('.step-card');
-    expect(stepCards.length).toBe(3);
+    const slideCard = compiled.querySelector('.slide-card-hero');
+    expect(slideCard).toBeTruthy();
+
+    const stepNumber = compiled.querySelector('.slide-step-number');
+    expect(stepNumber?.textContent?.trim()).toBe('01');
+
+    const benefits = compiled.querySelectorAll('.benefit-item');
+    expect(benefits.length).toBe(2);
   });
 
   it('should render 6 feature matrix cards and 3 faqs', () => {
