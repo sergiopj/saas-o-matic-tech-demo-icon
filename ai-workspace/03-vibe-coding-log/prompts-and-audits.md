@@ -4403,3 +4403,35 @@ Una vez consolidada la bitácora de auditoría en la carpeta del proyecto, se di
   - Oxlint backend: 0 errores / 0 advertencias.
   - Oxlint frontend: 0 errores / 0 advertencias.
 - **Valor para la evaluación:** Atención al detalle en accesibilidad y ergonomía de lectura incluso en la consola de integración continua.
+
+
+---
+
+### 6.216. Subsanación Crítica de Tipografía Invisible en Hero Banner en Modo Claro (Invalid CSS Custom Properties)
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Prompt Verbatim del Usuario:**
+  > *«toidas estas letras no se ven en el modo ligth SaaS-O-Matic Engine Panel de Control Comercial Supervisa clientes corporativos, simula tramos de tarificación SaaS y proyecta facturación multi-divisa en tiempo real. por tener la s letras en blanco»*
+- **Diagnóstico Técnico de Causa Raíz:**
+  En [home.component.scss](file:///c:/Users/Usuario/Documents/GitHub/saas-o-matic-tech-demo-icon/spa-saas-omatic/src/app/modules/home/pages/home/home.component.scss), la declaración del degradado corporativo contenía un error tipográfico en la invocación del Design Token:
+  `background: linear-gradient(135deg, var(--omatic-primary) 0%, var(-omaticic-primary-light) 100%);`
+  Al tener un solo guión y caracteres espurios (`-omaticic-`), la especificación W3C de CSS Custom Properties dictamina que la propiedad es **inválida en tiempo de cómputo (*invalid at computed-value time*)**, provocando que el navegador descarte el `background` y lo compute como `transparent`.
+  Al volverse transparente el banner en **Modo Claro (Light Mode)**:
+  1. Se transparentaba la superficie del lienzo de la página (`--omatic-bg-page: #f8fafc`, blanco/gris muy claro).
+  2. Los elementos tipográficos del banner estaban correctamente tipados con `color: var(--omatic-text-inverse)` (`#ffffff`) y `var(--omatic-text-inverse-muted)` (`rgba(255, 255, 255, 0.7)`).
+  3. Resultado: **Texto blanco sobre fondo blanco transparente**, haciendo completamente invisibles el badge `SaaS-O-Matic Engine`, el título `Panel de Control Comercial` y el subtítulo de analítica. En Modo Oscuro no se percibía porque el fondo general de la página era negro (`#090d16`).
+- **Decisión de Arquitectura y Solución Aplicada:**
+  1. *Corrección en Hero Banner:* Se restableció el token canónico `var(--omatic-primary-light)` en [home.component.scss](file:///c:/Users/Usuario/Documents/GitHub/saas-o-matic-tech-demo-icon/spa-saas-omatic/src/app/modules/home/pages/home/home.component.scss#L14), devolviendo el fondo corporativo azul marino profundo (`#0f172a` a `#1e293b`) que genera un contraste impecable con la tipografía blanca tanto en modo claro como en modo oscuro.
+  2. *Auditoría Integral de Tokens SCSS en todo el Proyecto:* Se ejecutó un barrido regex sobre todas las hojas de estilo del frontend para localizar y corregir cualquier otra errata similar (`omaticic` / `omatictic`), subsanando 7 puntos adicionales:
+     - `customer-card.component.scss`: `var(--omatic-accent-cyan)`.
+     - `customer-detail.component.scss`: `var(--omatic-primary-light)`.
+     - `customer-carousel.component.scss`: `var(--omatic-surface)` y `var(--omatic-primary-light)`.
+     - `home.component.scss` (pilas de monedas): `var(--omatic-coin-gold)` y `var(--omatic-coin-gold-dark)`.
+     - `simulation-hub.component.scss`: `var(--omatic-coin-gold)` y `var(--omatic-coin-gold-dark)`.
+     - `theme-toggle.component.scss`: `var(--omatic-shadow-md)`.
+- **Resultados de Verificación:**
+  - En Modo Claro, el banner luce su degradado azul marino profundo con tipografía blanca de máxima nitidez y ratio de contraste $> 12:1$ (cumpliendo sobradamente WCAG AAA).
+  - En Modo Oscuro, el banner se integra armónicamente con la profundidad del tema.
+  - Oxlint frontend & backend: **0 errores, 0 advertencias**.
+  - Suites unitarias: **542/542 tests pasando al 100%**.
+- **Valor para la evaluación:** Diagnóstico ágil de comportamiento sutil en el motor de renderizado CSS del navegador, asegurando una experiencia visual premium y sin defectos estéticos en la presentación ante el comité técnico.

@@ -11,7 +11,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 2rem;
-  background: linear-gradient(135deg, var(--omatic-primary) 0%, var(-omaticic-primary-light) 100%);
+  background: linear-gradient(135deg, var(--omatic-primary) 0%, var(--omatic-primary-light) 100%);
   border-radius: var(--omatic-radius-lg);
   padding: 1.15rem 2rem;
   color: var(--omatic-text-inverse);
@@ -505,7 +505,7 @@
         width: 19px;
         height: 5.5px;
         border-radius: 50%;
-        background: linear-gradient(135deg, var(--omatic-coin-gold-light) 0%, var(-omaticic-coin-gold) 60%, var(omatictic-coin-gold-dark) 100%);
+        background: linear-gradient(135deg, var(--omatic-coin-gold-light) 0%, var(--omatic-coin-gold) 60%, var(--omatic-coin-gold-dark) 100%);
         box-shadow:
           0 1px 0 var(--omatic-coin-gold-dark),
           0 1.5px 0 var(--omatic-coin-gold-rim),

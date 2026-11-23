@@ -37,7 +37,7 @@
   z-index: 2;
 
   &:hover:not([disabled]) {
-    background-color: color-mix(in srgb, var(--omatic-accent-blue) 12%, var(-omaticic-surface));
+    background-color: color-mix(in srgb, var(--omatic-accent-blue) 12%, var(--omatic-surface));
     color: var(--omatic-accent-blue);
     border-color: var(--omatic-accent-blue);
     transform: scale(1.08);
@@ -139,7 +139,7 @@
       width: 44px;
       height: 44px;
       border-radius: var(--omatic-radius-sm);
-      background: linear-gradient(135deg, var(--omatic-primary) 0%, var(-omaticic-primary-light) 100%);
+      background: linear-gradient(135deg, var(--omatic-primary) 0%, var(--omatic-primary-light) 100%);
       color: var(--omatic-text-inverse);
       font-weight: 700;
       font-size: 1.15rem;
