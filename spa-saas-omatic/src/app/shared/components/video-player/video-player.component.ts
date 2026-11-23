@@ -14,14 +14,12 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 
 function formatDuration(seconds: number): string {
-  if (!seconds || isNaN(seconds) || seconds < 0) {
+  if (!Number.isFinite(seconds) || seconds <= 0) {
     return '00:00';
   }
   const mins = Math.floor(seconds / 60);
   const secs = Math.floor(seconds % 60);
-  const paddedMins = mins < 10 ? `0${mins}` : `${mins}`;
-  const paddedSecs = secs < 10 ? `0${secs}` : `${secs}`;
-  return `${paddedMins}:${paddedSecs}`;
+  return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
 }
 
 @Component({
@@ -129,15 +127,17 @@ export class VideoPlayerComponent {
   }
 
   onContainerKeyDown(event: KeyboardEvent): void {
-    if (event.key === ' ' || event.key === 'k') {
+    const actions: Record<string, () => void> = {
+      ' ': () => this.togglePlay(),
+      k: () => this.togglePlay(),
+      m: () => this.toggleMute(),
+      f: () => this.toggleFullscreen(),
+    };
+
+    const action = actions[event.key.toLowerCase()];
+    if (action) {
       event.preventDefault();
-      this.togglePlay();
-    } else if (event.key === 'm') {
-      event.preventDefault();
-      this.toggleMute();
-    } else if (event.key === 'f') {
-      event.preventDefault();
-      this.toggleFullscreen();
+      action();
     }
   }
 }

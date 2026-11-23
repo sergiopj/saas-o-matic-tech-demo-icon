@@ -49,6 +49,7 @@ Whenever you operate in this repository, you MUST strictly adhere to the followi
 - **Component Decomposition & Reuse (`<app-paginator>`, `<app-customer-carousel>`)**: Never duplicate pagination mathematics or pagination HTML markup in page components. Delegate pagination to the reusable `<app-paginator>` standalone component. Similarly, isolate interactive swipe/touch carousels and sliding track math into dedicated presentation components (e.g., `<app-customer-carousel>`) rather than bloating top-level dashboard pages with low-level window resize and pointer drag handlers.
 - **Lazy Loading**: Heavy third-party integrations (e.g., Quill rich-text editor) must be lazily loaded in separate chunks to keep the initial main bundle under 165 kB.
 - **DOM Containment**: Apply `content-visibility: auto; contain-intrinsic-size: auto 240px;` on repeating card items to maximize 60 FPS rendering in large grids.
+- **Idiomatic Standard APIs Over Archaic Ternaries (`padStart`, `Number.isFinite`, Action Maps)**: Always leverage modern ECMAScript standard APIs (e.g. `String(val).padStart(len, '0')`, `Number.isFinite(val)`) instead of legacy manual ternaries (`val < 10 ? '0' + val : '' + val`) or global coercion functions (`isNaN`). When dispatching keyboard shortcuts or key events, normalize keys via `.toLowerCase()` and dispatch using typed action maps (`Record<string, () => void>`) or explicit switches with early returns rather than redundant cascading `if/else if` chains with repeated `preventDefault()`.
 
 ---
 

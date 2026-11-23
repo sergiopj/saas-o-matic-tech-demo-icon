@@ -4883,5 +4883,32 @@ Una vez consolidada la bitácora de auditoría en la carpeta del proyecto, se di
 - **Valor para la evaluación:**
   Demuestra sofisticación en diseño de producto y experiencia de onboarding interactiva (Product-Led Onboarding), combinando rendimiento óptico (vídeo ultra-ligero de 593 KB) con arquitectura declarativa en Angular 22.
 
+---
+
+### 6.235. Refactorización Clean Code del Reproductor de Vídeo, Extensión Temporal y Desacoplamiento de Metadatos de Peso
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Contexto / Desafío:**
+  El usuario solicitó que el vídeo de demostración tuviera mayor duración para una experiencia más inmersiva, que la etiqueta visual se normalizara a *"Vídeo Demo"* omitiendo el tamaño en KB (*"haz el video un pelin mas largo y en vez de video oficial pon video demo y no pongas el peso, todo esto referencialo en los mds que toquen tanto de ia workspace y si lo ves necedsario en agents"*), y sometió a auditoría de Clean Code dos funciones del componente (`formatDuration` y `onContainerKeyDown`).
+- **Diagnóstico Técnico y Solución Aplicada:**
+  1. *Extensión de Duración y Bucle Continuo:*
+     - Se generó una versión del contenedor MP4 con duración extendida a **12.19 segundos** (multiplicando el delta temporal en las tablas `stts` y actualizando `mvhd`, `mdhd` y `tkhd`), permitiendo un ritmo visual cinematográfico pausado.
+     - Se añadió el atributo `loop` nativo en el elemento `<video>` de la plantilla HTML, garantizando un bucle infinito y continuo sin cortes bruscos.
+  2. *Refactorización de Clean Code en `VideoPlayerComponent`:*
+     - **`formatDuration`:** Se sustituyeron los ternarios manuales estilo ES5 (`mins < 10 ? '0' + mins : ...`) y el `isNaN()` global por la API estándar moderna `String(val).padStart(2, '0')` y el guard estricto `!Number.isFinite(seconds) || seconds <= 0`.
+     - **`onContainerKeyDown`:** Se eliminó la escalera condicional de `if / else if` repetitiva con múltiples `preventDefault()`, reemplazándola por un *Action Map* declarativo (`Record<string, () => void>`) con normalización `.toLowerCase()`, lo que garantiza inmunidad ante mayúsculas, `Shift` o bloqueo de mayúsculas (Caps Lock).
+  3. *Eliminación de Peso Técnico en i18n:*
+     - Se actualizaron las cadenas de traducción en los 4 idiomas (`es`, `en`, `de`, `fr`) para mostrar únicamente *"Vídeo Demo"* (*"Demo Video"*, *"Demovideo"*, *"Vidéo Démo"*), retirando la mención a los kilobytes que rompía el enfoque de producto.
+  4. *Gobernanza y Reglas de Agente (`AGENTS.md` & `functional-specs.md`):*
+     - Se incorporó la regla técnica en `AGENTS.md` (Sección 2.D) promoviendo APIs estándar modernas (`padStart`, `Number.isFinite`, Action Maps) y se documentó el módulo en `functional-specs.md`.
+- **Resultados de Verificación:**
+  - Pruebas Frontend (Vitest): **346 tests passing al 100% (41 suites)**.
+  - Quality Gate de Cobertura Frontend: **Statements: 96.03%**, **Functions: 95.65%**, **Branches: 88.19%** (100% verde).
+  - Pruebas Backend (Jest): **227 tests passing al 100% (54 suites)**.
+  - Oxlint: **0 errores y 0 advertencias**.
+- **Valor para la evaluación:**
+  Evidencia rigor senior en la adopción de estándares ECMAScript modernos y orientación al detalle en la ergonomía de usuario y consistencia de documentación.
+
+
 
 

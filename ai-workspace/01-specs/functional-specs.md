@@ -406,3 +406,18 @@ Tanto Jest como Vitest aplican umbrales mínimos de cobertura automáticos:
 - Funciones y Métodos $\ge 75\%$ (obtenido: $>96\%$).
 - Ramas y Condiciones $\ge 65\%$ (obtenido: $>83\%$).
 Cualquier regresión que degrade la cobertura por debajo de estos umbrales aborta el pipeline de integración continua con código de salida 1.
+
+---
+
+## 9. Módulo de Guía, Documentación y Onboarding Multimedia (`Guide`)
+
+El módulo de Guía (`/guide`) proporciona a los nuevos usuarios, decisores comerciales y evaluadores técnicos una comprensión inmediata del producto mediante dos elementos clave:
+
+### 9.1. Reproductor de Vídeo Multimedia (`VideoPlayerComponent`)
+- **Vídeo Demo Integrado:** Reproduce una demostración visual interactiva (`saas-omatic-intro.mp4`, ~12.2 segundos) que explica el propósito comercial de la plataforma (optimización de suscripciones SaaS, simulación por tramos y facturación oficial).
+- **Controles Personalizados:** Línea de tiempo interactiva con cálculo reactivo de tiempo transcurrido (`mm:ss`), botón play/pause central y en barra, control de volumen/silencio y pantalla completa, sin exponer metadatos técnicos innecesarios (etiquetado limpiamente como *"Vídeo Demo"*).
+- **Bucle Continuo (`loop`):** Reproducción fluida y continua que permite mantener la ambientación mientras el usuario consulta la documentación.
+
+### 9.2. Carrusel Interactivo de Diapositivas Comerciales
+- **Formato Diapositiva Amplia:** Una tarjeta destacada que presenta cada etapa del flujo de trabajo comercial con número en gran formato, icono ilustrativo, descripción operativa y checklist de capacidades clave.
+- **Navegación Intuitiva:** Botonera ergonómica de avance y retroceso (`[ Retroceder ]` / `[ Avanzar ]`) junto con barra superior de píldoras de navegación rápida (`01`, `02`, `03`) para saltar de inmediato a cualquier fase.

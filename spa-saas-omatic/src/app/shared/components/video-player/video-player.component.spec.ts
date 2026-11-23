@@ -65,18 +65,21 @@ describe('VideoPlayerComponent', () => {
     expect(component.currentTime()).toBe(0);
   });
 
-  it('should respond to keyboard shortcuts (Space, m, f)', () => {
+  it('should respond to keyboard shortcuts (Space, m, f, and uppercase variants)', () => {
     const togglePlaySpy = vi.spyOn(component, 'togglePlay');
     const toggleMuteSpy = vi.spyOn(component, 'toggleMute');
     const toggleFsSpy = vi.spyOn(component, 'toggleFullscreen');
 
     component.onContainerKeyDown(new KeyboardEvent('keydown', { key: ' ' }));
-    expect(togglePlaySpy).toHaveBeenCalled();
+    expect(togglePlaySpy).toHaveBeenCalledTimes(1);
 
-    component.onContainerKeyDown(new KeyboardEvent('keydown', { key: 'm' }));
-    expect(toggleMuteSpy).toHaveBeenCalled();
+    component.onContainerKeyDown(new KeyboardEvent('keydown', { key: 'K' }));
+    expect(togglePlaySpy).toHaveBeenCalledTimes(2);
 
-    component.onContainerKeyDown(new KeyboardEvent('keydown', { key: 'f' }));
-    expect(toggleFsSpy).toHaveBeenCalled();
+    component.onContainerKeyDown(new KeyboardEvent('keydown', { key: 'M' }));
+    expect(toggleMuteSpy).toHaveBeenCalledTimes(1);
+
+    component.onContainerKeyDown(new KeyboardEvent('keydown', { key: 'F' }));
+    expect(toggleFsSpy).toHaveBeenCalledTimes(1);
   });
 });
