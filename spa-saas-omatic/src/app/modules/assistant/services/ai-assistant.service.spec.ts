@@ -28,7 +28,7 @@ describe('AiAssistantService', () => {
 
   it('should have predefined quick prompts', () => {
     expect(service.quickPrompts().length).toBe(QUICK_PROMPTS.length);
-    expect(service.quickPrompts()[0].id).toBe('prompt_challenge');
+    expect(service.quickPrompts()[0].id).toBe('prompt_pricing');
   });
 
   it('should resolve pricing tiers answer with action and calculation details in Spanish', () => {
@@ -136,6 +136,9 @@ describe('AiAssistantService', () => {
   it('should return fallback content when query has no matching keywords', () => {
     const answer = service.resolveAnswer('algo completamente desconocido y aleatorio xyz123', 'es');
     expect(answer.content).toContain('No he encontrado una coincidencia exacta');
+    expect(answer.content).toContain('Tarificación por Tramos');
+    expect(answer.content).toContain('Simulador de Suscripciones');
+    expect(answer.content).not.toContain('Arquitectura Hexagonal');
     expect(answer.actions).toBeUndefined();
   });
 

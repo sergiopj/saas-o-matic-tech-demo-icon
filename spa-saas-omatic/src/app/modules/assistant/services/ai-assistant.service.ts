@@ -161,19 +161,19 @@ export class AiAssistantService {
       case 'en':
         return `Hi there! 👋 I'm your SaaS-O-Matic copilot.
 
-How can I help you today? Feel free to ask me anything about tiered pricing calculations, customer and invoice management, technical architecture, or the technical challenge requirements.`;
+How can I help you today? Feel free to ask me about tiered pricing calculations, customer tax validation, subscription cost simulations, or issuing and downloading invoices.`;
       case 'de':
         return `Hallo! 👋 Ich bin dein SaaS-O-Matic Copilot.
 
-Wie kann ich dir heute helfen? Frag mich gerne alles über die Staffelpreisberechnung, Kunden- und Rechnungsverwaltung, die Systemarchitektur oder die technische Challenge.`;
+Wie kann ich dir heute helfen? Frag mich gerne alles über Staffelpreisberechnungen, steuerliche Kundenprüfung, Abonnementsimulationen oder Rechnungs-PDFs.`;
       case 'fr':
         return `Bonjour ! 👋 Je suis votre copilote SaaS-O-Matic.
 
-Comment puis-je vous aider aujourd'hui ? N'hésitez pas à me poser vos questions sur le calcul des tarifs par paliers, la gestion des clients et factures, l'architecture ou le défi technique.`;
+Comment puis-je vous aider aujourd'hui ? Posez-moi vos questions sur le calcul des tarifs par paliers, la validation fiscale des clients, les simulations ou les factures.`;
       default:
         return `¡Hola! 👋 Soy tu copiloto en SaaS-O-Matic.
 
-¿En qué te puedo ayudar hoy? Puedes preguntarme cualquier duda sobre el cálculo de precios por tramos, la gestión de clientes y facturas, nuestra arquitectura o los detalles del reto técnico.`;
+¿En qué te puedo ayudar hoy? Puedo orientarte sobre cómo calcular precios por tramos, realizar simulaciones interactivas, validar clientes corporativos o emitir y descargar facturas.`;
     }
   }
 
@@ -182,31 +182,33 @@ Comment puis-je vous aider aujourd'hui ? N'hésitez pas à me poser vos question
       case 'en':
         return `I couldn't find a direct match for your question, but I can help you with:
 • **Tiered Pricing:** Ask *"How do pricing tiers calculate?"*
+• **Simulations:** Ask *"How do I simulate a subscription cost?"*
 • **Fiscal Rules:** Ask *"How are Spanish CIF or DNI verified?"*
 • **Invoices & Billing:** Ask *"How does PDF invoice download work?"*
 • **Currencies:** Ask *"Which currencies are supported?"*
-• **Architecture:** Ask *"Explain the hexagonal architecture."*
 
 Feel free to pick any of the quick suggestions above!`;
       case 'de':
         return `Ich habe keine direkte Übereinstimmung gefunden, helfe Ihnen aber gerne bei:
 • **Staffelpreisen:** Fragen Sie nach der Staffelpreis-Berechnung.
+• **Simulationen:** Fragen Sie nach der Abonnement-Simulation.
 • **Steuerprüfung:** Fragen Sie nach der CIF- oder DNI-Validierung der AEAT.
 • **Rechnungen:** Fragen Sie nach PDF-Download oder Rechnungsstornierung.
-• **Architektur:** Fragen Sie nach der hexagonalen Architektur.`;
+• **Währungen:** Fragen Sie nach den unterstützten Währungen.`;
       case 'fr':
         return `Je n'ai pas trouvé de correspondance exacte, mais je peux vous renseigner sur :
 • **Tarification par paliers :** Demandez le calcul des paliers.
+• **Simulations :** Demandez comment simuler un abonnement.
 • **Validation fiscale :** Demandez comment valider un CIF ou DNI espagnol.
 • **Factures :** Demandez le fonctionnement des factures PDF.
-• **Architecture :** Demandez des explications sur l'architecture hexagonale.`;
+• **Devises :** Demandez les devises prises en charge.`;
       default:
         return `No he encontrado una coincidencia exacta para esa consulta, pero puedo ayudarte con:
 • **Tarificación por Tramos:** Pregunta *"¿Cómo se calculan los tramos?"*
+• **Simulador de Suscripciones:** Pregunta *"¿Cómo simulo el coste de una suscripción?"*
 • **Validación Fiscal:** Pregunta *"¿Cómo se valida un CIF o NIF de la AEAT?"*
 • **Facturación y PDF:** Pregunta *"¿Cómo funciona la descarga de facturas en PDF?"*
 • **Divisas y Tipos de Cambio:** Pregunta *"¿Qué divisas soportáis?"*
-• **Arquitectura Hexagonal:** Pregunta *"¿Cómo está estructurado el backend y frontend?"*
 
 ¡O selecciona cualquiera de las preguntas rápidas recomendadas arriba!`;
     }
@@ -225,6 +227,12 @@ Feel free to pick any of the quick suggestions above!`;
         en: 'How does tiered pricing calculation work?',
         de: 'Wie funktioniert die Staffelpreis-Berechnung?',
         fr: 'Comment fonctionne le calcul des prix par paliers ?',
+      },
+      prompt_simulations: {
+        es: '¿Cómo simulo el coste mensual y el desglose de tramos?',
+        en: 'How do I simulate monthly costs and tier breakdown?',
+        de: 'Wie simuliere ich monatliche Kosten und Staffelaufschlüsselung?',
+        fr: 'Comment simuler les coûts mensuels et le détail des paliers ?',
       },
       prompt_fiscal: {
         es: '¿Cómo valida el sistema un CIF o NIF de la AEAT?',

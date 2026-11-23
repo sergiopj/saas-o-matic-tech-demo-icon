@@ -431,10 +431,10 @@ El módulo de Asistente IA (`/assistant`), accesible directamente bajo «Contact
 
 ### 10.1. Base de Conocimiento de Dominio Desacoplada y Multilingüe (`AiAssistantService` y `ai-knowledge.data.ts`)
 Siguiendo los principios de Responsabilidad Única y separación de datos y lógica, el corpus de conocimiento está desacoplado del servicio en un módulo de datos tipado (`src/app/modules/assistant/data/ai-knowledge.data.ts`), indexado con **palabras clave multilingües nativas** para los 4 idiomas soportados (`es`, `en`, `de`, `fr`):
-1. **Tono Conversacional Humano y Mensaje de Bienvenida Cálido:**
-   - En lugar de un saludo robótico con un extenso listado enciclopédico de viñetas técnicas que sature al usuario, el asistente recibe con un saludo natural, empático y directo:
-     > *"¡Hola! 👋 Soy tu copiloto en SaaS-O-Matic. ¿En qué te puedo ayudar hoy? Puedes preguntarme cualquier duda sobre el cálculo de precios por tramos, la gestión de clientes y facturas, nuestra arquitectura o los detalles del reto técnico."*
-   - El mensaje inicial omite pies de página o fuentes técnicas irrelevantes para mantener la interfaz completamente limpia y acogedora.
+1. **Tono Conversacional Humano y Orientación Estricta a Funcionalidad de Negocio:**
+   - La persona conversacional del asistente se define como un copiloto comercial experto en SaaS, evitando filtrar o exponer pistas técnicas internas (arquitectura hexagonal, patrones de persistencia o directrices de código) en su saludo, subtítulos, preguntas rápidas o mensajes de fallback:
+     > *"¡Hola! 👋 Soy tu copiloto en SaaS-O-Matic. ¿En qué te puedo ayudar hoy? Puedo orientarte sobre cómo calcular precios por tramos, realizar simulaciones interactivas, validar clientes corporativos o emitir y descargar facturas."*
+   - Las especificaciones arquitectónicas y de desarrollo permanecen indexadas en segundo plano para responder consultas técnicas si un evaluador las formula directamente, pero la interfaz comercial pública mantiene un foco 100% de producto.
 2. **Sub-Intenciones Específicas y Respuestas Concisas:**
    - En lugar de bloques extensos de texto (*wall of text*), el corpus desglosa intenciones operativas atómicas (ej. `download_invoice_pdf`, `cancel_invoice`, `pricing_tiers`, `fiscal_aeat`, `challenge_criteria`, `run_locally_deployment`).
    - Consultas prácticas como *«¿dónde descargo el pdf de una factura?»* responden directamente con los 2 pasos claros de navegación visual hacia el botón de descarga en la tabla, acompañadas de un acceso rápido `[Ir a Facturas y Cobros]` y una nota sutil al pie.

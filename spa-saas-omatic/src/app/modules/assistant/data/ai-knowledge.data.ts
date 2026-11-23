@@ -1745,16 +1745,16 @@ Frontend: \`npm --prefix spa-saas-omatic test\` (Vitest) and \`npm run lint\` (O
 
 export const QUICK_PROMPTS: readonly QuickPrompt[] = [
   {
-    id: 'prompt_challenge',
-    labelKey: 'assistant.prompts.challenge',
-    query: '¿Cuáles son los objetivos y criterios del reto técnico?',
-    icon: 'military_tech',
-  },
-  {
     id: 'prompt_pricing',
     labelKey: 'assistant.prompts.pricing',
     query: '¿Cómo funciona el cálculo de precios por tramos?',
     icon: 'calculate',
+  },
+  {
+    id: 'prompt_simulations',
+    labelKey: 'assistant.prompts.simulations',
+    query: '¿Cómo simulo el coste mensual y el desglose de tramos?',
+    icon: 'tune',
   },
   {
     id: 'prompt_fiscal',
@@ -1773,12 +1773,6 @@ export const QUICK_PROMPTS: readonly QuickPrompt[] = [
     labelKey: 'assistant.prompts.currencies',
     query: '¿Qué divisas están soportadas y qué pasa si no hay internet?',
     icon: 'currency_exchange',
-  },
-  {
-    id: 'prompt_architecture',
-    labelKey: 'assistant.prompts.architecture',
-    query: '¿Cómo está estructurada la arquitectura hexagonal del proyecto?',
-    icon: 'account_tree',
   },
   {
     id: 'prompt_customers',

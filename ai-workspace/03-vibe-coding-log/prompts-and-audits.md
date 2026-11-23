@@ -5073,6 +5073,35 @@ Una vez consolidada la bitácora de auditoría en la carpeta del proyecto, se di
 - **Valor para la evaluación:**
   Evidencia atención meticulosa al detalle en accesibilidad y ergonomía de lectura, evitando distracciones cíclicas de movimiento (cumpliendo con pautas WCAG 2.2 sobre contenido en movimiento que pueda distraer al usuario).
 
+---
+
+### 6.241. Alineación Estricta con la Persona de Producto: Eliminación de Fugas Técnicas y Enfoque 100% Funcional y Comercial
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Contexto / Desafío:**
+  El usuario advirtió una fuga técnica (*technical leak*) en el mensaje de fallback del Asistente IA (*"ojo no demos pistas de la parte tecnica de los proyectos, solo de funcionalidad"*). El mensaje sugería indagar sobre «Arquitectura Hexagonal: ¿Cómo está estructurado el backend y frontend?», lo que rompía la ilusión de producto comercial interno para ventas y descubría de forma artificial la ingeniería entre bastidores.
+- **Diagnóstico Técnico y Solución de Arquitectura Aplicada:**
+  1. *Purga de Sugerencias Técnicas en Mensajes de Fallback y Bienvenida:*
+     - En `AiAssistantService` (`spa-saas-omatic/src/app/modules/assistant/services/ai-assistant.service.ts`), se sustituyó la viñeta de Arquitectura Hexagonal en todos los idiomas (`es`, `en`, `de`, `fr`) por **Simulaciones de Suscripción**:
+       > *"• Simulador de Suscripciones: Pregunta '¿Cómo simulo el coste de una suscripción?'"*
+     - Se eliminó del mensaje de bienvenida cualquier mención explícita a *"arquitectura"* o *"reto técnico"*, orientando el discurso exclusivamente al valor de negocio:
+       > *"¡Hola! 👋 Soy tu copiloto en SaaS-O-Matic. ¿En qué te puedo ayudar hoy? Puedo orientarte sobre cómo calcular precios por tramos, realizar simulaciones interactivas, validar clientes corporativos o emitir y descargar facturas."*
+  2. *Refactorización de Preguntas Frecuentes Rápidas (`QUICK_PROMPTS`):*
+     - Se retiraron del catálogo público de botones las opciones de reto técnico y arquitectura (`prompt_challenge`, `prompt_architecture`).
+     - Se consolidó un set de 6 sugerencias 100% funcionales para el equipo comercial: Tramos de Precios, Simulador Interactivo (`prompt_simulations`), Validación Fiscal, Facturación/PDF, Divisas y Gestión de Clientes.
+     - *Nota arquitectónica:* El corpus de conocimiento en segundo plano (`ai-knowledge.data.ts`) conserva indexados los temas de arquitectura y evaluación por si un entrevistador técnico pregunta activamente sobre ellos, pero el bot nunca los ofrece proactivamente ni como pista.
+  3. *Armonización de Subtítulos y Descargo de Responsabilidad (`translations.ts`):*
+     - Se modificó `assistant.subtitle` en los 4 idiomas eliminando la palabra "arquitectura":
+       > *"Tu copiloto comercial interactivo para cálculo de precios por tramos, gestión de clientes, simulaciones y facturación."*
+     - Se actualizó el descargo inferior para referenciar "reglas de negocio y especificaciones comerciales de SaaS-O-Matic".
+- **Resultados de Verificación:**
+  - Pruebas Frontend (Vitest): **388 tests passing al 100% (43 suites)** (+1 test actualizado validando que el fallback no contiene términos técnicos y sugiere simulaciones).
+  - Oxlint: **0 errores y 0 advertencias** en 106 archivos inspeccionados.
+  - Pruebas Backend (Jest): **227 tests passing al 100% (54 suites)**.
+- **Valor para la evaluación:**
+  Demuestra madurez de producto (*Product Mindset*), asegurando que una herramienta interna destinada a comerciales se exprese en el lenguaje del dominio (DDD Ubiquitous Language) sin exponer la trastienda de desarrollo ni romper la inmersión del usuario.
+
+
 
 
 
