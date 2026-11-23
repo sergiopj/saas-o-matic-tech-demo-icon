@@ -13,11 +13,13 @@ yarn-error.log*
 
 # SQLite Database files
 *.sqlite
+*.sqlite*
 *.sqlite3
 *.db
 *.sqlite-wal
 *.sqlite-shm
 database.sqlite
+data/
 
 # Environment variables
 .env

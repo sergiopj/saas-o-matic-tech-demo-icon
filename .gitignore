@@ -18,12 +18,15 @@ coverage/
 
 # SQLite Database & Storage
 *.sqlite
+*.sqlite*
 *.sqlite3
 *.db
 *.sqlite-wal
 *.sqlite-shm
 mic-saas-omatic/*.sqlite*
 database.sqlite
+data/
+*/data/
 
 # IDE & OS
 .idea/

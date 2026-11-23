@@ -4563,3 +4563,26 @@ Una vez consolidada la bitácora de auditoría en la carpeta del proyecto, se di
   - Swagger UI disponible en `http://localhost:3000/docs` con los 4 módulos documentados.
 - **Valor para la evaluación:**
   Demuestra maestría en gobernanza de APIs y diseño Contract-First, asegurando que la documentación técnica interactiva sea siempre fiel a la implementación sin desincronizaciones entre backend y frontend.
+
+
+---
+
+### 6.222. Auditoría de Higiene en Git: Desindexación (Untrack) de Binarios SQLite y Ciclo de Vida de Gitignore
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Prompt Verbatim del Usuario:**
+  > *«revisa el gitignore por que se subia el sqlite?»* [Adjunta captura de GitHub Desktop con `mic-saas-omatic\saas_o_matic.sqlite` detectado en cambios pendientes].
+- **Diagnóstico Técnico de Causa Raíz:**
+  1. *Regla de Oro de Git:* Los patrones definidos en [.gitignore](file:///c:/Users/Usuario/Documents/GitHub/saas-o-matic-tech-demo-icon/.gitignore) únicamente surten efecto sobre ficheros que **no están rastreados previamente (*untracked*)**. Si un archivo fue comiteado al repositorio en cualquier momento del pasado (en este caso, en el commit histórico `7ca24ff5`), Git mantiene un puntero en su índice interno (`git ls-files`).
+  2. Aunque en commits posteriores se añadiera la regla `*.sqlite` a `.gitignore`, Git continuaba rastreando cualquier mutación o borrado de `saas_o_matic.sqlite` porque el fichero seguía presente en el árbol rastreado del repositorio.
+  3. Al arrancar la API o ejecutar pruebas, la base de datos SQLite se modifica, provocando que GitHub Desktop detectara el binario como modificado o pendiente de eliminación.
+- **Decisión de Arquitectura y Solución Aplicada:**
+  1. *Desindexación Explícita sin Pérdida de Datos:* Se ejecutó `git rm --cached mic-saas-omatic/saas_o_matic.sqlite`. Este comando elimina el archivo del índice de control de versiones de Git sin tocar ni eliminar la base de datos física del disco local del usuario.
+  2. *Refuerzo de Patrones de Exclusión:* Se blindaron tanto [.gitignore](file:///c:/Users/Usuario/Documents/GitHub/saas-o-matic-tech-demo-icon/.gitignore) (raíz) como [mic-saas-omatic/.gitignore](file:///c:/Users/Usuario/Documents/GitHub/saas-o-matic-tech-demo-icon/mic-saas-omatic/.gitignore) con las reglas `*.sqlite*` y `data/`.
+  3. A partir de este momento, Git ignora por completo cualquier fichero `.sqlite`, `.sqlite-wal` o `.sqlite-shm`, garantizando que la higiene de Git sea absoluta.
+- **Resultados de Verificación:**
+  - `git ls-files | Select-String -Pattern "\.sqlite"`: **0 ficheros rastreados**.
+  - `git status`: Base de datos excluida del control de versiones.
+  - Oxlint: 0 errores / 0 advertencias.
+- **Valor para la evaluación:**
+  Conocimiento profundo de las tripas de Git (diferencia entre el *working tree*, el *staging index* y el comportamiento estricto de `.gitignore`), evitando fugas de binarios locales en repositorios corporativos.
