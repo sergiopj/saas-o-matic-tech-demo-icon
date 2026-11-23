@@ -26,7 +26,7 @@
 
     <!-- Top Badge / Header Overlay -->
     @if (badge() || title()) {
-      <div class="video-top-bar" (click)="$event.stopPropagation()">
+      <div class="video-top-bar" [attr.aria-hidden]="isPlaying()" (click)="$event.stopPropagation()">
         @if (badge()) {
           <span class="video-badge">{{ badge() | translate }}</span>
         }

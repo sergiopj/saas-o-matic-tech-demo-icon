@@ -5500,3 +5500,39 @@ Una vez consolidada la bitácora de auditoría en la carpeta del proyecto, se di
   - Backend: Oxlint 0/0, 59 suites / 241 tests pasando al 100%.
 - **Valor para la evaluación:**
   Garantiza fidelidad contable y tributaria de nivel bancario, al tiempo que eleva la calidad audiovisual de la demostración para el comité evaluador.
+
+---
+
+### 6.254. Nomenclatura CI/CD «Deploy Artifact», Desvanecimiento Cinematográfico de Título en Vídeo y Justificación de Arquitectura YouTube vs. Demo Local
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Contexto / Desafío:**
+  1. *Nomenclatura del Job de CI/CD:* El usuario consultó sobre el nombre del job 4 en el pipeline de GitHub Actions (`[4. Backend — Deploy (CD / GHCR)]`), sugiriendo si era más riguroso denominarlo *«Deploy Artifact»* (`"El nombre no seria mejor deploy artifact? o como se escriba?"`).
+  2. *Refinamiento de UX en Vídeo Demo:* Al usuario le encantó el nuevo vídeo, pero solicitó que al darle al play se oculte la barra superior con el título y la etiqueta de demo para que no estorben la visualización (`"cuando da al pley que se quite lo de video demo y para que sirve saas o matic?"`), además de cambiar el texto *«¿Para qué sirve SaaS-O-Matic?»* por la formulación más profesional *«¿Qué es SaaS-O-Matic?»* (`"a parte para que sirve me paerece muy cutre me gusta mas que es"`).
+  3. *Trazabilidad Arquitectónica del Alojamiento de Vídeo:* El usuario solicitó dejar expresamente documentado que en un entorno productivo real el vídeo estaría en YouTube o CDN embebido, y que aquí se incluye localmente por tratarse de una demo técnica para entrevistas (`"explica que lo suyo es que el video este subido en youtube y embedido en nuestro front, explica que est aais por ser una demo para entrevistas"`).
+- **Diagnóstico Técnico y Solución de Arquitectura Aplicada:**
+  1. *Renombrado de Jobs en Pipeline GitHub Actions (`.github/workflows/ci-cd.yml`):*
+     - Job 4: `'4. Backend — Deploy Artifact (CD / GHCR)'`
+     - Job 8: `'8. Frontend — Deploy Artifact (CD / GHCR)'`
+     - Justificación: En registros de contenedores OCI (como GHCR / GitHub Packages), las imágenes Docker generadas son formalmente artefactos de despliegue inmutables versionados con SHA y tags semánticos.
+  2. *Desvanecimiento Cinematográfico de la Cabecera del Reproductor (`video-player.component.scss` y `.html`):*
+     - Añadida la regla CSS en `.video-player-container.is-playing .video-top-bar`:
+       `opacity: 0; transform: translateY(-8px); pointer-events: none;`
+       gobernada por una transición suave acelerada por hardware (`transition: opacity 0.25s ease-in-out, transform 0.25s ease-in-out;`).
+     - Al pausar o concluir, la cabecera reaparece de forma transparente y legible sobre el póster.
+     - Añadido `[attr.aria-hidden]="isPlaying()"` en la cabecera para máxima accesibilidad W3C.
+  3. *Actualización de Copys a «¿Qué es SaaS-O-Matic?»:*
+     - Sincronizado en [translations.ts](file:///c:/Users/Usuario/Documents/GitHub/saas-o-matic-tech-demo-icon/spa-saas-omatic/src/app/core/i18n/translations.ts):
+       - `es`: `'guide.video.title': '¿Qué es SaaS-O-Matic?'`
+       - `en`: `'guide.video.title': 'What is SaaS-O-Matic?'`
+       - `fr`: `'guide.video.title': 'Qu’est-ce que SaaS-O-Matic ?'`
+  4. *Documentación Arquitectónica: YouTube en Producción vs. Bundling Local en Demo:*
+     - Documentado formalmente en [functional-specs.md](file:///c:/Users/Usuario/Documents/GitHub/saas-o-matic-tech-demo-icon/ai-workspace/01-specs/functional-specs.md#L416-L425).
+     - *Producción:* Alojamiento en YouTube / Vimeo / Cloudflare Stream con HLS adaptativo para no penalizar el tamaño de los contenedores Docker ni el ancho de banda del servidor.
+     - *Demo para Entrevista Técnica:* Empaquetado local (`saas-omatic-intro.mp4`, 0.83 MB) para garantizar una experiencia 100% resiliente y offline en cualquier entorno de evaluación, sin cookies de rastreo, sin publicidad y sin riesgo de bloqueos por proxies corporativos.
+- **Resultados de Verificación:**
+  - Oxlint: 0 errores y 0 advertencias.
+  - Vitest: 372 tests pasando al 100%.
+  - Jest: 241 tests pasando al 100%.
+- **Valor para la evaluación:**
+  Cuidado obsesivo del detalle visual y máxima transparencia arquitectónica entre soluciones orientadas a entrevistas de código frente a despliegues masivos en producción.
