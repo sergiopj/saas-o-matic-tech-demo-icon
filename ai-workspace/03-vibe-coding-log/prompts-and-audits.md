@@ -4435,3 +4435,34 @@ Una vez consolidada la bitácora de auditoría en la carpeta del proyecto, se di
   - Oxlint frontend & backend: **0 errores, 0 advertencias**.
   - Suites unitarias: **542/542 tests pasando al 100%**.
 - **Valor para la evaluación:** Diagnóstico ágil de comportamiento sutil en el motor de renderizado CSS del navegador, asegurando una experiencia visual premium y sin defectos estéticos en la presentación ante el comité técnico.
+
+
+---
+
+### 6.217. Ergonomía DX para la Entrevista: Comandos Abreviados de Docker (`npm run docker`)
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Prompt Verbatim del Usuario:**
+  > *«podemos abreviar mucho la sintaxis del comando de levamntar docker? pero que siga haciendo lo que hace? por el tema de no acordzrme del co,mando completo en la entrevista»*
+- **Contexto / Desafío:**
+  Durante una demostración en vivo ante un comité evaluador, recordar comandos largos con nombres compuestos (`npm run deploy:docker:quick` o la cadena raw de `docker compose`) añade fricción cognitiva y riesgo de errores tipográficos en directo. El candidato necesita una sintaxis ultra-corta, natural e inolvidable.
+- **Decisión de Arquitectura y Solución Aplicada:**
+  1. *Unificación de Comandos Cortos en [package.json](file:///c:/Users/Usuario/Documents/GitHub/saas-o-matic-tech-demo-icon/package.json):*
+     - `"docker"`: Reconstrucción limpia de cero sin caché + arranque + tabla de estado (`docker compose down --remove-orphans && docker compose build --no-cache && docker compose up -d && docker compose ps`).
+     - `"docker:quick"`: Despliegue ultrarrápido en ~2 segundos aprovechando caché de capas de BuildKit (`docker compose up -d --build && docker compose ps`).
+     - `"docker:stop"` / `"docker:down"`: Parada limpia de contenedores (`docker compose down`).
+     - `"docker:logs"`: Streaming de logs en tiempo real (`docker compose logs -f`).
+     - `"docker:status"`: Estado de salud + últimas 20 líneas de traza.
+     - Se preservan intactos los comandos previos `deploy:docker`, `deploy:stop`, etc., como alias retrocompatibles.
+  2. *Actualización de Documentación en [README.md](file:///c:/Users/Usuario/Documents/GitHub/saas-o-matic-tech-demo-icon/README.md):*
+     - Se destaca `npm run docker` como el comando principal de producción en contenedores.
+- **Resultados de Verificación:**
+  - Sintaxis de `package.json` validada.
+  - Oxlint backend: 0 errores / 0 advertencias.
+  - Oxlint frontend: 0 errores / 0 advertencias.
+- **Valor para la evaluación:**
+  Flujo de trabajo natural y memorizable en segundos para el evaluador:
+  - Local nativo: `npm start`
+  - Docker completo: `npm run docker`
+  - Docker rápido: `npm run docker:quick`
+  - Apagar Docker: `npm run docker:stop`

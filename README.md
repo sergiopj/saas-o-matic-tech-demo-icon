@@ -137,14 +137,16 @@ Para evaluadores que prefieran levantar todo el ecosistema de forma aislada sin 
 > *💡 Si en tu terminal ves `'docker' no se reconoce como un comando`, significa que no tienes Docker Desktop instalado o configurado en el PATH. En ese caso, utiliza la **Opción Rápida con `npm start`**, que no requiere Docker.*
 
 ```bash
-# Opción 1: Reconstrucción limpia de cero y levantamiento:
-npm run deploy:docker
+# Opción 1: Reconstrucción limpia de cero y levantamiento (Comando abreviado para entrevista):
+npm run docker
+# (Alias: npm run deploy:docker)
 
 # Opción 2: Despliegue rápido en 2 segundos (usando caché de capas Docker):
-npm run deploy:docker:quick
+npm run docker:quick
+# (Alias: npm run deploy:docker:quick)
 
 # Comprobación de estado y healthchecks:
-npm run deploy:status
+npm run docker:status
 npm run deploy:health
 ```
 
@@ -161,8 +163,8 @@ npm run deploy:health
    - Expuesto en **`http://localhost:4200`** (y también en puerto HTTP estándar **`http://localhost:80`**).
 3. **Parada limpia de contenedores:**
    ```bash
-   npm run deploy:stop
-   # o: docker compose down
+   npm run docker:stop
+   # (o: npm run docker:down)
    ```
 
 ---
