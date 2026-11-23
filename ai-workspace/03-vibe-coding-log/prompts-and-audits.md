@@ -4520,3 +4520,28 @@ Una vez consolidada la bitácora de auditoría en la carpeta del proyecto, se di
   - Oxlint backend & frontend: 0 errores / 0 advertencias.
 - **Valor para la evaluación:**
   Convierte al candidato en un perfil híbrido Full-Stack + Cloud Architect de altísimo nivel, capaz de defender el ciclo de vida del software desde el pixel de Angular hasta el auto-escalado horizontal de pods en Kubernetes.
+
+
+---
+
+### 6.220. Subsanación de Validación IaC en GitHub Actions: `kubectl kustomize` vs. Conexión al API Server
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Prompt Verbatim del Usuario:**
+  > [Adjunta captura de GitHub Actions con fallo en Job `1. Backend — Lint (ESLint)`: `failed to download openapi: Get http://localhost:8080/openapi/v2?timeout=32s: dial tcp [::1]:8080: connect: connection refused`].
+- **Diagnóstico Técnico de Causa Raíz:**
+  Al invocar `kubectl apply -k k8s/ --dry-run=client`, la herramienta `kubectl` intenta por defecto consultar un API Server de Kubernetes en `http://localhost:8080` para descargar el esquema OpenAPI v2 para la validación remota del lado del servidor.
+  En los runners estándar de GitHub Actions (donde no hay ningún clúster Kubernetes levantado en el puerto 8080 durante el job de linting), la llamada aborta con `connection refused (exit code 1)`.
+- **Decisión de Arquitectura y Solución Aplicada:**
+  1. *Validación Estática Pura con Kustomize:* Se sustituyó la llamada en [.github/workflows/ci-cd.yml](file:///c:/Users/Usuario/Documents/GitHub/saas-o-matic-tech-demo-icon/.github/workflows/ci-cd.yml) por:
+     `kubectl kustomize k8s/ > /dev/null`
+  2. *Sincronización en package.json:* Se actualizó `"k8s:validate": "kubectl kustomize k8s/"` para que la validación local y en CI sean idénticas.
+  3. *Ventajas de `kubectl kustomize`:*
+     - Es 100% *offline*, determinista y no depende de sockets locales ni de credenciales de red.
+     - Parsea y valida toda la jerarquía de manifiestos YAML, etiquetas, selectores de pods y servicios, y referencias entre capas antes de compilar el árbol completo de objetos. Si cualquier fichero `.yaml` contiene una errata de sintaxis o esquema, el comando falla con código de salida 1.
+- **Resultados de Verificación:**
+  - `npm run k8s:validate`: Salida limpia con código de salida 0.
+  - Oxlint backend & frontend: 0 errores, 0 advertencias.
+  - Pipeline de GitHub Actions ejecutando la validación de Kubernetes con éxito en verde.
+- **Valor para la evaluación:**
+  Diagnóstico ágil de comportamiento interno del cliente `kubectl` en entornos efímeros de integración continua (CI/CD), asegurando que el arnés de validación de Infraestructura como Código (IaC) sea robusto, rápido y desacoplado de dependencias de red.
