@@ -321,14 +321,6 @@ describe('CustomerListComponent', () => {
     expect(rangeText.textContent).toContain('Showing');
     expect(rangeText.textContent).toContain('of');
 
-    // Switch to German
-    i18nService.setLanguage('de');
-    fixture.detectChanges();
-
-    expect(nav.getAttribute('aria-label')).toBe('Kundennavigation');
-    expect(rangeText.textContent).toContain('Zeige');
-    expect(rangeText.textContent).toContain('von');
-
     // Switch to French
     i18nService.setLanguage('fr');
     fixture.detectChanges();

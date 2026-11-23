@@ -2,7 +2,6 @@ import { Injectable, computed, signal } from '@angular/core';
 import { registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
 import localeEn from '@angular/common/locales/en';
-import localeDe from '@angular/common/locales/de';
 import localeFr from '@angular/common/locales/fr';
 import { getSafeStorageItem, setSafeStorageItem } from '../utils/storage.util';
 import {
@@ -15,7 +14,6 @@ import {
 
 registerLocaleData(localeEs, 'es');
 registerLocaleData(localeEn, 'en');
-registerLocaleData(localeDe, 'de');
 registerLocaleData(localeFr, 'fr');
 
 

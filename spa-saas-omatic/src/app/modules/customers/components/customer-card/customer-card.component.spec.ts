@@ -87,12 +87,7 @@ describe('CustomerCardComponent', () => {
     fixture.detectChanges();
     expect(timeEl.textContent.trim()).toMatch(/Nov\s+14,\s+2026/);
 
-    // 3. In German: "14.11.2026" or "14. Nov. 2026"
-    i18nService.setLanguage('de');
-    fixture.detectChanges();
-    expect(timeEl.textContent.trim()).toContain('14');
-
-    // 4. In French: "14 nov. 2026"
+    // 3. In French: "14 nov. 2026"
     i18nService.setLanguage('fr');
     fixture.detectChanges();
     expect(timeEl.textContent.trim()).toContain('14');

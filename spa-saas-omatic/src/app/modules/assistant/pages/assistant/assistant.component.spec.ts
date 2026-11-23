@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { AssistantComponent } from './assistant.component';
 import { AiAssistantService } from '../../services/ai-assistant.service';
 import { ToastService } from '../../../../core/services/toast.service';
@@ -17,6 +19,8 @@ describe('AssistantComponent', () => {
       imports: [AssistantComponent],
       providers: [
         provideRouter([]),
+        provideHttpClient(),
+        provideHttpClientTesting(),
         AiAssistantService,
         ToastService,
         I18nService,
@@ -57,7 +61,7 @@ describe('AssistantComponent', () => {
   });
 
   it('should send query when clicking a quick prompt', async () => {
-    const spy = vi.spyOn(assistantService, 'askQuickPrompt');
+    const spy = vi.spyOn(assistantService, 'askQuickPrompt').mockResolvedValue(undefined);
     const firstPrompt = component.quickPrompts()[0];
 
     await component.onSelectPrompt(firstPrompt);
@@ -65,7 +69,7 @@ describe('AssistantComponent', () => {
   });
 
   it('should send user message and update input text', async () => {
-    const spy = vi.spyOn(assistantService, 'sendMessage');
+    const spy = vi.spyOn(assistantService, 'sendMessage').mockResolvedValue(undefined);
     component.inputText.set('¿Cómo se calculan los tramos?');
 
     await component.onSend();
@@ -150,10 +154,18 @@ describe('AssistantComponent', () => {
     expect(htmlString).toContain('&lt;script&gt;');
   });
 
-  it('should compute the last assistant message for live accessibility output', async () => {
+  it('should compute the last assistant message for live accessibility output', () => {
     expect(component.lastAssistantMessage()).toContain('copiloto en SaaS-O-Matic');
 
-    await assistantService.sendMessage('¿Cómo se calculan los precios?');
+    assistantService.messages.set([
+      ...assistantService.messages(),
+      {
+        id: 'msg-test-assistant',
+        sender: 'assistant',
+        content: 'Respuesta de prueba sobre Tramo 1',
+        timestamp: new Date(),
+      },
+    ]);
     expect(component.lastAssistantMessage()).toContain('Tramo 1');
   });
 

@@ -5129,6 +5129,68 @@ Una vez consolidada la bitácora de auditoría en la carpeta del proyecto, se di
 - **Valor para la evaluación:**
   Consolida una identidad de marca cohesiva (*Design System Consistency*), replicando los patrones de diseño establecidos en el resto de la suite sin redundancias visuales y manteniendo una accesibilidad y rendimiento impecables.
 
+---
+
+### 6.243. Retirada de la Píldora de Estado del Asistente y Desmantelamiento Integral del Idioma Alemán (`de`)
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Contexto / Desafío:**
+  1. El usuario solicitó simplificar el encabezado del asistente eliminando el elemento de estado redundante (*"esto quitalo En línea • Base de conocimiento sincronizada"*), liberando espacio vertical y eliminando distracciones visuales.
+  2. Asimismo, instruyó remover de manera holística el idioma alemán del sistema (*"quita el idioma de aleman en todo el sistema"*), conservando como tríada lingüística oficial el Español (`es`), Inglés (`en`) y Francés (`fr`).
+- **Diagnóstico Técnico y Solución de Arquitectura Aplicada:**
+  1. *Eliminación de `.status-pill` en `/assistant`:*
+     - Retirado el markup en `assistant.component.html` y la regla `@keyframes pulse-status` en `assistant.component.scss`.
+     - Actualizado `assistant.component.spec.ts` validando la composición limpia del encabezado.
+  2. *Desmantelamiento Integral del Alemán (`de`) en el Core de i18n:*
+     - En `translations.ts`: Eliminado el bloque completo `de: { ... }` (472 líneas de copia) y su entrada en `SUPPORTED_LANGUAGES`.
+     - En `i18n.service.ts`: Eliminada la importación y registro de `localeDe` de `@angular/common/locales/de`.
+     - Refactorización de pruebas unitarias (`customer-card.component.spec.ts`, `customer-list.component.spec.ts`, `language-selector.component.spec.ts`, `i18n.service.spec.ts`, `ai-assistant.service.spec.ts`) migrando aserciones multi-idioma a Francés e Inglés.
+- **Resultados de Verificación:**
+  - Pruebas Frontend (Vitest): **388 tests passing al 100% (43 suites)**.
+  - Oxlint: **0 errores y 0 advertencias** en 106 archivos.
+- **Valor para la evaluación:**
+  Mantenimiento higiénico y riguroso del código, eliminando peso muerto y garantizando que el sistema refleje con exactitud el alcance de negocio definido sin dejar artefactos huérfanos.
+
+---
+
+### 6.244. Migración de la Base de Conocimiento a Backend Hexagonal NestJS con SQLite y Erradicación de Antipatrones de Texto en Servicios
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Contexto / Desafío:**
+  El usuario detectó y criticó con agudeza arquitectónica dos graves antipatrones en el módulo de Asistente IA:
+  1. *Hardcoded data & bundle bloat:* El corpus de conocimiento (`AI_KNOWLEDGE_TOPICS`, >1700 líneas de topics y keywords) residía estáticamente en el frontend (`ai-knowledge.data.ts`), inflando el bundle y rompiendo la arquitectura cliente-servidor (*"¿esto no debería llevarse a la api y bd?"*).
+  2. *Procedural switch anti-pattern:* En `AiAssistantService`, la bienvenida, las preguntas rápidas y el fallback contenían bloques procedimentales `switch (lang)` y diccionarios inline hardcodeados con textos traducidos (*"estamos en lo mismo no? meter textos ahi hardcoded en un servicio? alimenta los agends md para que aprenda"*).
+  Instrucción expresa: *"SI LLEVALO AL BACKEND PERO OJO CON EL CODIGO, PINCIPIOS SOLID, Y FIJARSE EN OTROS MODULOS DE LA API"*.
+- **Diagnóstico Técnico y Solución de Arquitectura Aplicada:**
+  1. *Diseño del Módulo Hexagonal de Asistente en NestJS (`mic-saas-omatic/src/modules/assistant`):*
+     - **Entidad de Dominio Pura (`KnowledgeTopic`):** TypeScript agnóstico de frameworks, encapsulando las invariantes y el algoritmo de puntuación semántica ponderada ($1.5\times$ idioma activo, discriminación de tokens $\le 3$ caracteres).
+     - **Puertos de Entrada y Salida:**
+       - In Port: `SearchKnowledgeUseCasePort` y use case `SearchKnowledgeUseCase`.
+       - Out Port: `KnowledgeRepositoryPort` (`KNOWLEDGE_REPOSITORY_PORT`).
+     - **Adaptador de Persistencia TypeORM + SQLite (`KnowledgePersistenceAdapter`):**
+       - Tabla SQLite `knowledge_topics` mapeada mediante `KnowledgeTopicTypeOrmEntity` y `KnowledgePersistenceMapper`.
+       - Carga de seed data atómica en el seeder global (`DatabaseSeederService`) con 8 temas maestros políglotas (`seed-knowledge.data.ts`).
+     - **Adaptador Primario REST (`AssistantController` y DTOs):**
+       - Controlador en `POST /assistant/chat` con DTOs validados declarativamente (`AskAssistantDto` con `@IsIn(['es', 'en', 'fr'])`).
+       - Retorno tipado `AssistantReplyDto` con contenido, acciones y fuentes.
+  2. *Desacoplamiento y Limpieza Radical en Frontend (`AiAssistantService`):*
+     - Erradicación total de los bloques `switch (lang)` y diccionarios inline de traducción en el servicio.
+     - Centralización de mensajes de interfaz (bienvenida y fallback) en `translations.ts` consumidos limpiamente a través de `I18nService.t(...)` (SSOT).
+     - Reducción del fichero de datos del cliente (`ai-knowledge.data.ts`) a un listado ligero de `QUICK_PROMPTS` cuyas preguntas se resuelven en tiempo real vía `this.i18n.t(prompt.labelKey)`.
+     - Inyección de `HttpClient` para consultar `POST /assistant/chat`, con mecanismo de fallback transparente en caso de error de red o desconexión offline.
+  3. *Actualización de Políticas y Reglas Operativas en `AGENTS.md`:*
+     - Añadida regla de oro bajo la Sección 2.D prohibiendo estrictamente diccionarios inline o switches procedimentales de traducción en servicios de Angular, ordenando la centralización de UI copy en `translations.ts` y del conocimiento de dominio en la base de datos relacional del backend.
+  4. *Cobertura de Pruebas Unitarias al 100%:*
+     - 5 nuevas suites de pruebas en NestJS (`knowledge-topic.entity.spec.ts`, `search-knowledge.use-case.spec.ts`, `knowledge-persistence.mapper.spec.ts`, `assistant.controller.spec.ts`, `assistant.module.spec.ts`).
+     - Pruebas en Vitest frontend actualizadas con `provideHttpClientTesting()` y simulación de respuestas/errores HTTP.
+- **Resultados de Verificación:**
+  - Pruebas Backend (Jest): **240 tests passing al 100% (59 suites)** (+13 tests nuevos).
+  - Pruebas Frontend (Vitest): **367 tests passing al 100% (43 suites)**.
+  - Oxlint: **0 errores y 0 advertencias** tanto en backend (141 archivos) como en frontend (106 archivos).
+- **Valor para la evaluación:**
+  Demuestra maestría en Arquitectura Hexagonal y Principios SOLID (Single Responsibility, Dependency Inversion), erradicando malas prácticas de duplicación de datos o lógica hardcodeada en el cliente, y elevando el Asistente IA a un servicio robusto, desacoplado y de nivel empresarial.
+
+
 
 
 

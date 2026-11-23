@@ -50,7 +50,7 @@ describe('LanguageSelectorComponent', () => {
 
   it('should delegate setLanguage call to I18nService directly', () => {
     const serviceSpy = vi.spyOn(i18nService, 'setLanguage');
-    component.setLanguage('de');
-    expect(serviceSpy).toHaveBeenCalledWith('de');
+    component.setLanguage('fr');
+    expect(serviceSpy).toHaveBeenCalledWith('fr');
   });
 });

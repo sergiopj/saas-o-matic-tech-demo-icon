@@ -18,8 +18,23 @@ export interface ChatMessage {
 export interface QuickPrompt {
   id: string;
   labelKey: string;
-  query: string;
+  query?: string;
   icon: string;
+}
+
+export interface AskAssistantRequestDto {
+  query: string;
+  language: string;
+}
+
+export interface AssistantReplyDto {
+  topicId: string;
+  title: string;
+  content: string;
+  action: ChatAction | null;
+  sources: string[];
+  matched: boolean;
+  score: number;
 }
 
 export interface KnowledgeTopic {

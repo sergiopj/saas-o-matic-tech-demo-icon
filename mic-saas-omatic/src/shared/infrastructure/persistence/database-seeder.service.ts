@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
+import { Inject, Injectable, Logger, OnApplicationBootstrap, Optional } from '@nestjs/common';
 import {
   CUSTOMER_REPOSITORY_PORT,
 } from '../../../modules/customers/application/ports/out/customer-repository.port';
@@ -11,6 +11,12 @@ import {
   INVOICE_REPOSITORY_PORT,
 } from '../../../modules/invoices/application/ports/out/invoice-repository.port';
 import type { InvoiceRepositoryPort } from '../../../modules/invoices/application/ports/out/invoice-repository.port';
+import {
+  KNOWLEDGE_REPOSITORY_PORT,
+} from '../../../modules/assistant/application/ports/out/knowledge-repository.port';
+import type { KnowledgeRepositoryPort } from '../../../modules/assistant/application/ports/out/knowledge-repository.port';
+import { KnowledgeTopic } from '../../../modules/assistant/domain/entities/knowledge-topic.entity';
+import { SEED_KNOWLEDGE_TOPICS } from '../../../modules/assistant/infrastructure/data/seed-knowledge.data';
 import { Customer } from '../../../modules/customers/domain/entities/customer.entity';
 import { Simulation } from '../../../modules/simulations/domain/entities/simulation.entity';
 import { Invoice } from '../../../modules/invoices/domain/entities/invoice.entity';
@@ -508,6 +514,9 @@ export class DatabaseSeederService implements OnApplicationBootstrap {
     private readonly simulationRepository: SimulationRepositoryPort,
     @Inject(INVOICE_REPOSITORY_PORT)
     private readonly invoiceRepository: InvoiceRepositoryPort,
+    @Optional()
+    @Inject(KNOWLEDGE_REPOSITORY_PORT)
+    private readonly knowledgeRepository?: KnowledgeRepositoryPort,
   ) {}
 
   async onApplicationBootstrap(): Promise<void> {
@@ -617,6 +626,17 @@ export class DatabaseSeederService implements OnApplicationBootstrap {
         invoicesCount++;
       }
       this.logger.log(`Invoices seeding finished: +${invoicesCount} invoices.`);
+    }
+
+    // Seed AI knowledge topics if knowledge table is empty
+    if (this.knowledgeRepository) {
+      const existingTopics = await this.knowledgeRepository.count();
+      if (force || existingTopics === 0) {
+        this.logger.log(`Seeding database with ${SEED_KNOWLEDGE_TOPICS.length} knowledge topics...`);
+        const topics = SEED_KNOWLEDGE_TOPICS.map((def) => KnowledgeTopic.create(def));
+        await this.knowledgeRepository.saveAll(topics);
+        this.logger.log(`Knowledge topics seeding finished: +${topics.length} topics.`);
+      }
     }
 
     return { customersCount, simulationsCount, invoicesCount };

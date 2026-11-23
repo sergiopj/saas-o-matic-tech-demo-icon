@@ -429,46 +429,36 @@ El módulo de Guía (`/guide`) proporciona a los nuevos usuarios, decisores come
 
 El módulo de Asistente IA (`/assistant`), accesible directamente bajo «Contacto y Soporte» en la barra lateral de navegación con insignia destacada (`AI`), proporciona un copiloto conversacional inteligente embebido en la aplicación.
 
-### 10.1. Base de Conocimiento de Dominio Desacoplada y Multilingüe (`AiAssistantService` y `ai-knowledge.data.ts`)
-Siguiendo los principios de Responsabilidad Única y separación de datos y lógica, el corpus de conocimiento está desacoplado del servicio en un módulo de datos tipado (`src/app/modules/assistant/data/ai-knowledge.data.ts`), indexado con **palabras clave multilingües nativas** para los 4 idiomas soportados (`es`, `en`, `de`, `fr`):
-1. **Tono Conversacional Humano y Orientación Estricta a Funcionalidad de Negocio:**
-   - La persona conversacional del asistente se define como un copiloto comercial experto en SaaS, evitando filtrar o exponer pistas técnicas internas (arquitectura hexagonal, patrones de persistencia o directrices de código) en su saludo, subtítulos, preguntas rápidas o mensajes de fallback:
-     > *"¡Hola! 👋 Soy tu copiloto en SaaS-O-Matic. ¿En qué te puedo ayudar hoy? Puedo orientarte sobre cómo calcular precios por tramos, realizar simulaciones interactivas, validar clientes corporativos o emitir y descargar facturas."*
-   - Las especificaciones arquitectónicas y de desarrollo permanecen indexadas en segundo plano para responder consultas técnicas si un evaluador las formula directamente, pero la interfaz comercial pública mantiene un foco 100% de producto.
-2. **Sub-Intenciones Específicas y Respuestas Concisas:**
-   - En lugar de bloques extensos de texto (*wall of text*), el corpus desglosa intenciones operativas atómicas (ej. `download_invoice_pdf`, `cancel_invoice`, `pricing_tiers`, `fiscal_aeat`, `challenge_criteria`, `run_locally_deployment`).
-   - Consultas prácticas como *«¿dónde descargo el pdf de una factura?»* responden directamente con los 2 pasos claros de navegación visual hacia el botón de descarga en la tabla, acompañadas de un acceso rápido `[Ir a Facturas y Cobros]` y una nota sutil al pie.
-3. **Indexación Políglota de Palabras Clave (`keywords: { es, en, de, fr }`):**
-   - El motor semántico pondera las palabras clave en el idioma activo del usuario con peso prioritario ($1.5\times$), apoyándose en las variantes secundarias como mecanismo de fallback si se formulan preguntas cruzadas.
-   - Discrimina siglas cortas de $\le 3$ caracteres (`ci`, `cd`, `dni`, `nie`, `cif`, `eur`, `usd`, `vat`) mediante verificación estricta de límites léxicos/tokens, erradicando falsos positivos en términos como *desconocido*.
-4. **Cobertura Integral del Reto Técnico Oficial (`Prueba_Devs_con_IA.docx`):**
-   - **Criterios Oficiales de Evaluación (`challenge_criteria`):** Ponderación exacta del reto (35% Planificación y Diseño con Spec-Driven Development, 25% Criterio Técnico y Control de Calidad con Vibe Coding, 30% Calidad del Software Entregado y 10% README y Despliegue sin fricción).
-   - **Propósito y Filosofía del Reto (`challenge_overview`):** Justificación de SaaS-O-Matic como optimizador comercial multi-divisa y superación del picado repetitivo de código en favor del diseño y criterio de sistemas.
-   - **Metodología y Espacio de Trabajo con IA (`ai_workspace_methodology`):** Estructura en tres dimensiones de `/ai-workspace` (`01-specs/`, `02-architecture/`, `03-vibe-coding-log/`).
-   - **Motor de Tarificación y Ejemplo Oficial (`pricing_tiers`):** Detalle matemático del caso de 15 usuarios del reto (10 a 10 € + 5 a 8 € = 140,00 € base) y el caso de 60 usuarios (470,00 € base).
-   - **Tabla de Impuestos por Jurisdicción (`pricing_taxes`):** Desglose fiscal exacto (España 21% IVA, Alemania 19% USt, Francia 20% TVA, Estados Unidos 0% / exento).
-   - **Instrucciones de Despliegue y Ejecución Local (`run_locally_deployment`):** Comandos rápidos para levantar en local (puertos 3000 y 4200) o en un comando con Docker Compose (`docker-compose up -d --build`).
-   - **Simulador Interactivo de Suscripciones (`simulations_flow`):** Uso de sliders en vivo, cálculo en tiempo real y persistencia en SQLite (`POST /simulations`).
-   - **Validación Fiscal Algorítmica (AEAT):** Verificación oficial de DNI, NIE y CIF (módulo 23 y algoritmo de control ponderado de la AEAT) y formatos de VAT internacional (DE, FR, US, CH).
-   - **Ciclo de Facturas y Emisión de PDF:** Ciclo de vida documental (`DRAFT` $\to$ `ISSUED` $\to$ `PAID` / `CANCELLED`), anulación segura con modal accesible (`ConfirmDialogComponent`) y descarga binaria en PDFKit.
-   - **Soporte Multi-Divisa y Resiliencia Offline:** Gestión de 4 divisas (EUR, USD, GBP, CHF) y conmutación automática a caché offline en memoria/localStorage.
-   - **Arquitectura Hexagonal:** Estructura en tres capas (Dominio puro, Puertos de Entrada/Salida y Adaptadores Primarios/Secundarios), SQLite en modo WAL (`enableWAL: true`) y Problem Details RFC 7807.
-   - **Pipeline CI/CD y Calidad:** 8 jobs paralelos en GitHub Actions, Oxlint con 0 errores/warnings y umbrales de cobertura $>96\%$.
+### 10.1. Base de Conocimiento Centralizada en Backend y Arquitectura Hexagonal (`AssistantModule` y `POST /assistant/chat`)
+Siguiendo los principios de Responsabilidad Única, separación de datos y arquitectura hexagonal (Ports & Adapters), la base de conocimiento y el motor de ponderación semántica residen centralizados en el backend (`mic-saas-omatic/src/modules/assistant`):
+1. **Entidad de Dominio Pura e Invariantes (`KnowledgeTopic`):**
+   - Encapsula el algoritmo de scoring léxico y coincidencia políglota para los 3 idiomas oficiales (`es`, `en`, `fr`), discriminando siglas cortas de $\le 3$ caracteres (`dni`, `cif`, `nie`, `eur`, `usd`, `vat`) mediante verificación estricta de tokens para evitar falsos positivos.
+   - Pondera las coincidencias en el idioma activo con factor $1.5\times$ sobre idiomas secundarios.
+2. **Puertos y Adaptador de Persistencia SQLite (`KnowledgePersistenceAdapter`):**
+   - Puerto de salida `KnowledgeRepositoryPort` implementado con TypeORM sobre la tabla SQLite `knowledge_topics`.
+   - Seeding automático transaccional (`DatabaseSeederService`) al arranque si la tabla está vacía, garantizando persistencia relacional sin duplicidad de datos en cliente.
+3. **Controlador REST Declarativo y Caso de Uso (`SearchKnowledgeUseCase`):**
+   - Endpoint `POST /assistant/chat` con validación declarativa mediante `AskAssistantDto` (`@IsNotEmpty()`, `@IsIn(['es', 'en', 'fr'])`).
+   - Retorna `AssistantReplyDto` tipado con contenido localizado, acciones contextuales de navegación (`/simulations`, `/customers`, `/invoices`, `/guide`) y fuentes documentales auditadas.
+4. **Cliente Frontend Desacoplado y Resiliencia Offline (`AiAssistantService`):**
+   - Erradicación total de textos hardcodeados o bloques procedurales `switch (lang)` en el servicio.
+   - La bienvenida y el fallback se resuelven dinámicamente mediante `I18nService.t(...)` conectado al SSOT `translations.ts`.
+   - Comunicación asíncrona mediante `HttpClient` contra `POST /assistant/chat`. Si se produce una pérdida de conectividad de red o fallo de API, conmuta de forma transparente al mensaje de fallback localizado.
 
 ### 10.2. Experiencia de Usuario y Accesibilidad Conversacional (`AssistantComponent`)
 - **Emblema 3D Robot del Asistente en Encabezado (`.assistant-badge-img`):**
   - Integrado a la izquierda del grupo de títulos (`.header-titles-group`), en estricta coherencia y alineación con los medallones de los módulos de Clientes (`corporate-customer-badge.jpg`) y Simulaciones (`simulations-badge.jpg`).
   - Representa un robot asistente 3D futurista y amigable con chasis en porcelana blanca y azul cobalto Omatic, visor de cristal oscuro con ojos LED curvados en cian brillante, cubos tridimensionales de tramos de precios y partículas holográficas de datos.
   - Dimensiones canónicas de 64×64 px (52×52 px en móviles bajo `@media (max-width: 640px)`), esquinas redondeadas (`--omatic-radius-md`), borde sutil (`1px solid var(--omatic-border)`), sombra suave (`var(--omatic-shadow-sm)`) y micro-interacción hover (`transform: translateY(-2px) scale(1.05); box-shadow: var(--omatic-shadow-md);`).
-  - Etiqueta alternativa accesible e internacionalizada: `[alt]="'assistant.badgeAlt' | translate"` en los 4 idiomas (`es`, `en`, `de`, `fr`).
+  - Etiqueta alternativa accesible e internacionalizada: `[alt]="'assistant.badgeAlt' | translate"` en los 3 idiomas (`es`, `en`, `fr`).
 - **Píldoras de Preguntas Frecuentes:** Botones interactivos superiores (`QUICK_PROMPTS`) que permiten al usuario formular preguntas clave con un solo clic, incluyendo el acceso directo a los criterios de evaluación del reto técnico con insignia `military_tech`.
 - **Burbuja Flotante Compacta de Pensamiento (`typing-bubble`):**
   - Se desacopla la burbuja de carga del ancho completo del mensaje (`flex: 0 0 auto !important; width: fit-content !important;`), dotándola de un diseño compacto y orgánico de bordes redondeados.
-  - Se simula una latencia realista de reflexión (~650ms) en la que 3 puntos saltarines animados con desfase armónico (`typing-bounce`) comunican visualmente que el asistente está componiendo la respuesta.
+  - Se simula una latencia realista de reflexión en la que 3 puntos saltarines animados con desfase armónico (`typing-bounce`) comunican visualmente que el asistente está componiendo la respuesta.
   - Auto-desplazamiento suave hacia el fondo (`scrollToBottom`) al iniciar la redacción y al recibir la respuesta.
 - **Formato Enriquecido y Sanitización Anti-XSS:** Renderizado seguro de párrafos, listas con viñetas, términos en negrita y etiquetas de código inline (`code-token`) mediante escape estricto de HTML antes del marcado visual.
 - **Enlaces de Navegación Contextuales:** Cada respuesta del asistente incluye píldoras interactivas (`[Abrir Simulador de Tramos]`, `[Ver Clientes]`, `[Ver Facturas]`, `[Ver Guía y Arquitectura]`) que permiten saltar directamente al módulo relevante sin perder contexto.
 - **Citas de Fuentes Documentales:** Desglose visual discreto al pie con los archivos de especificación consultados (ej. `Prueba_Devs_con_IA.docx`, `ai-workspace/01-specs/functional-specs.md`).
 - **Copia al Portapapeles y Reinicio:** Botón de copiado por mensaje con retroalimentación vía `ToastService` y opción de reiniciar conversación.
-- **Internacionalización Total (i18n):** Respuestas y preguntas frecuentes completamente adaptadas a los 4 idiomas (`es`, `en`, `de`, `fr`).
+- **Internacionalización Total (i18n):** Respuestas y preguntas frecuentes adaptadas a los 3 idiomas soportados (`es`, `en`, `fr`).
 - **Accesibilidad W3C:** Notificación de mensajes mediante elemento nativo `<output class="sr-only" aria-live="polite">` (cumpliendo SonarQube `Web:S6819`).

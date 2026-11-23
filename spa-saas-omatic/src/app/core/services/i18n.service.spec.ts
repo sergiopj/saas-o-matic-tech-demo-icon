@@ -45,8 +45,8 @@ describe('I18nService', () => {
   });
 
   it('should persist selected language to localStorage and prioritize it on detection', () => {
-    service.setLanguage('de');
-    expect(localStorage.getItem('saas_omatic_lang')).toBe('de');
+    service.setLanguage('fr');
+    expect(localStorage.getItem('saas_omatic_lang')).toBe('fr');
     localStorage.removeItem('saas_omatic_lang');
   });
 
