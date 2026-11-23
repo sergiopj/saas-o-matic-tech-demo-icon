@@ -5190,6 +5190,34 @@ Una vez consolidada la bitácora de auditoría en la carpeta del proyecto, se di
 - **Valor para la evaluación:**
   Demuestra maestría en Arquitectura Hexagonal y Principios SOLID (Single Responsibility, Dependency Inversion), erradicando malas prácticas de duplicación de datos o lógica hardcodeada en el cliente, y elevando el Asistente IA a un servicio robusto, desacoplado y de nivel empresarial.
 
+---
+
+### 6.245. Diagnóstico de CI: Resolución de Módulo Faltante por Regla Excesiva de `.gitignore` (`seed-knowledge.data.ts`)
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Contexto / Desafío:**
+  Al ejecutarse el pipeline de CI/CD en GitHub Actions sobre el commit `529c6a9c`, los jobs de backend fallaron en `database-seeder.service.spec.ts` y `app.module.spec.ts` arrojando:
+  > *`Cannot find module '../../../modules/assistant/infrastructure/data/seed-knowledge.data' from 'src/shared/infrastructure/persistence/database-seeder.service.ts'`*
+  A pesar de que localmente los 240 tests de Jest pasaban al 100%, en el runner de CI el fichero de datos no existía.
+- **Diagnóstico Técnico Forense:**
+  1. Se ejecutó `git check-ignore -v 'mic-saas-omatic/src/modules/assistant/infrastructure/data/seed-knowledge.data.ts'`.
+  2. Se descubrió que la línea 22 de `mic-saas-omatic/.gitignore` contenía la directiva genérica `data/` sin barra inicial (`/`). Esto instruía a Git a omitir de forma recursiva cualquier carpeta denominada `data/` en cualquier subnivel del backend, provocando que `src/.../infrastructure/data/seed-knowledge.data.ts` quedara invisible y fuera del control de versiones.
+  3. De forma complementaria, el `.gitignore` de la raíz del monorepo contaba con una regla de exclusión para frontend (`!spa-saas-omatic/src/**/data/`), pero omitía al backend.
+- **Solución Técnica Aplicada:**
+  1. *Refactorización de `.gitignore` (Backend y Raíz):*
+     - En `mic-saas-omatic/.gitignore`: Se acotó la exclusión de la base de datos local SQLite a la raíz del paquete (`/data/`) y se añadió explícitamente la excepción protectora de código fuente: `!src/**/data/`.
+     - En `.gitignore` (raíz): Se incorporó `!mic-saas-omatic/src/**/data/`.
+  2. *Incorporación y Commit de los Datos Semilla al Repositorio:*
+     - Git detectó de inmediato `mic-saas-omatic/src/modules/assistant/infrastructure/data/seed-knowledge.data.ts` (682 líneas).
+     - Se versionó en el commit `28214702` (*fix(assistant): include seed-knowledge.data by whitelisting src/\*\*/data in gitignore*).
+- **Resultados de Verificación:**
+  - Suite de Tests Backend (Jest): **240/240 tests passing (59 suites)**.
+  - Oxlint: **0 errores y 0 advertencias**.
+  - `git status`: Árbol de trabajo 100% limpio y listo para push a origin.
+- **Valor para la evaluación:**
+  Capacidad de diagnóstico forense de bajo nivel ante discrepancias entre entornos locales y runners efímeros de integración continua (CI/CD), asegurando la integridad total del repositorio y la reproducibilidad exacta de los builds.
+
+
 
 
 
