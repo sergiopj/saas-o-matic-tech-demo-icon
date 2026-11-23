@@ -47,6 +47,9 @@ export class AssistantComponent implements AfterViewChecked {
   @ViewChild('scrollContainer')
   private readonly scrollContainer?: ElementRef<HTMLDivElement>;
 
+  @ViewChild('chatInput')
+  private readonly chatInputBox?: ElementRef<HTMLInputElement>;
+
   readonly inputText = signal<string>('');
   readonly messages = this.assistantService.messages;
   readonly isTyping = this.assistantService.isTyping;
@@ -126,12 +129,45 @@ export class AssistantComponent implements AfterViewChecked {
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;');
 
-    const formatted = escaped
+    const tooltip = this.i18n.t('assistant.applyPromptTooltip') || 'Insertar pregunta';
+
+    const withSuggestions = escaped.replace(
+      /\*["“«]([^"”»*]+)["”»]\*/g,
+      (_match, q: string) => {
+        const cleanQ = q.trim();
+        const rawAttr = cleanQ.replace(/&amp;/g, '&').replace(/"/g, '&quot;');
+        return `<button type="button" class="chat-suggested-query-btn" data-query="${rawAttr}" title="${tooltip}"><span class="material-symbols-outlined suggest-icon" aria-hidden="true">touch_app</span><span class="suggest-text">&ldquo;${cleanQ}&rdquo;</span></button>`;
+      }
+    );
+
+    const formatted = withSuggestions
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
       .replace(/`([^`]+)`/g, '<code class="code-token">$1</code>')
       .replace(/\n/g, '<br>');
 
     return this.sanitizer.bypassSecurityTrustHtml(formatted);
+  }
+
+  onContentClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement | null;
+    const btn = target?.closest<HTMLButtonElement>('.chat-suggested-query-btn');
+    if (btn) {
+      const query = btn.getAttribute('data-query');
+      if (query) {
+        this.fillInput(query);
+      }
+    }
+  }
+
+  private fillInput(query: string): void {
+    if (this.isTyping()) {
+      return;
+    }
+    this.inputText.set(query);
+    setTimeout(() => {
+      this.chatInputBox?.nativeElement?.focus();
+      this.chatInputBox?.nativeElement?.scrollIntoView?.({ behavior: 'smooth', block: 'nearest' });
+    }, 0);
   }
 
   private scrollToBottom(): void {

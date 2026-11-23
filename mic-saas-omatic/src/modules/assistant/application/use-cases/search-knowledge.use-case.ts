@@ -63,11 +63,11 @@ export class SearchKnowledgeUseCase implements SearchKnowledgeUseCasePort {
 
 Feel free to pick any of the quick suggestions above!`,
       fr: `Je n'ai pas trouvé de correspondance exacte, mais je peux vous renseigner sur :
-• **Tarification par paliers :** Demandez le calcul des paliers.
-• **Simulations :** Demandez comment simuler un abonnement.
-• **Validation fiscale :** Demandez comment valider un CIF ou DNI espagnol.
-• **Factures :** Demandez le fonctionnement des factures PDF.
-• **Devises :** Demandez les devises prises en charge.
+• **Tarification par paliers :** Demandez *"Comment fonctionnent les paliers de prix ?"*
+• **Simulations :** Demandez *"Comment simuler un abonnement ?"*
+• **Validation fiscale :** Demandez *"Comment valider un CIF ou NIF espagnol ?"*
+• **Factures :** Demandez *"Comment télécharger une facture PDF ?"*
+• **Devises :** Demandez *"Quelles devises sont supportées ?"*
 
 N'hésitez pas à choisir l'une des suggestions ci-dessus !`,
       es: `No he encontrado una coincidencia exacta para esa consulta, pero puedo ayudarte con:

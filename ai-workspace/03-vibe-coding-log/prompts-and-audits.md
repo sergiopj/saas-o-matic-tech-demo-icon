@@ -5418,3 +5418,41 @@ Una vez consolidada la bitácora de auditoría en la carpeta del proyecto, se di
   - Oxlint: **0 errores y 0 advertencias** en 106 archivos inspeccionados.
 - **Valor para la evaluación:**
   Consolida una experiencia de usuario orientada al producto (*Product-Led Excellence*), erradicando el sesgo de auto-evaluación en la UI del asistente y ofreciendo únicamente consultas de alto valor para equipos comerciales y clientes.
+
+---
+
+### 6.252. Redimensión al 40% del Contenedor de Vídeo Demo y Píldoras Clicables de Preguntas Sugeridas en el Asistente IA
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Contexto / Desafío:**
+  1. *Escala del Reproductor de Vídeo en Guía:* El usuario solicitó reducir al menos un 40% el contenedor del vídeo demostrativo de la guía (`"el video demo de guia y documentacion haz su contenedor un 40% mas pqeueño akl menos"`), ya que en resoluciones de escritorio ocupaba un espacio vertical excesivo respecto al resto de la documentación y navegación.
+  2. *Interactivad en Mensajes Fallback del Asistente:* El usuario observó que cuando el asistente no encuentra una respuesta exacta y ofrece sugerencias entre comillas (ej. `• Tarificación por Tramos: Pregunta "¿Cómo se calculan los tramos?"`), sería una experiencia superior que cada una fuese clicable y rellenara directamente la caja de entrada del chat (`"esto me gusta cuando no hay respuesta peor molaria que pulsas en cada uno de ellos y te lo añadee como input al chat"`).
+- **Diagnóstico Técnico y Solución de Arquitectura Aplicada:**
+  1. *Optimización de Escala del Reproductor de Vídeo (`guide.component.scss` y `video-player.component.scss`):*
+     - En `video-player.component.scss`: se redujo el `max-width` de `.video-player-container` de `920px` a `550px` (reducción calculada del 40.2%).
+     - En `guide.component.scss`: se alineó centralmente `.video-showcase-section` (`align-items: center`) y se limitó `.video-wrapper` a `max-width: 550px; margin: 0 auto;`.
+     - Preservada la relación de aspecto panorámica 16:9 y el comportamiento fluido a pantalla completa (`100vw`).
+  2. *Píldoras Clicables de Preguntas Sugeridas en Chat (`AssistantComponent` y `formatContent`):*
+     - Reingeniería del formateador seguro de Markdown en `AssistantComponent.formatContent`:
+       - Detección reactiva mediante expresión regular `/\*["“«]([^"”»*]+)["”»]\*/g` de cualquier pregunta sugerida envuelta en comillas y asteriscos.
+       - Transformación dinámica en botones interactivos `<button type="button" class="chat-suggested-query-btn" data-query="..." title="...">` con icono `<span class="material-symbols-outlined suggest-icon">touch_app</span>` y comillas tipográficas `&ldquo;...&rdquo;`.
+     - Delegación de eventos en `.bubble-content` mediante `(click)="onContentClick($event)"`.
+     - Al pulsar cualquier sugerencia:
+       - Extrae el atributo `data-query` del botón más cercano (`.closest<HTMLButtonElement>('.chat-suggested-query-btn')`).
+       - Actualiza de forma reactiva el signal `inputText.set(query)`.
+       - Enfoca inmediatamente el input del chat (`chatInputBox?.nativeElement?.focus()`) y efectúa scroll suave (`scrollIntoView`) para que el usuario pueda enviar la pregunta o editarla al instante.
+       - Bloqueo defensivo ante clics mientras el bot está redactando (`if (this.isTyping()) return;`).
+  3. *Estilos y Cumplimiento Estricto de Reglas de Calidad (SSOT):*
+     - Uso exclusivo de tokens oficiales `--omatic-*` (`--omatic-accent-blue-subtle`, `--omatic-border`, `--omatic-accent-blue`, `--omatic-accent-blue-hover`).
+     - Prohibición estricta de `transition: all`, aplicando transiciones explícitas en `background-color`, `border-color`, `color` y `transform`.
+     - Foco accesible con `outline: 2px solid var(--omatic-accent-blue)`.
+  4. *Paridad Multilingüe en Fallback Backend y Frontend:*
+     - Actualizado `SearchKnowledgeUseCase.buildFallbackResult()` y `translations.ts` en `fr` para formatear uniformemente las 5 preguntas recomendadas con comillas tipográficas (*"..."*).
+     - Incorporada la clave `assistant.applyPromptTooltip` en `es`, `en` y `fr` para accesibilidad en el botón.
+- **Resultados de Verificación:**
+  - Oxlint Frontend y Backend: **0 errores y 0 advertencias** en 249 archivos analizados.
+  - Vitest Frontend: **371/371 tests passing al 100% (43 suites)** con 0 errores no controlados.
+  - Jest Backend: **241/241 tests passing al 100% (59 suites)**.
+  - Cobertura global mantenida por encima del 96% en líneas y funciones.
+- **Valor para la evaluación:**
+  Mejora sustancial de la ergonomía visual y usabilidad conversacional, convirtiendo el texto de ayuda pasivo en un acelerador interactivo de consultas para el usuario final.

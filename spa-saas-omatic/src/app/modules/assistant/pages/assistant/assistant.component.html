@@ -108,7 +108,7 @@
                 </button>
               </div>
 
-              <div class="bubble-content" [innerHTML]="formatContent(msg.content)"></div>
+              <div class="bubble-content" (click)="onContentClick($event)" [innerHTML]="formatContent(msg.content)"></div>
 
               @if (msg.actions && msg.actions.length > 0) {
                 <div class="actions-wrapper">
@@ -157,6 +157,7 @@
     <div class="chat-input-container">
       <div class="input-controls-wrap">
         <input
+          #chatInput
           type="text"
           class="chat-input-box"
           [ngModel]="inputText()"

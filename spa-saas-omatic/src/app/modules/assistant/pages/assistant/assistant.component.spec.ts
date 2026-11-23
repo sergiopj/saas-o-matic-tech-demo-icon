@@ -176,4 +176,56 @@ describe('AssistantComponent', () => {
     const typingEl = fixture.nativeElement.querySelector('.typing-bubble');
     expect(typingEl).toBeTruthy();
   });
+
+  it('should transform quoted suggested questions into clickable buttons with data-query in formatContent', () => {
+    const raw = 'Pregunta *"¿Cómo se calculan los tramos?"* para más info';
+    const safeHtml = component.formatContent(raw);
+    const htmlString = (safeHtml as any).changingThisBreaksApplicationSecurity || '';
+
+    expect(htmlString).toContain('chat-suggested-query-btn');
+    expect(htmlString).toContain('data-query="¿Cómo se calculan los tramos?"');
+    expect(htmlString).toContain('touch_app');
+  });
+
+  it('should fill input text when clicking a suggested query button via onContentClick', () => {
+    const btn = document.createElement('button');
+    btn.className = 'chat-suggested-query-btn';
+    btn.setAttribute('data-query', '¿Cómo se calculan los tramos?');
+    const childSpan = document.createElement('span');
+    childSpan.className = 'suggest-text';
+    btn.appendChild(childSpan);
+
+    const event = {
+      target: childSpan,
+    } as unknown as MouseEvent;
+
+    component.onContentClick(event);
+    expect(component.inputText()).toBe('¿Cómo se calculan los tramos?');
+  });
+
+  it('should ignore onContentClick if target is not inside a suggested query button', () => {
+    const div = document.createElement('div');
+    const event = {
+      target: div,
+    } as unknown as MouseEvent;
+
+    component.inputText.set('');
+    component.onContentClick(event);
+    expect(component.inputText()).toBe('');
+  });
+
+  it('should not populate input when assistant is typing', () => {
+    assistantService.isTyping.set(true);
+    const btn = document.createElement('button');
+    btn.className = 'chat-suggested-query-btn';
+    btn.setAttribute('data-query', '¿Cómo se calculan los tramos?');
+
+    const event = {
+      target: btn,
+    } as unknown as MouseEvent;
+
+    component.inputText.set('');
+    component.onContentClick(event);
+    expect(component.inputText()).toBe('');
+  });
 });

@@ -441,6 +441,55 @@
         color: var(--omatic-accent-blue);
         border: 1px solid var(--omatic-border);
       }
+
+      ::ng-deep .chat-suggested-query-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        padding: 0.2rem 0.55rem;
+        margin: 0.2rem 0.25rem 0.2rem 0;
+        border-radius: var(--omatic-radius-md);
+        background: var(--omatic-accent-blue-subtle);
+        border: 1px solid var(--omatic-border);
+        color: var(--omatic-accent-blue);
+        font-family: inherit;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        line-height: 1.4;
+        cursor: pointer;
+        vertical-align: middle;
+        text-align: left;
+        transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+
+        &:hover {
+          background: var(--omatic-accent-blue-subtle-hover);
+          border-color: var(--omatic-accent-blue);
+          color: var(--omatic-accent-blue-hover);
+          transform: translateY(-1px);
+        }
+
+        &:active {
+          transform: translateY(0);
+        }
+
+        &:focus-visible {
+          outline: 2px solid var(--omatic-accent-blue);
+          outline-offset: 1px;
+        }
+
+        .suggest-icon {
+          font-size: 15px;
+          width: 15px;
+          height: 15px;
+          line-height: 1;
+          color: var(--omatic-accent-blue);
+        }
+
+        .suggest-text {
+          font-style: italic;
+          color: var(--omatic-accent-blue);
+        }
+      }
     }
   }
 }
