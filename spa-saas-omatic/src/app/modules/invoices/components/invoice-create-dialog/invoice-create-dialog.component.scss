@@ -139,6 +139,14 @@
     font-weight: 600;
     margin-right: 0.25rem;
   }
+
+  input::placeholder,
+  textarea::placeholder {
+    font-size: 0.8125rem;
+    font-style: italic;
+    color: var(--omatic-text-muted);
+    opacity: 0.7;
+  }
 }
 
 .customer-option {

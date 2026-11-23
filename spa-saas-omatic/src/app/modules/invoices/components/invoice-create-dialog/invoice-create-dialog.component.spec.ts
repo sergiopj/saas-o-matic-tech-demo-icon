@@ -199,4 +199,17 @@ describe('InvoiceCreateDialogComponent', () => {
     component.onCancel();
     expect(mockDialogRef.close).toHaveBeenCalled();
   });
+
+  it('should auto-suggest default concept when customer is selected and concept is empty', () => {
+    component.form.patchValue({ concept: '' });
+    component.form.get('customerId')?.setValue(sampleCustomer.id);
+    expect(component.form.get('concept')?.value).toContain(sampleCustomer.companyName);
+  });
+
+  it('should mark fields as dirty and touched when submitting invalid form', () => {
+    component.form.patchValue({ customerId: '', concept: '', subtotal: 0 });
+    component.onSubmit();
+    expect(component.form.get('concept')?.dirty).toBe(true);
+    expect(mockInvoiceApi.create).not.toHaveBeenCalled();
+  });
 });

@@ -158,6 +158,8 @@
       form="invoice-create-form"
       class="submit-btn"
       [disabled]="form.invalid || submitting()"
+      [attr.aria-disabled]="form.invalid || submitting()"
+      [attr.title]="(form.invalid || submitting()) ? ('invoices.create.disabledHint' | translate) : null"
     >
       @if (submitting()) {
         <mat-spinner diameter="18" class="btn-spinner"></mat-spinner>

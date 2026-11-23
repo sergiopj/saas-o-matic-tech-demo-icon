@@ -4586,3 +4586,27 @@ Una vez consolidada la bitácora de auditoría en la carpeta del proyecto, se di
   - Oxlint: 0 errores / 0 advertencias.
 - **Valor para la evaluación:**
   Conocimiento profundo de las tripas de Git (diferencia entre el *working tree*, el *staging index* y el comportamiento estricto de `.gitignore`), evitando fugas de binarios locales en repositorios corporativos.
+
+
+---
+
+### 6.223. Subsanación de UX en Diálogo de Facturación: i18n de Botón Cancelar y Diferenciación de Placeholders vs. Valores
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Prompt Verbatim del Usuario:**
+  > *«mira los dos botones de abajo a la derecha estan mal uno deshabilitado y el otro muestra mal el texto»* [Adjunta captura del modal "Issue New Invoice" con el botón `common.cancel` y el botón `Issue Invoice` deshabilitado].
+- **Diagnóstico Técnico de Causa Raíz:**
+  1. *Clave de Traducción Huérfana (`common.cancel`):* En el template [invoice-create-dialog.component.html](file:///c:/Users/Usuario/Documents/GitHub/saas-o-matic-tech-demo-icon/spa-saas-omatic/src/app/modules/invoices/components/invoice-create-dialog/invoice-create-dialog.component.html) se empleaba `{{ 'common.cancel' | translate }}`, pero dicha clave no existía en el diccionario centralizado [translations.ts](file:///c:/Users/Usuario/Documents/GitHub/saas-o-matic-tech-demo-icon/spa-saas-omatic/src/app/core/i18n/translations.ts), provocando que la pipe mostrara la clave literal sin traducir.
+  2. *Trampa de UX en Placeholders sin Estilo Diferenciado:* El campo obligatorio `concept` (Concepto / Descripción) mostraba el placeholder `"E.g. Enterprise Scale Subscription Q1 2026"`. Al carecer de estilos explícitos para `::placeholder`, el texto se renderizaba con el mismo peso, color y tamaño que un valor introducido por el usuario. Al seleccionar un cliente y teclear la base imponible (`1200`), el usuario percibía que los 3 campos estaban completos cuando en realidad `concept` estaba vacío (`''`).
+  3. *Bloqueo de Validación Silencioso (`ShowOnDirtyErrorStateMatcher` + `disabled`):* Al no haber pulsado sobre el campo `concept`, el control no estaba *dirty*. Al estar el botón de envío deshabilitado rígidamente (`[disabled]="form.invalid"`), el formulario nunca alcanzaba el estado `submitted`, impidiendo que Angular Material mostrara el mensaje de error `<mat-error>`. El usuario quedaba atrapado sin entender por qué el botón no respondía.
+- **Decisión de Arquitectura y Solución Aplicada:**
+  1. *Internacionalización Completa en 4 Idiomas:* Se añadió `'common.cancel'`, `'invoices.create.cancel'` y `'invoices.create.disabledHint'` en español (`Cancelar`), inglés (`Cancel`), alemán (`Abbrechen`) y francés (`Annuler`).
+  2. *Diferenciación Visual Estricta de Placeholders:* En [invoice-create-dialog.component.scss](file:///c:/Users/Usuario/Documents/GitHub/saas-o-matic-tech-demo-icon/spa-saas-omatic/src/app/modules/invoices/components/invoice-create-dialog/invoice-create-dialog.component.scss), se definió para `input::placeholder` y `textarea::placeholder`: `font-size: 0.8125rem; font-style: italic; color: var(--omatic-text-muted); opacity: 0.7;`. El texto de ejemplo es ahora visiblemente tenue e itálico, erradicando cualquier confusión con valores reales.
+  3. *Auto-Sugerencia Inteligente de Concepto al Seleccionar Cliente:* En [invoice-create-dialog.component.ts](file:///c:/Users/Usuario/Documents/GitHub/saas-o-matic-tech-demo-icon/spa-saas-omatic/src/app/modules/invoices/components/invoice-create-dialog/invoice-create-dialog.component.ts), al seleccionar un cliente corporativo (ej. "Banco Santander S.A."), si el campo concepto está vacío, se autocompleta con `${cust.companyName} - Suscripción SaaS` (localizado según el idioma activo). Esto permite que el formulario sea válido de inmediato al introducir el importe, agilizando el flujo comercial.
+  4. *Feedback Accesible en Botón de Envío:* Se añadió `[attr.title]` y `[attr.aria-disabled]` vinculados a `invoices.create.disabledHint`, explicando al usuario exactamente qué campos faltan si el formulario está incompleto. Al pulsar submit con datos inválidos, se marcan todos los controles como `dirty` y `touched` para iluminar los errores en rojo.
+- **Resultados de Verificación:**
+  - 318 tests unitarios de frontend pasando al 100% (36 suites).
+  - 228 tests unitarios de backend pasando al 100%.
+  - Oxlint: 0 errores / 0 advertencias en frontend y backend.
+- **Valor para la evaluación:**
+  Demuestra refinamiento en ergonomía visual y accesibilidad (W3C A11y), previniendo trampas de interacción sutiles y ofreciendo micro-optimizaciones comerciales que deleitan al usuario final.

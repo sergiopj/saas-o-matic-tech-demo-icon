@@ -124,6 +124,13 @@ export class InvoiceCreateDialogComponent implements OnInit {
 
     this.form.get('customerId')?.valueChanges.subscribe((val) => {
       this.selectedCustomerId.set(val ?? '');
+      if (val && !this.form.get('concept')?.value) {
+        const cust = this.customers().find((c) => c.id === val);
+        if (cust) {
+          const defaultSuffix = this.i18n.t('invoices.create.defaultConcept');
+          this.form.patchValue({ concept: `${cust.companyName} - ${defaultSuffix}` });
+        }
+      }
     });
 
     this.form.get('subtotal')?.valueChanges.subscribe((val) => {
@@ -137,6 +144,14 @@ export class InvoiceCreateDialogComponent implements OnInit {
       next: (res) => {
         this.customers.set(res.items);
         this.loadingCustomers.set(false);
+        const currentCustId = this.form.get('customerId')?.value;
+        if (currentCustId && !this.form.get('concept')?.value) {
+          const cust = res.items.find((c) => c.id === currentCustId);
+          if (cust) {
+            const defaultSuffix = this.i18n.t('invoices.create.defaultConcept');
+            this.form.patchValue({ concept: `${cust.companyName} - ${defaultSuffix}` });
+          }
+        }
       },
       error: () => {
         this.loadingCustomers.set(false);
@@ -147,6 +162,9 @@ export class InvoiceCreateDialogComponent implements OnInit {
   onSubmit(): void {
     if (this.form.invalid || this.submitting()) {
       this.form.markAllAsTouched();
+      this.form.get('customerId')?.markAsDirty();
+      this.form.get('concept')?.markAsDirty();
+      this.form.get('subtotal')?.markAsDirty();
       return;
     }
 
