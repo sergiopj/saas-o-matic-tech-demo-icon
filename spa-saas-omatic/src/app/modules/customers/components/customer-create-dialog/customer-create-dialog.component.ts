@@ -77,7 +77,7 @@ export const PLAN_OPTIONS: string[] = [
   styleUrl: './customer-create-dialog.component.scss',
 })
 export class CustomerCreateDialogComponent implements OnInit, OnDestroy {
-  readonly dialogRef = inject(MatDialogRef<CustomerCreateDialogComponent>);
+  private readonly dialogRef = inject(MatDialogRef<CustomerCreateDialogComponent>);
   readonly customerData = inject<Customer | null>(MAT_DIALOG_DATA, {
     optional: true,
   });

@@ -34,7 +34,7 @@ export interface ConfirmDialogOptions {
 })
 export class ConfirmDialogComponent {
   readonly data = inject<ConfirmDialogOptions>(MAT_DIALOG_DATA);
-  readonly dialogRef = inject(MatDialogRef<ConfirmDialogComponent>);
+  private readonly dialogRef = inject(MatDialogRef<ConfirmDialogComponent>);
 
   readonly title = this.data?.title ?? 'common.confirmTitle';
   readonly message = this.data?.message ?? '';

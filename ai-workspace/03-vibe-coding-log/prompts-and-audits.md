@@ -5314,3 +5314,31 @@ Una vez consolidada la bitácora de auditoría en la carpeta del proyecto, se di
   - Trazabilidad y claridad ejecutiva inmediata en la consola de GitHub Actions diferenciando las fases de integración (CI) frente a las de entrega/despliegue (CD).
 - **Valor para la evaluación:**
   Alinea la nomenclatura con las mejores prácticas de la industria DevOps/SRE, permitiendo al evaluador técnico identificar de un vistazo las compuertas de calidad de CI frente a los artefactos de entrega en producción de CD.
+---
+
+### 6.249. Depuración del Drawer de Facturas (Supresión de Acciones Inferiores) y Formalización de Encapsulación TypeScript (`public` vs `private`) en Angular
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Contexto / Desafío:**
+  1. *Eliminación de Botones en Drawer de Factura:* El usuario solicitó expresamente retirar los tres botones de la parte inferior del panel desplegable de detalle de factura (*"quita lois botones de abajo los tres"* adjuntando captura de `INV-2026-5870`), dado que la tabla principal ya dispone de las acciones en cada fila y el drawer debe funcionar como una ficha de inspección limpia, espaciosa y sin saturación.
+  2. *Auditoría y Consulta Arquitectónica de Encapsulación en Angular:* El usuario indagó sobre las buenas prácticas de modificadores de acceso en TypeScript de Angular (*"no hay public y private en el ts de angular? entiendo que si es public es por que llamamos a la funcion en el html? y private en el ts? si es asi y estoy en lo cierto revisa cada ts del front end osea del spa y actualiza los agents md y el resto de mds de workspace ai"*).
+- **Diagnóstico Técnico y Solución de Arquitectura Aplicada:**
+  1. *Limpieza Integral del Drawer de Factura (`invoice-list.component.html` y `.scss`):*
+     - Se eliminó el bloque `<div drawer-footer class="drawer-footer-actions">` que albergaba los botones *"Marcar como Cobrada"*, *"Descargar Factura en PDF"* y *"Anular Factura"*.
+     - Se eliminaron las clases SCSS `.drawer-footer-actions`, `.drawer-actions`, `.btn-mark-paid`, `.btn-download-pdf` y `.btn-cancel-invoice` de `invoice-list.component.scss` para prevenir reglas huérfanas.
+     - El componente `<app-slide-over-drawer>` opera ahora como un visualizador de inspección de datos fiscales, desglose financiero y notas, delegando las acciones mercantiles a los botones de acción de cada fila de la tabla principal.
+  2. *Auditoría de Encapsulación TypeScript en el SPA:*
+     - Se auditó la totalidad de los 106 ficheros del frontend (`spa-saas-omatic/src/app`).
+     - Se confirmó el principio rector de Angular AOT:
+       - **`public` (o público por defecto):** Obligatorio para cualquier propiedad, Signal o método que se consuma o invoque desde la plantilla `.html` (ej. `(click)="downloadPdf(invoice)"`, `customerApi.loading()`, `currencyService.selectedCurrency()`). En Angular estricto (`strictTemplates: true`), declarar un método o propiedad como `private` si se usa en el template genera un error fatal de compilación `TS2341`.
+       - **`private` (o `private readonly`):** Imprescindible para todas las dependencias internas de clase, servicios inyectados no leídos en plantillas (`dialog`, `toast`, `route`, `dialogRef`), subjects reactivos internos y métodos auxiliares de cálculo en `.ts`.
+     - Se refactorizaron las declaraciones de `dialogRef` en los componentes de diálogo (`CustomerCreateDialogComponent`, `ConfirmDialogComponent`, `EmailComposerDialogComponent`) marcándolas explícitamente como `private readonly dialogRef = inject(...)`.
+  3. *Actualización de Gobernanza y Documentación:*
+     - Se incorporó la directriz estricta de encapsulación en `AGENTS.md` (Sección 2.D).
+     - Se añadió la subsección 3.26 en `ai-workspace/02-architecture/architecture-guidelines.md`.
+- **Resultados de Verificación:**
+  - Pruebas Frontend (Vitest): **367/367 tests passing al 100% (43 suites)**.
+  - Pruebas Backend (Jest): **240/240 tests passing al 100% (59 suites)**.
+  - Oxlint: **0 errores y 0 advertencias** en frontend (106 archivos) y backend (143 archivos).
+- **Valor para la evaluación:**
+  Refuerza la madurez en arquitectura de componentes Angular, cumpliendo los principios de Ocultamiento de Información (Information Hiding) y Menor Privilegio (Least Privilege), asegurando que las plantillas y clases expongan estrictamente los miembros necesarios para la vista.

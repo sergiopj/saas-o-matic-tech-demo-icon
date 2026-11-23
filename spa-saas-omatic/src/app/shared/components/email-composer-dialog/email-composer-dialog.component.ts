@@ -56,7 +56,7 @@ export interface EmailComposerDialogResult {
 })
 export class EmailComposerDialogComponent {
   readonly data = inject<EmailComposerDialogData>(MAT_DIALOG_DATA);
-  readonly dialogRef = inject(MatDialogRef<EmailComposerDialogComponent>);
+  private readonly dialogRef = inject(MatDialogRef<EmailComposerDialogComponent>);
   private readonly emailApi = inject(EmailApiService);
   private readonly i18n = inject(I18nService);
   private readonly elementRef = inject(ElementRef);

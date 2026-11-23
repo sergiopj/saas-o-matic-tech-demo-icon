@@ -1096,6 +1096,27 @@ Para resolver este defecto visual de forma universal y elegante:
 - **Eliminación de Comentarios Artificiales o Redundantes:** En componentes declarativos basados en Angular Signals (`signal`, `computed`, `input`), se prohíben comentarios JSDoc verbosos que solo repiten la firma del método o la variable (ej. `/** Memoized avatar initial (pure computed signal) */`).
 - **Código Auto-Documentado:** Los nombres expresivos de señales e inputs en inglés canónico (`avatarInitial`, `taxCountryCode`, `creationDateFormatted`) comunican su propósito de manera auto-contenida sin añadir ruido visual al código fuente.
 
+### 3.26 Encapsulación Estricta de Miembros TypeScript (`public` vs `private`) en Componentes Angular
+
+En Angular con compilación Ahead-of-Time (AOT) y comprobación estricta de plantillas (`strictTemplates: true`), la visibilidad de los miembros de clase debe respetar rigurosamente el principio de menor privilegio (Least Privilege) e Information Hiding:
+
+1. **Miembros `public` (o públicos por defecto):**
+   - Son aquellos consumidos o invocados directamente desde la plantilla HTML del componente (`.html`) o por componentes contenedores vía ViewChild/TemplateRef.
+   - Incluyen:
+     - Señales de estado enlazadas a la vista (`readonly invoices = signal(...)`).
+     - Métodos de respuesta a eventos del usuario (`(click)="onSearch()"`, `(submit)="onSubmit()"`).
+     - Servicios inyectados cuyos estados son leídos en la vista (`readonly customerApi = inject(CustomerApiService)` consumido como `customerApi.loading()` o `customerApi.error()`).
+     - Inputs y Outputs del componente (`readonly value = input(...)`).
+   - *Restricción de compilación:* En Angular estricto, si un método o propiedad se marca como `private` y se invoca desde la plantilla HTML, el compilador emite un error fatal `TS2341: Property 'x' is private and only accessible within class 'YComponent'`.
+
+2. **Miembros `private` (o `private readonly`):**
+   - Son aquellos cuyo alcance se restringe exclusivamente al código interno de la clase TypeScript (`.ts`).
+   - Incluyen:
+     - Servicios inyectados para uso interno del componente (`private readonly dialog = inject(MatDialog);`, `private readonly toast = inject(ToastService);`, `private readonly route = inject(ActivatedRoute);`, `private readonly dialogRef = inject(MatDialogRef);`).
+     - Métodos auxiliares de inicialización, teardown o cálculo interno no expuestos al HTML.
+     - Sujetos reactivos internos de desuscripción (`private readonly destroy$ = new Subject<void>()`) o flags de interacción interna.
+   - *Beneficio arquitectónico:* Previene fugas de implementación, reduce la superficie de API del componente y garantiza que las plantillas solo tengan acceso a los datos y acciones que genuinamente necesitan para renderizar la interfaz.
+
 ---
 
 ## 4. Estrategia de Testing y Aseguramiento de Calidad

@@ -285,42 +285,5 @@
         }
       </div>
     }
-
-    <!-- Drawer Footer Action Buttons -->
-    <div drawer-footer class="drawer-footer-actions">
-      @if (selectedInvoice(); as inv) {
-        @if (inv.status === 'ISSUED') {
-          <button
-            mat-flat-button
-            type="button"
-            class="btn-mark-paid"
-            (click)="markAsPaid(inv)"
-          >
-            <mat-icon>check_circle</mat-icon>
-            <span>{{ 'invoices.actions.markPaid' | translate }}</span>
-          </button>
-        }
-        <button
-          mat-stroked-button
-          type="button"
-          class="btn-download-pdf"
-          (click)="downloadPdf(inv)"
-        >
-          <mat-icon>picture_as_pdf</mat-icon>
-          <span>{{ 'invoices.actions.downloadPdf' | translate }}</span>
-        </button>
-        @if (inv.status === 'ISSUED') {
-          <button
-            mat-stroked-button
-            type="button"
-            class="btn-cancel-invoice"
-            (click)="cancelInvoice(inv)"
-          >
-            <mat-icon>block</mat-icon>
-            <span>{{ 'invoices.actions.cancel' | translate }}</span>
-          </button>
-        }
-      }
-    </div>
   </app-slide-over-drawer>
 </div>
