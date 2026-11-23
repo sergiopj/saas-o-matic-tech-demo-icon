@@ -102,7 +102,7 @@ jobs:
         run: npm --prefix spa-saas-omatic ci
 
       - name: Run frontend unit tests
-        run: npm --prefix spa-saas-omatic test -- --run --reporter=verbose
+        run: npm --prefix spa-saas-omatic run test:coverage
 
       - name: Upload frontend coverage report
         uses: actions/upload-artifact@v4
