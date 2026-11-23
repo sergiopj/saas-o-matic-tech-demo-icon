@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsString, MaxLength } from 'class-validator';
-import type { SendEmailCommand } from '../../../application/ports/in/send-email.command';
+import { SendEmailCommand } from '../../../../../application/ports/in/send-email.command';
 
 export class SendEmailDto implements SendEmailCommand {
   @ApiProperty({
