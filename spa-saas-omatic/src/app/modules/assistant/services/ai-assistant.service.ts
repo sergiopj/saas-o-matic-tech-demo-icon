@@ -38,7 +38,7 @@ export class AiAssistantService {
     this.messages.set([welcomeMessage]);
   }
 
-  async sendMessage(query: string): Promise<void> {
+  async sendMessage(query: string, delayMs = 600): Promise<void> {
     const trimmed = query.trim();
     if (!trimmed || this.isTyping()) {
       return;
@@ -60,9 +60,14 @@ export class AiAssistantService {
         language: this.i18n.currentLanguage(),
       };
 
-      const reply = await firstValueFrom(
-        this.http.post<AssistantReplyDto>(this.apiUrl, payload)
-      );
+      const delayPromise = delayMs > 0
+        ? new Promise((resolve) => setTimeout(resolve, delayMs))
+        : Promise.resolve();
+
+      const [reply] = await Promise.all([
+        firstValueFrom(this.http.post<AssistantReplyDto>(this.apiUrl, payload)),
+        delayPromise,
+      ]);
 
       const assistantMessage: ChatMessage = {
         id: `msg-${Date.now()}-assistant`,
@@ -92,8 +97,8 @@ export class AiAssistantService {
     }
   }
 
-  async askQuickPrompt(prompt: QuickPrompt): Promise<void> {
+  async askQuickPrompt(prompt: QuickPrompt, delayMs = 600): Promise<void> {
     const localizedQuery = this.i18n.t(prompt.labelKey as TranslationKey);
-    await this.sendMessage(localizedQuery);
+    await this.sendMessage(localizedQuery, delayMs);
   }
 }

@@ -72,7 +72,7 @@ describe('AiAssistantService', () => {
       score: 10,
     };
 
-    const sendPromise = service.sendMessage('¿Cómo se calculan los tramos?');
+    const sendPromise = service.sendMessage('¿Cómo se calculan los tramos?', 0);
     expect(service.isTyping()).toBe(true);
     expect(service.messages().length).toBe(2);
     expect(service.messages()[1].sender).toBe('user');
@@ -97,7 +97,7 @@ describe('AiAssistantService', () => {
   });
 
   it('should gracefully fallback to localized message if HTTP call fails', async () => {
-    const sendPromise = service.sendMessage('query con error');
+    const sendPromise = service.sendMessage('query con error', 0);
 
     const req = httpTesting.expectOne(apiUrl);
     req.error(new ProgressEvent('network error'));
@@ -114,13 +114,13 @@ describe('AiAssistantService', () => {
 
   it('should ignore empty or whitespace message', async () => {
     const countBefore = service.messages().length;
-    await service.sendMessage('   ');
+    await service.sendMessage('   ', 0);
     expect(service.messages().length).toBe(countBefore);
   });
 
   it('should handle askQuickPrompt using localized prompt text and dispatch to API', async () => {
     const prompt = QUICK_PROMPTS.find((p) => p.id === 'prompt_pricing')!;
-    const askPromise = service.askQuickPrompt(prompt);
+    const askPromise = service.askQuickPrompt(prompt, 0);
 
     const req = httpTesting.expectOne(apiUrl);
     expect(req.request.body.query).toBe('¿Cómo funciona el cálculo de precios por tramos?');
