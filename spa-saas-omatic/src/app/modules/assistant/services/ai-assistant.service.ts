@@ -90,8 +90,8 @@ export class AiAssistantService {
 
     for (const topic of AI_KNOWLEDGE_TOPICS) {
       // Prioritize active language keywords, followed by secondary languages
-      const activeKeywords = topic.keywords[lang] ?? [];
-      const otherKeywords = Object.entries(topic.keywords)
+      const activeKeywords: readonly string[] = topic.keywords[lang] ?? [];
+      const otherKeywords: readonly string[] = Object.entries(topic.keywords)
         .filter(([l]) => l !== lang)
         .flatMap(([, kwList]) => kwList);
 
