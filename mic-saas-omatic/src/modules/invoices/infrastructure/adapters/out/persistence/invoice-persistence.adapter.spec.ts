@@ -54,7 +54,7 @@ describe('InvoicePersistenceAdapter', () => {
       updatedAt: new Date(),
     });
 
-    mockRepository.save!.mockResolvedValue(savedEntity);
+    (mockRepository.save as jest.Mock).mockResolvedValue(savedEntity);
 
     const result = await adapter.save(sampleDomain);
     expect(result.getId()).toBe(sampleDomain.getId());
@@ -62,7 +62,7 @@ describe('InvoicePersistenceAdapter', () => {
   });
 
   it('should find invoice by id', async () => {
-    mockRepository.findOne!.mockResolvedValue(null);
+    (mockRepository.findOne as jest.Mock).mockResolvedValue(null);
     const result = await adapter.findById('non-existent');
     expect(result).toBeNull();
   });

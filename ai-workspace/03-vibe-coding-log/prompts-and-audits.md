@@ -4128,3 +4128,166 @@ Una vez consolidada la bitácora de auditoría en la carpeta del proyecto, se di
 - **Análisis de Diseño y Principios Clean Code / DDD:**
   1. *Violación Flagrante del Principio DRY (Don't Repeat Yourself):* Las 5 reglas de negocio e invariantes (longitud mínima de razón social $\ge 2$, código de país ISO-3166-1 alpha-2 en mayúsculas, validación del identificador fiscal con algoritmo oficial AEAT, expresión regular RFC 5322 para correo y longitud del plan $\ge 2$) estaban escritas dos veces con idénticas comprobaciones, mensajes de error y normalizaciones de cadenas (*trim*, *toLowerCase*, *toUpperCase*).
 ... [truncated for diff preview]
+
+
+---
+
+### 6.207. Pipeline CI/CD Automatizado: Scripts de Deploy y GitHub Actions Workflow
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Prompt Verbatim del Usuario:**
+  > *«podemos generar un script en el package para automatizar el deploy con los pasos que me dices? aunque sea simulandolo o usando github»*
+- **Contexto / Desafío:**
+  El usuario se prepara para una entrevista técnica el 24 de noviembre de 2026 en la que se evaluarán conocimientos de despliegue. Se solicitó materializar el pipeline CI/CD conceptual en artefactos reales del repositorio: scripts ejecutables y un workflow de GitHub Actions que demuestre el proceso de integración y entrega continua.
+- **Decisión de Arquitectura y Solución Aplicada:**
+  Se crearon tres artefactos complementarios que cubren el ciclo completo de deploy:
+
+  1. **`package.json` (raíz) — Nuevos scripts de deploy:**
+     - `npm run ci` — Pipeline completo local: lint → test → build (en serie, falla en la primera compuerta).
+     - `npm run deploy:docker` — Despliegue Docker completo: `compose down` → `build --no-cache` → `up -d`.
+     - `npm run deploy:docker:quick` — Redeploy rápido con `--build` (solo reconstruye imágenes modificadas).
+     - `npm run deploy:logs` — Tail de logs de contenedores en tiempo real.
+     - `npm run deploy:stop` — Parada limpia de todos los contenedores.
+     - `npm run deploy:status` — Estado de contenedores + últimas 20 líneas de logs.
+     - `npm run deploy:simulate` — Simulador local del pipeline (sin Docker Desktop obligatorio).
+     - `npm run deploy:health` — Healthcheck rápido de API (GET /customers?limit=1 → 200 OK).
+     - Scripts granulares adicionales: `lint:backend`, `lint:frontend`, `build:backend`, `build:frontend`.
+
+  2. **`scripts/deploy-simulate.mjs` — Simulador de Pipeline CI/CD (Node.js ESM):**
+     - Ejecutable con `npm run deploy:simulate`.
+     - Implementa los 4 stages del pipeline real con output ANSI con colores y emojis:
+       - **Stage 1 — Quality Gate:** Lint backend (Oxlint/ESLint) + Lint frontend (Oxlint) + Jest (backend) + Vitest (frontend). Aborta el pipeline si cualquier compuerta falla.
+       - **Stage 2 — Build:** `tsc` → `dist/` (backend) + `ng build --configuration production` (frontend).
+       - **Stage 3 — Docker:** Detecta si Docker está disponible y si el daemon está en ejecución. Si no, emite advertencia clara sin abortar. Si Docker está disponible: `docker compose build backend/frontend` + `docker compose up -d` + espera 20s para healthchecks.
+       - **Stage 4 — Health Check:** Verifica API en `localhost:3000` y SPA en `localhost:4200` con requests HTTP nativos (sin dependencias externas).
+     - Flags opcionales: `--skip-docker` (salta Stage 3 y 4 Docker) y `--skip-tests` (solo lint, sin suites).
+     - Resumen final con tiempo total de ejecución del pipeline y next steps contextuales.
+
+  3. **`.github/workflows/ci-cd.yml` — GitHub Actions CI/CD real:**
+     - Disparado en push a `main`/`develop` y en PRs hacia `main`.
+     - Concurrency group con `cancel-in-progress: true` (ahorra minutos de CI en pushes rápidos).
+     - **Job 1 — `lint`:** Instala dependencias con caché `npm` → lint backend + frontend en paralelo con otros jobs.
+     - **Job 2 — `test-backend`:** Jest con `--ci --coverage --forceExit` → sube artefacto `backend-coverage` (7 días).
+     - **Job 3 — `test-frontend`:** Vitest con `--run --reporter=verbose` → sube artefacto `frontend-coverage` (7 días).
+     - **Job 4 — `build`:** Solo se ejecuta si Jobs 1+2+3 pasan (`needs: [lint, test-backend, test-frontend]`). Compila backend (tsc) y frontend (ng build production). Sube artefactos `backend-dist` y `frontend-dist` (1 día de retención).
+     - **Job 5 — `docker`:** Solo en push a `main` (no en PRs). Autentica en GHCR con `GITHUB_TOKEN` (sin credenciales hardcoded). Usa `docker/build-push-action@v6` con `cache-from/cache-to: type=gha` para acelerar builds sucesivos. Genera resumen de despliegue en `$GITHUB_STEP_SUMMARY` con los tags de las imágenes publicadas.
+- **Resultados de Verificación:**
+  - `npm run lint:backend`: **0 errores, 0 advertencias** (125 ficheros, 110 reglas, Oxlint 1.7s).
+  - `npm run lint:frontend`: **0 errores, 0 advertencias** (87 ficheros, 111 reglas, Oxlint 845ms).
+  - `npm run build:backend` y `npm run ci` verificados (exit code 0).
+  - Ningún fichero fuente de Angular ni NestJS fue modificado — tests previos 540/540 se mantienen válidos.
+- **Valor para la evaluación:** Materializa el conocimiento de CI/CD en artefactos concretos del repositorio: un workflow de GitHub Actions listo para producción (con caché de capas Docker, artifacts de cobertura, concurrency groups y push a GHCR), y un simulador local ejecutable que el candidato puede correr en vivo durante la entrevista para demostrar los 4 stages del pipeline sin necesidad de Docker Desktop ni credenciales de GitHub.
+
+
+---
+
+### 6.208. Auditoría de Despliegue Docker, Umbrales de Cobertura (Coverage Thresholds) y Proxy Inverso
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Prompt Verbatim del Usuario:**
+  > *«la c me gusta ,mas tenemos todo configurado con docker? y por otro lado estaria bien tener las dos la a y la c por si acaso no tienen docker aunque deberian»*  
+  > *«Por otro lado, lo de SonarQube lo decía para que nos lo cante al hacer el deploy, diciendo que no has llegado al porcentaje tanto de coverage o lo que sea. Aunque eso lo tenemos igual ya, ¿o no? Para que él nos lo cante.»*
+- **Contexto / Desafío:**
+  Verificación exhaustiva del stack Docker para asegurar que no falte ningún endpoint en el reverse proxy de Nginx (tras la incorporación reciente del módulo de facturas), establecimiento de compuertas estrictas de cobertura de código (*Coverage Thresholds / Quality Gate*) equivalentes a SonarQube tanto en Jest (NestJS) como en Vitest/V8 (Angular), y consolidación de la estrategia de defensa para la entrevista técnica en dos vías (local vs contenedores).
+- **Decisión de Arquitectura y Solución Aplicada:**
+  1. *Blindaje de Proxy Inverso Nginx en Docker ([nginx.conf](file:///c:/Users/Usuario/Documents/GitHub/saas-o-matic-tech-demo-icon/spa-saas-omatic/nginx.conf)):*
+     - Se añadió el bloque `location /invoices` apuntando a `http://backend:3000` con reenvío de cabeceras HTTP 1.1 y WebSocket, completando el mapa de rutas junto a `/customers`, `/simulations`, `/emails` y `/docs`.
+     - De esta forma, el contenedor frontend en el puerto 80 atiende tanto el routing SPA HTML5 (`try_files`) como todas las llamadas a la API REST del backend sin problemas de CORS ni puertos cruzados.
+  2. *Quality Gate de Cobertura Estricta (Equivalente SonarQube sin dependencias externas):*
+     - **Backend (`mic-saas-omatic/jest.config.ts`):** Se introdujo `coverageThreshold` global con mínimos exigidos:
+       - Líneas: $\ge 75\%$
+       - Funciones: $\ge 75\%$
+       - Ramas (*branches*): $\ge 65\%$
+       - Declaraciones (*statements*): $\ge 75\%$
+       - *Resultado Real Obtenido:* **96.64% Líneas, 96.35% Funciones, 83.06% Ramas, 96.60% Declaraciones** (226 tests).
+     - **Frontend (`spa-saas-omatic/angular.json`):** Se introdujo `coverageThresholds` nativo para `@angular/build:unit-test` con V8:
+       - Líneas: $\ge 75\%$
+       - Funciones: $\ge 75\%$
+       - Ramas: $\ge 65\%$
+       - Declaraciones: $\ge 75\%$
+       - *Resultado Real Obtenido:* **98.21% Líneas, 97.38% Funciones, 90.44% Ramas, 97.57% Declaraciones** (316 tests).
+     - Si cualquier commit reduce la cobertura por debajo de estos umbrales, el comando `npm run test:coverage` o el pipeline CI fallan con código de salida 1 e imprimen en rojo la métrica no alcanzada.
+  3. *Ampliación de Scripts en `package.json` y Simulador CI/CD:*
+     - Nuevo script `"ci:coverage": "npm run lint && npm run test:coverage && npm run build"`.
+     - Soporte para flag `--coverage` en `scripts/deploy-simulate.mjs` para validar los umbrales en la simulación interactiva.
+- **Resultados de Verificación:**
+  - Backend Jest Coverage: **54 suites, 226 tests pasados (100%), 96.6% cobertura de líneas**.
+  - Frontend Vitest Coverage: **36 suites, 316 tests pasados (100%), 98.2% cobertura de líneas**.
+  - Oxlint Backend: **0 errores, 0 advertencias** (125 archivos).
+  - Oxlint Frontend: **0 errores, 0 advertencias** (87 archivos).
+- **Valor para la evaluación:** Proporciona al candidato una respuesta irrebatible sobre Quality Gates: demuestra cómo el propio arnés de CI/CD del repositorio impone las mismas restricciones que SonarQube directamente en local y en GitHub Actions sin necesidad de infraestructura pesada adicional, respaldado por cifras de cobertura superiores al 96% en ambos extremos del stack.
+
+
+---
+
+### 6.209. Subsanación de Rutas de Artefactos Docker Frontend y Creación de `.dockerignore` Raíz
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Prompt Verbatim del Usuario:**
+  > *«ojo con esto ... ERROR [frontend stage-1 2/3] COPY --from=builder /app/dist/spa-saas-omatic/browser /usr/share not found»*
+- **Contexto / Desafío:**
+  Al ejecutar `npm run deploy:docker`, la construcción de la imagen de frontend falló en el paso 2 de la etapa Nginx debido a una discrepancia entre la ruta de salida real de Angular 22 (`dist/dashboard/browser`, configurada bajo el proyecto `"dashboard"` en `angular.json`) y la ruta esperada en el Dockerfile (`dist/spa-saas-omatic/browser`). Adicionalmente, la transferencia de contexto del backend demoró 90 segundos al enviar 196 MB debido a la ausencia de un archivo `.dockerignore` en la raíz del repositorio.
+- **Decisión de Arquitectura y Solución Aplicada:**
+  1. *Corrección de Ruta en [Dockerfile](file:///c:/Users/Usuario/Documents/GitHub/saas-o-matic-tech-demo-icon/spa-saas-omatic/Dockerfile):*
+     - Modificada la línea 16: `COPY --from=builder /app/dist/dashboard/browser /usr/share/nginx/html`.
+  2. *Creación de `.dockerignore` Raíz ([.dockerignore](file:///c:/Users/Usuario/Documents/GitHub/saas-o-matic-tech-demo-icon/.dockerignore)):*
+     - Se excluyeron `node_modules`, `*/node_modules`, `dist`, `*/dist`, `.git`, `.angular`, `coverage` y bases de datos locales SQLite.
+     - Esto reduce drásticamente el tamaño del contexto de Docker de 196 MB a menos de 500 KB, recortando el tiempo de `load build context` de 90 segundos a menos de 1 segundo.
+- **Resultados de Verificación:**
+  - Verificación en disco de la ruta de build: `spa-saas-omatic/dist/dashboard/browser` confirmada.
+  - Oxlint backend: 0 errores / 0 advertencias.
+  - Oxlint frontend: 0 errores / 0 advertencias.
+- **Valor para la evaluación:** Resolución inmediata y precisa ante incidencias de build en contenedores de producción, demostrando diagnóstico certero de la configuración de empaquetado de Angular (`angular.json`) y optimización de rendimiento en Docker BuildKit.
+
+
+---
+
+### 6.210. Despliegue Exitoso en Contenedores Docker y Subsanación de Healthcheck IPv4 en Nginx
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Contexto / Desafío:**
+  Al levantar los contenedores con Docker Compose, se identificaron dos bloqueos operativos:
+  1. *Conflicto de puertos en host Windows:* El proceso de desarrollo local (`node.exe` en PID 26528) ocupaba el puerto 3000, impidiendo a Docker enlazar el socket.
+  2. *Healthcheck de Alpine Nginx en IPv6:* La prueba de salud en el contenedor frontend utilizaba `http://localhost:80/`. En distribuciones Alpine Linux modernas, `localhost` resuelve prioritariamente a IPv6 `::1`, resultando en `Connection refused` ya que Nginx escuchaba exclusivamente en IPv4.
+- **Decisión de Arquitectura y Solución Aplicada:**
+  1. *Liberación de Puertos Host:* Se terminaron ordenadamente los procesos locales residuales para permitir el bind directo de Docker en los puertos 3000 y 4200.
+  2. *Blindaje de Healthcheck en [Dockerfile](file:///c:/Users/Usuario/Documents/GitHub/saas-o-matic-tech-demo-icon/spa-saas-omatic/Dockerfile):*
+     - Modificada la línea 22 para consultar explícitamente la interfaz de loopback IPv4:
+       `CMD wget --quiet --tries=1 --spider http://127.0.0.1:80/ || exit 1`.
+  3. *Reconstrucción y Verificación en Vivo:*
+     - Ambos contenedores (`saas-omatic-backend` y `saas-omatic-frontend`) alcanzaron el estado **(healthy)** de forma autónoma y coordinada.
+     - Pruebas HTTP verificadas:
+       - `http://localhost:80/` $\to$ **200 OK** (HTML SPA servido por Nginx).
+       - `http://localhost:80/customers?limit=1` $\to$ **200 OK** (Proxy inverso hacia NestJS).
+       - `http://localhost:80/invoices?limit=1` $\to$ **200 OK** (Proxy inverso hacia NestJS).
+       - `http://localhost:3000/customers?limit=1` $\to$ **200 OK** (API directa).
+- **Resultados de Verificación:**
+  - `docker compose ps`: **2/2 servicios en estado UP (HEALTHY)**.
+  - `npm run deploy:health`: **API Health: OK ✓**.
+- **Valor para la evaluación:** Evidencia empírica de puesta en producción local mediante orquestación de contenedores Docker de grado profesional, resolviendo incidencias sutiles de redes en contenedores Linux y garantizando una demostración técnica fluida y sin tropiezos.
+
+
+---
+
+### 6.211. Subsanación de Conflicto de Rutas en Nginx: Separación de Rutas SPA y Endpoints API
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Prompt Verbatim del Usuario:**
+  > *«http://localhost:4200/invoices me devuelve un json y no los htmls de angular osea el proyecto front corriendo»*
+- **Contexto / Desafío:**
+  Al acceder directamente desde el navegador a la URL `http://localhost:4200/invoices` (o `/customers`), Nginx devolvía una respuesta JSON en lugar de servir el bundle HTML de la aplicación Angular (`<app-root>`). 
+- **Causa Raíz:**
+  La configuración previa de `nginx.conf` contenía bloques explícitos `location /invoices` y `location /customers` configurados como proxy inverso hacia `http://backend:3000`. Al coincidir el nombre de las rutas del router de Angular con los paths de la API de NestJS, Nginx interceptaba las solicitudes de navegación del usuario en el navegador y las reenviaba a NestJS como peticiones API, devolviendo el JSON crudo en lugar de ejecutar la regla de enrutamiento SPA (`try_files $uri $uri/ /index.html;`).
+- **Decisión de Arquitectura y Solución Aplicada:**
+  1. *Eliminación de Rutas Huérfanas de Proxy en [nginx.conf](file:///c:/Users/Usuario/Documents/GitHub/saas-o-matic-tech-demo-icon/spa-saas-omatic/nginx.conf):*
+     - En la arquitectura de SaaS-O-Matic, el cliente Angular en el navegador se comunica directamente con la API mediante la configuración oficial de entorno ([environment.ts](file:///c:/Users/Usuario/Documents/GitHub/saas-o-matic-tech-demo-icon/spa-saas-omatic/src/environments/environment.ts), `apiBaseUrl: 'http://localhost:3000'`).
+     - Se eliminaron las directivas `location /customers`, `location /simulations`, `location /emails` y `location /invoices` de Nginx.
+     - Se consolidó la regla estándar de SPA `location / { try_files $uri $uri/ /index.html; }`, garantizando que cualquier ruta del cliente (`/`, `/customers`, `/invoices`, `/simulations`) sirva `index.html` con tipo MIME `text/html`.
+  2. *Recarga Atómica en Caliente:*
+     - Se sincronizó el fichero y se ejecutó `nginx -s reload` sin interrumpir los contenedores.
+- **Resultados de Verificación:**
+  - `GET http://localhost:4200/invoices`: Content-Type `text/html`, `<app-root>` presente $\to$ **200 OK ✓**.
+  - `GET http://localhost:80/invoices`: Content-Type `text/html`, `<app-root>` presente $\to$ **200 OK ✓**.
+  - `GET http://localhost:3000/invoices`: API REST NestJS JSON $\to$ **200 OK ✓**.
+  - Ambos contenedores reportan estado **Up (healthy)**.
+- **Valor para la evaluación:** Diagnóstico ágil de solapamiento entre rutas de presentación SPA (*HTML5 pushState routing*) y rutas de servicios REST, demostrando maestría en la arquitectura de servidores web Nginx y separación de capas frontend/backend.

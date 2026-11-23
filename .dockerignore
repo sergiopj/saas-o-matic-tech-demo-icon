@@ -1,0 +1,16 @@
+node_modules
+*/node_modules
+dist
+*/dist
+.git
+.angular
+coverage
+*/coverage
+*.sqlite
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm
+.vscode
+.idea
+*.log
+npm-debug.log*

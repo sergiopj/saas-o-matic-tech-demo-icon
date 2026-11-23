@@ -18,8 +18,21 @@
     "test:coverage:frontend": "npm --prefix spa-saas-omatic run test:coverage",
     "test:cov": "npm run test:coverage",
     "lint": "npm --prefix mic-saas-omatic run lint && npm --prefix spa-saas-omatic run lint",
+    "lint:backend": "npm --prefix mic-saas-omatic run lint",
+    "lint:frontend": "npm --prefix spa-saas-omatic run lint",
     "seed": "npm --prefix mic-saas-omatic run seed",
-    "build": "npm --prefix mic-saas-omatic run build && npm --prefix spa-saas-omatic run build"
+    "build": "npm --prefix mic-saas-omatic run build && npm --prefix spa-saas-omatic run build",
+    "build:backend": "npm --prefix mic-saas-omatic run build",
+    "build:frontend": "npm --prefix spa-saas-omatic run build",
+    "ci": "npm run lint && npm run test && npm run build",
+    "ci:coverage": "npm run lint && npm run test:coverage && npm run build",
+    "deploy:docker": "docker compose down --remove-orphans && docker compose build --no-cache && docker compose up -d && docker compose ps",
+    "deploy:docker:quick": "docker compose up -d --build && docker compose ps",
+    "deploy:logs": "docker compose logs -f",
+    "deploy:stop": "docker compose down",
+    "deploy:status": "docker compose ps && docker compose logs --tail=20",
+    "deploy:simulate": "node scripts/deploy-simulate.mjs",
+    "deploy:health": "node -e \"require('http').get('http://localhost:3000/customers?limit=1',(r)=>console.log('API Health:',r.statusCode===200?'OK ✓':'FAIL ✗')).on('error',()=>console.log('API Health: UNREACHABLE'))\""
   },
   "devDependencies": {
     "concurrently": "^9.1.2"

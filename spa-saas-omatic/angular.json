@@ -91,7 +91,13 @@
           "options": {
             "coverageExclude": [
               "**/*.html"
-            ]
+            ],
+            "coverageThresholds": {
+              "lines": 75,
+              "functions": 75,
+              "branches": 65,
+              "statements": 75
+            }
           }
         }
       }

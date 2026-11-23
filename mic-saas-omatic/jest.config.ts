@@ -30,6 +30,16 @@ const config: Config = {
     '!src/data-source.ts',
   ],
   coverageDirectory: './coverage',
+  // Coverage thresholds: pipeline fails loudly if quality drops below these minimums.
+  // Equivalent to SonarQube quality gate enforcement at the CI level.
+  coverageThreshold: {
+    global: {
+      lines: 75,
+      functions: 75,
+      branches: 65,
+      statements: 75,
+    },
+  },
   testEnvironment: 'node',
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
 };
