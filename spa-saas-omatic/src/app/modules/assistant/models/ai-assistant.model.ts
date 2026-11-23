@@ -24,7 +24,7 @@ export interface QuickPrompt {
 
 export interface KnowledgeTopic {
   id: string;
-  keywords: readonly string[];
+  keywords: Readonly<Record<string, readonly string[]>>;
   titles: Readonly<Record<string, string>>;
   content: Readonly<Record<string, string>>;
   actions?: readonly {

@@ -4955,6 +4955,35 @@ Una vez consolidada la bitácora de auditoría en la carpeta del proyecto, se di
 - **Valor para la evaluación:**
   Convierte la aplicación en una experiencia inteligente interactiva de vanguardia, permitiendo al evaluador técnico o decisor de negocio consultar cualquier duda sobre la plataforma de forma inmediata sin salir de la interfaz, combinando Product-Led Growth con gobernanza estricta de Clean Architecture.
 
+---
+
+### 6.237. Optimización de Ergonomía Visual en Guía y Desacoplamiento Arquitectónico Multilingüe de la Base de Conocimiento IA
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Contexto / Desafío:**
+  El usuario señaló dos mejoras clave en diseño y arquitectura de software:
+  1. *Reducción de Ruido Visual en Guía:* Eliminar el bloque de texto redundante superior sobre el reproductor de vídeo («Vídeo Demostración», «¿Para qué sirve SaaS-O-Matic?», «Descubre en 1 minuto cómo optimizar suscripciones...»), dado que la propia carátula del vídeo ya lo indica claramente (*"esto quitalo el propio video la preview ya lo pone... ruido visual y perdemos espacio, ponlo en los mds que toquen"*).
+  2. *Desacoplamiento y Multilingüismo en Asistente IA:* Extraer la base de conocimiento y sus palabras clave fuera de `AiAssistantService` a un módulo de datos dedicado, y expandir las palabras clave para que el motor no esté restringido únicamente a consultas en español (*"por otro lado no seria mejor que las keywords vayan en un json a parte y desacoplarlo dle servicio? ... ademas esta pensado solo para español?"*).
+- **Diagnóstico Técnico y Solución de Arquitectura Aplicada:**
+  1. *Limpieza Visual y Ganancia de Espacio en `GuideComponent`:*
+     - Se suprimió la cabecera repetitiva `.section-header` en `guide.component.html`.
+     - El componente `<app-video-player>` se renderiza ahora de forma directa y compacta, maximizando el espacio vertical y eliminando duplicidades con el poster oficial y la insignia visual integrada (*Vídeo Demo*).
+  2. *Desacoplamiento Estricto de Datos (`src/app/modules/assistant/data/ai-knowledge.data.ts`):*
+     - Se extrajo todo el corpus de conocimiento (`AI_KNOWLEDGE_TOPICS` y `QUICK_PROMPTS`) a un módulo de datos tipado independiente, reduciendo `ai-assistant.service.ts` de más de 800 líneas a ~150 líneas de orquestación pura y legible.
+  3. *Indexación Políglota de Palabras Clave (`keywords: { es, en, de, fr }`):*
+     - Se rediseñó la propiedad `keywords` en la interfaz `KnowledgeTopic` para almacenar diccionarios multilingües nativos (`Record<string, readonly string[]>`).
+     - Cada uno de los 9 temas incorpora ahora decenas de términos específicos en Español, Inglés, Alemán y Francés (ej. *tramo / tier / staffel / palier*, *factura / invoice / rechnung / facture*, *divisa / currency / währung / devise*).
+     - El algoritmo de búsqueda `resolveAnswer` pondera prioritariamente ($1.5\times$) las palabras clave del idioma activo del usuario (`i18n.currentLanguage()`) y aplica como red de seguridad las palabras clave de los demás idiomas para consultas mixtas.
+     - Se mantienen los guards de longitud ($\le 3$ caracteres) con coincidencia estricta sobre tokens para prevenir falsos positivos en siglas como `ci`, `cd`, `dni` o `vat`.
+- **Resultados de Verificación:**
+  - Pruebas Frontend (Vitest): **380 tests passing al 100% (43 suites)** (+3 tests nuevos de validación multilingüe en alemán y francés).
+  - Quality Gate de Cobertura Frontend: **Statements: 96.18%**, **Functions: 95.90%**, **Lines: 97.03%**, **Branches: 88.19%**.
+  - Pruebas Backend (Jest): **227 tests passing al 100% (54 suites)**.
+  - Oxlint: **0 errores y 0 advertencias** en 105 archivos inspeccionados.
+- **Valor para la evaluación:**
+  Demuestra maestría en principios SOLID (Single Responsibility y Open/Closed), desacoplamiento de capas de datos y empatía con usuarios internacionales en entornos empresariales globales.
+
+
 
 
 

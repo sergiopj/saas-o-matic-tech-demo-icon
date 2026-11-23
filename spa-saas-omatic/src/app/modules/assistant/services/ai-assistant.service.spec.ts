@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { AiAssistantService, QUICK_PROMPTS } from './ai-assistant.service';
+import { AiAssistantService } from './ai-assistant.service';
+import { QUICK_PROMPTS } from '../data/ai-knowledge.data';
 import { I18nService } from '../../../core/services/i18n.service';
 
 describe('AiAssistantService', () => {
@@ -44,6 +45,30 @@ describe('AiAssistantService', () => {
     expect(answer.content).toContain('Tier 1 (0–10 users)');
     expect(answer.content).toContain('€470.00');
     expect(answer.actions?.[0].label).toBe('Open Pricing Simulator');
+  });
+
+  it('should resolve pricing tiers answer in German using native German keywords', () => {
+    const answer = service.resolveAnswer('Wie funktioniert die Staffelpreis Berechnung und Stufen?', 'de');
+    expect(answer.content).toContain('Stufe 1 (0–10 Benutzer)');
+    expect(answer.content).toContain('470,00 €');
+    expect(answer.actions?.[0].label).toBe('Staffel-Simulator öffnen');
+  });
+
+  it('should resolve pricing tiers answer in French using native French keywords', () => {
+    const answer = service.resolveAnswer('Comment fonctionne la tarification par paliers ?', 'fr');
+    expect(answer.content).toContain('Palier 1 (0–10 utilisateurs)');
+    expect(answer.content).toContain('470,00 €');
+    expect(answer.actions?.[0].label).toBe('Ouvrir le Simulateur');
+  });
+
+  it('should resolve fiscal validation answer in German and French with localized labels', () => {
+    const deAnswer = service.resolveAnswer('Wie prüfe ich spanische Steuer und DNI?', 'de');
+    expect(deAnswer.content).toContain('Spanien (ES)');
+    expect(deAnswer.actions?.[0].label).toBe('Kunden anzeigen');
+
+    const frAnswer = service.resolveAnswer('Comment valider la taxe fiscale et CIF espagnol ?', 'fr');
+    expect(frAnswer.content).toContain('Espagne (ES)');
+    expect(frAnswer.actions?.[0].label).toBe('Voir les Clients');
   });
 
   it('should resolve fiscal validation answer with AEAT details and customer link', () => {

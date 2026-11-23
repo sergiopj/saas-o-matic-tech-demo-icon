@@ -30,13 +30,7 @@
   </header>
 
   <!-- Video Player Section (Explanatory Platform Overview) -->
-  <section class="video-showcase-section" aria-labelledby="video-section-title">
-    <div class="section-header text-center">
-      <span class="section-badge">{{ 'guide.video.badge' | translate }}</span>
-      <h2 id="video-section-title" class="section-title">{{ 'guide.video.title' | translate }}</h2>
-      <p class="section-subtitle">{{ 'guide.video.subtitle' | translate }}</p>
-    </div>
-
+  <section class="video-showcase-section" [attr.aria-label]="'guide.video.title' | translate">
     <div class="video-wrapper">
       <app-video-player
         src="/videos/saas-omatic-intro.mp4"

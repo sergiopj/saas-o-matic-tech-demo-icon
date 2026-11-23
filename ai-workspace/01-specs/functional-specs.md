@@ -415,6 +415,7 @@ El módulo de Guía (`/guide`) proporciona a los nuevos usuarios, decisores come
 
 ### 9.1. Reproductor de Vídeo Multimedia (`VideoPlayerComponent`)
 - **Vídeo Demo Integrado:** Reproduce una demostración visual interactiva (`saas-omatic-intro.mp4`, ~12.2 segundos) que explica el propósito comercial de la plataforma (optimización de suscripciones SaaS, simulación por tramos y facturación oficial).
+- **Densidad Visual y Ergonomía (Sin Ruido Duplicado):** Se prescinde de cabeceras de texto redundantes exteriores («Vídeo Demostración», «¿Para qué sirve SaaS-O-Matic?») aprovechando la propia carátula/poster y las etiquetas nativas del reproductor para maximizar el espacio útil vertical y la limpieza visual.
 - **Controles Personalizados:** Línea de tiempo interactiva con cálculo reactivo de tiempo transcurrido (`mm:ss`), botón play/pause central y en barra, control de volumen/silencio y pantalla completa, sin exponer metadatos técnicos innecesarios (etiquetado limpiamente como *"Vídeo Demo"*).
 - **Bucle Continuo (`loop`):** Reproducción fluida y continua que permite mantener la ambientación mientras el usuario consulta la documentación.
 
@@ -428,14 +429,17 @@ El módulo de Guía (`/guide`) proporciona a los nuevos usuarios, decisores come
 
 El módulo de Asistente IA (`/assistant`), accesible directamente bajo «Contacto y Soporte» en la barra lateral de navegación con insignia destacada (`AI`), proporciona un copiloto conversacional inteligente embebido en la aplicación.
 
-### 10.1. Base de Conocimiento de Dominio Integrada (`AiAssistantService`)
-El asistente está indexado sobre las directrices de arquitectura y especificaciones funcionales del repositorio:
-1. **Motor de Facturación por Tramos:** Reglas de cálculo progresivo marginal (€10, €8, €5), almacenamiento adicional y llamadas API, con desglose matemático de ejemplos reales (ej. 60 usuarios = 470 €) y enlace directo al simulador.
-2. **Validación Fiscal Algorítmica (AEAT):** Verificación oficial de DNI, NIE y CIF (módulo 23 y algoritmo de control ponderado de la AEAT) y formatos de VAT internacional (DE, FR, US, CH).
-3. **Ciclo de Facturas y Emisión de PDF:** Ciclo de vida documental (`DRAFT` $\to$ `ISSUED` $\to$ `PAID` / `CANCELLED`), anulación segura con modal accesible (`ConfirmDialogComponent`) y descarga binaria en PDFKit.
-4. **Soporte Multi-Divisa y Resiliencia Offline:** Gestión de 4 divisas (EUR, USD, GBP, CHF) y conmutación automática a caché offline en memoria/localStorage.
-5. **Arquitectura Hexagonal:** Estructura en tres capas (Dominio puro, Puertos de Entrada/Salida y Adaptadores Primarios/Secundarios), SQLite en modo WAL (`enableWAL: true`) y Problem Details RFC 7807.
-6. **Pipeline CI/CD y Calidad:** 8 jobs paralelos en GitHub Actions, Oxlint con 0 errores/warnings y umbrales de cobertura $>96\%$.
+### 10.1. Base de Conocimiento de Dominio Desacoplada y Multilingüe (`AiAssistantService` y `ai-knowledge.data.ts`)
+Siguiendo los principios de Responsabilidad Única y separación de datos y lógica, el corpus de conocimiento está desacoplado del servicio en un módulo de datos tipado (`src/app/modules/assistant/data/ai-knowledge.data.ts`), indexado con **palabras clave multilingües nativas** para los 4 idiomas soportados (`es`, `en`, `de`, `fr`):
+1. **Indexación Políglota de Palabras Clave (`keywords: { es, en, de, fr }`):**
+   - El motor semántico pondera las palabras clave en el idioma activo del usuario con peso prioritario ($1.5\times$), apoyándose en las variantes secundarias como mecanismo de fallback si se formulan preguntas cruzadas.
+   - Discrimina siglas cortas de $\le 3$ caracteres (`ci`, `cd`, `dni`, `nie`, `cif`, `eur`, `usd`, `vat`) mediante verificación estricta de límites léxicos/tokens, erradicando falsos positivos en términos como *desconocido*.
+2. **Motor de Facturación por Tramos:** Reglas de cálculo progresivo marginal (€10, €8, €5), almacenamiento adicional y llamadas API, con desglose matemático de ejemplos reales (ej. 60 usuarios = 470 €) y enlace directo al simulador.
+3. **Validación Fiscal Algorítmica (AEAT):** Verificación oficial de DNI, NIE y CIF (módulo 23 y algoritmo de control ponderado de la AEAT) y formatos de VAT internacional (DE, FR, US, CH).
+4. **Ciclo de Facturas y Emisión de PDF:** Ciclo de vida documental (`DRAFT` $\to$ `ISSUED` $\to$ `PAID` / `CANCELLED`), anulación segura con modal accesible (`ConfirmDialogComponent`) y descarga binaria en PDFKit.
+5. **Soporte Multi-Divisa y Resiliencia Offline:** Gestión de 4 divisas (EUR, USD, GBP, CHF) y conmutación automática a caché offline en memoria/localStorage.
+6. **Arquitectura Hexagonal:** Estructura en tres capas (Dominio puro, Puertos de Entrada/Salida y Adaptadores Primarios/Secundarios), SQLite en modo WAL (`enableWAL: true`) y Problem Details RFC 7807.
+7. **Pipeline CI/CD y Calidad:** 8 jobs paralelos en GitHub Actions, Oxlint con 0 errores/warnings y umbrales de cobertura $>96\%$.
 
 ### 10.2. Experiencia de Usuario y Accesibilidad Conversacional (`AssistantComponent`)
 - **Píldoras de Preguntas Frecuentes:** Botones interactivos superiores que permiten al usuario formular preguntas clave con un solo clic.
