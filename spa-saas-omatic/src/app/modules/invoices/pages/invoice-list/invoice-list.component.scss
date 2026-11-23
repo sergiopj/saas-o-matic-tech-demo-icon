@@ -196,7 +196,6 @@
   width: 100%;
   border-collapse: collapse;
   font-size: 0.875rem;
-  min-width: 1140px;
 
   thead {
     background-color: var(--omatic-surface);
@@ -220,35 +219,6 @@
         text-align: center;
       }
     }
-
-    .col-num {
-      width: 140px;
-      min-width: 140px;
-    }
-
-    .col-cust {
-      min-width: 180px;
-    }
-
-    .col-concept {
-      min-width: 190px;
-    }
-
-    .col-date {
-      width: 135px;
-      min-width: 135px;
-    }
-
-    .col-subtotal,
-    .col-total {
-      width: 125px;
-      min-width: 125px;
-    }
-
-    .col-status {
-      width: 115px;
-      min-width: 115px;
-    }
   }
 
   tbody {
@@ -258,6 +228,10 @@
 
       &:hover {
         background-color: var(--omatic-surface);
+
+        td.actions-cell {
+          background-color: var(--omatic-surface);
+        }
       }
 
       td {
@@ -326,18 +300,30 @@
 }
 
 .actions-header {
-  width: 200px;
-  min-width: 200px;
+  position: sticky;
+  right: 0;
+  z-index: 2;
+  width: 164px;
+  min-width: 164px;
   text-align: center;
-  padding-right: 1.25rem !important;
+  background-color: var(--omatic-surface);
+  border-left: 1px solid var(--omatic-border-light);
+  box-shadow: -4px 0 8px rgba(0, 0, 0, 0.05);
+  padding: 0.75rem 0.5rem !important;
 }
 
 .actions-cell {
-  width: 200px;
-  min-width: 200px;
+  position: sticky;
+  right: 0;
+  z-index: 1;
+  width: 164px;
+  min-width: 164px;
   text-align: center;
   white-space: nowrap;
-  padding-right: 1.25rem !important;
+  background-color: var(--omatic-bg-card);
+  border-left: 1px solid var(--omatic-border-light);
+  box-shadow: -4px 0 8px rgba(0, 0, 0, 0.05);
+  padding: 0.5rem 0.5rem !important;
 
   .actions-wrapper {
     display: inline-flex;
@@ -348,13 +334,13 @@
   }
 
   .action-btn {
-    width: 32px;
-    height: 32px;
-    min-width: 32px;
-    max-width: 32px;
-    line-height: 32px;
-    padding: 0;
-    margin: 0;
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    max-width: 32px !important;
+    line-height: 32px !important;
+    padding: 0 !important;
+    margin: 0 !important;
     flex-shrink: 0;
     color: var(--omatic-text-secondary);
     transition: color 0.12s ease-in-out, background-color 0.12s ease-in-out;
