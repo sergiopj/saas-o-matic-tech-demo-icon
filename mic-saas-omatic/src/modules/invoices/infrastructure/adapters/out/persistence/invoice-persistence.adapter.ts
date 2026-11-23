@@ -55,8 +55,8 @@ export class InvoicePersistenceAdapter implements InvoiceRepositoryPort {
     const sortOrder = criteria?.sortOrder ?? 'DESC';
     queryBuilder.orderBy(`invoice.${sortBy}`, sortOrder);
 
-    const page = criteria?.page && criteria.page > 0 ? criteria.page : 1;
-    const limit = criteria?.limit && criteria.limit > 0 ? criteria.limit : 20;
+    const page = Math.max(1, criteria?.page ?? 1);
+    const limit = Math.max(1, criteria?.limit ?? 20);
     queryBuilder.skip((page - 1) * limit).take(limit);
 
     const [entities, total] = await queryBuilder.getManyAndCount();

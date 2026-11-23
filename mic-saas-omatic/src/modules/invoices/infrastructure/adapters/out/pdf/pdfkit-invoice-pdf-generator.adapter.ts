@@ -6,6 +6,17 @@ import type {
   InvoicePdfGeneratorPort,
 } from '../../../../application/ports/out/invoice-pdf-generator.port';
 
+interface InvoiceStatusBadgeConfig {
+  readonly label: string;
+  readonly color: string;
+}
+
+const INVOICE_STATUS_BADGE_CONFIG: Readonly<Record<string, InvoiceStatusBadgeConfig>> = {
+  PAID: { label: 'PAID', color: '#16a34a' },
+  CANCELLED: { label: 'CANCELLED', color: '#dc2626' },
+  ISSUED: { label: 'ISSUED', color: '#2563eb' },
+};
+
 @Injectable()
 export class PdfkitInvoicePdfGeneratorAdapter implements InvoicePdfGeneratorPort {
   async generate(invoice: Invoice, customer?: InvoicePdfCustomerData): Promise<Buffer> {
@@ -49,24 +60,9 @@ export class PdfkitInvoicePdfGeneratorAdapter implements InvoicePdfGeneratorPort
         doc.fillColor('#1061e2').fontSize(12).font('Helvetica-Bold').text(invoice.getInvoiceNumber(), 48, 136);
 
         // Status pill
-        // cspell:ignore CANCELADA EMITIDA
-        let statusLabel: string;
-        let statusColor: string;
-        switch (invoice.getStatus()) {
-          case 'PAID':
-            statusLabel = 'PAGADA / PAID';
-            statusColor = '#16a34a';
-            break;
-          case 'CANCELLED':
-            statusLabel = 'CANCELADA / CANCELLED';
-            statusColor = '#dc2626';
-            break;
-          default:
-            statusLabel = 'EMITIDA / ISSUED';
-            statusColor = '#2563eb';
-        }
-        doc.roundedRect(doc.page.width - 150, 118, 102, 22, 4).fill(statusColor);
-        doc.fillColor('#ffffff').fontSize(8.5).font('Helvetica-Bold').text(statusLabel, doc.page.width - 150, 124, { width: 102, align: 'center' });
+        const statusBadge = INVOICE_STATUS_BADGE_CONFIG[invoice.getStatus()] ?? INVOICE_STATUS_BADGE_CONFIG['ISSUED'];
+        doc.roundedRect(doc.page.width - 150, 118, 102, 22, 4).fill(statusBadge.color);
+        doc.fillColor('#ffffff').fontSize(8.5).font('Helvetica-Bold').text(statusBadge.label, doc.page.width - 150, 124, { width: 102, align: 'center' });
 
         // Dates Grid
         const issueDateStr = invoice.getIssueDate() instanceof Date ? invoice.getIssueDate().toISOString().split('T')[0] : String(invoice.getIssueDate()).slice(0, 10);

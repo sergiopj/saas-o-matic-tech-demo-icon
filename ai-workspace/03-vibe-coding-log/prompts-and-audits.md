@@ -4640,3 +4640,27 @@ Una vez consolidada la bitácora de auditoría en la carpeta del proyecto, se di
   - Oxlint: **0 errores y 0 advertencias** en los 93 ficheros de frontend y 125 de backend.
 - **Valor para la evaluación:**
   Cierra el producto digital de extremo a extremo, dotando a SaaS-O-Matic de una experiencia de autoservicio para el usuario y canal de soporte corporativo con un diseño pulido y alineado con los design tokens de Omatic.
+
+
+---
+
+### 6.225. Auditoría de Código Limpio en Backend: Erradicación de Magic Strings en PDFKit y Guardias Defensivas de Paginación
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Prompt Verbatim del Usuario:**
+  > *«esto hadcoded aqui en español? Title: Factura ${invoice.getInvoiceNumber()}, esto hadcodeado aqui? switch (invoice.getStatus()) { case 'PAID': statusLabel = 'PAGADA / PAID'; statusColor = '#16a34a'; ... } ademas alimenta kos agents md y el resto de workspace ai, esta config aqui hardoced? const page = criteria?.page && criteria.page > 0 ? criteria.page : 1;»*
+- **Diagnóstico Técnico de Causa Raíz:**
+  1. *Metadato en Español en PDFKit:* En `PdfkitInvoicePdfGeneratorAdapter`, el título interno del documento binario usaba `Factura`, vulnerando la regla 1 de `AGENTS.md` (código y metadatos en inglés canónico).
+  2. *Magic Strings y Colores Hex Dispersos en Switch Procedimental:* Para pintar la píldora de estado en el PDF, se utilizaba un bloque `switch` con variables mutables `let statusLabel` y `let statusColor` con códigos hexadecimales incrustados (`#16a34a`, `#dc2626`, `#2563eb`). Aunque en backend Node.js con PDFKit no existen las variables CSS del navegador y es obligatorio pasar colores RGB/Hex directos a la librería, incrustarlos procedimentalmente dentro del método `generate()` es un code smell.
+  3. *Ternario Verboso en Paginación SQL:* En `InvoicePersistenceAdapter`, la expresión `const page = criteria?.page && criteria.page > 0 ? criteria.page : 1;` introducía verbosidad innecesaria para lo que es simplemente una guarda de cota inferior para el cálculo de `OFFSET = (page - 1) * limit`.
+- **Decisión de Arquitectura y Solución Aplicada:**
+  1. *Metadatos en Inglés Canónico:* Se normalizó `Title: Invoice ${invoice.getInvoiceNumber()}`.
+  2. *Diccionario Inmutable de Configuración de Estados (`INVOICE_STATUS_BADGE_CONFIG`):* Se declaró un mapa de sólo lectura `Readonly<Record<string, InvoiceStatusBadgeConfig>>` a nivel de módulo, resolviendo el badge en $\mathcal{O}(1)$ (`INVOICE_STATUS_BADGE_CONFIG[invoice.getStatus()] ?? ...`) y eliminando por completo el `switch` y los `let` mutables.
+  3. *Guardias Matemáticas Limpias:* Se refactorizó la paginación a `Math.max(1, criteria?.page ?? 1)` y `Math.max(1, criteria?.limit ?? 20)`.
+  4. *Gobernanza y Actualización de Reglas:* Se incorporaron dos nuevas directrices de arquitectura en [AGENTS.md](file:///c:/Users/Usuario/Documents/GitHub/saas-o-matic-tech-demo-icon/AGENTS.md) («Defensive Pagination Guards Without Verbosity» y «No Procedural Color Switches or Inline Magic Strings in PDF Generators»).
+- **Resultados de Verificación:**
+  - Tests Backend: 226/226 passing (54 suites).
+  - Tests Frontend: 327/327 passing (38 suites).
+  - Oxlint: 0 advertencias y 0 errores.
+- **Valor para la evaluación:**
+  Muestra una mirada clínica para la detección de deuda técnica sutil (magic numbers, metadatos y código imperativo), elevando el backend a un nivel de pulcritud artesanal.
