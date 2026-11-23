@@ -18,43 +18,12 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # ─────────────────────────────────────────────────────────────────
-  # JOB 1 — Quality Gate: Lint
-  # Runs in parallel with the test jobs for speed
-  # ─────────────────────────────────────────────────────────────────
-  lint:
-    name: 'Quality Gate — Lint'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+  # ═════════════════════════════════════════════════════════════════
+  # TRACK 1: BACKEND QUALITY GATES
+  # ═════════════════════════════════════════════════════════════════
 
-      - name: Setup Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-          cache-dependency-path: |
-            mic-saas-omatic/package-lock.json
-            spa-saas-omatic/package-lock.json
-
-      - name: Install backend dependencies
-        run: npm --prefix mic-saas-omatic ci
-
-      - name: Install frontend dependencies
-        run: npm --prefix spa-saas-omatic ci
-
-      - name: Lint backend (ESLint)
-        run: npm --prefix mic-saas-omatic run lint
-
-      - name: Lint frontend (Oxlint)
-        run: npm --prefix spa-saas-omatic run lint
-
-  # ─────────────────────────────────────────────────────────────────
-  # JOB 2 — Quality Gate: Backend Tests
-  # ─────────────────────────────────────────────────────────────────
-  test-backend:
-    name: 'Quality Gate — Backend Tests (Jest)'
+  lint-backend:
+    name: '1. Backend — Lint (ESLint)'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -70,14 +39,34 @@ jobs:
       - name: Install backend dependencies
         run: npm --prefix mic-saas-omatic ci
 
-      - name: Run backend unit tests
+      - name: Run backend linter
+        run: npm --prefix mic-saas-omatic run lint
+
+  test-backend:
+    name: '2. Backend — Tests & Coverage (Jest)'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: mic-saas-omatic/package-lock.json
+
+      - name: Install backend dependencies
+        run: npm --prefix mic-saas-omatic ci
+
+      - name: Run backend unit tests with coverage
         run: npm --prefix mic-saas-omatic test -- --ci --coverage --forceExit
 
-      - name: Publish backend coverage summary
+      - name: Publish backend coverage summary table
         if: always()
         run: node scripts/coverage-summary.mjs "Backend (NestJS / Jest)" mic-saas-omatic/coverage/clover.xml
 
-      - name: Upload backend coverage report
+      - name: Upload backend coverage report artifact
         uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -85,12 +74,10 @@ jobs:
           path: mic-saas-omatic/coverage/
           retention-days: 7
 
-  # ─────────────────────────────────────────────────────────────────
-  # JOB 3 — Quality Gate: Frontend Tests
-  # ─────────────────────────────────────────────────────────────────
-  test-frontend:
-    name: 'Quality Gate — Frontend Tests (Vitest)'
+  build-backend:
+    name: '3. Backend — Build (TypeScript → dist/)'
     runs-on: ubuntu-latest
+    needs: [lint-backend, test-backend]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -100,57 +87,13 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
-          cache-dependency-path: spa-saas-omatic/package-lock.json
+          cache-dependency-path: mic-saas-omatic/package-lock.json
 
-      - name: Install frontend dependencies
-        run: npm --prefix spa-saas-omatic ci
+      - name: Install backend dependencies
+        run: npm --prefix mic-saas-omatic ci
 
-      - name: Run frontend unit tests
-        run: npm --prefix spa-saas-omatic run test:coverage
-
-      - name: Publish frontend coverage summary
-        if: always()
-        run: node scripts/coverage-summary.mjs "Frontend (Angular / Vitest)" spa-saas-omatic/coverage/dashboard/clover.xml
-
-      - name: Upload frontend coverage report
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: frontend-coverage
-          path: spa-saas-omatic/coverage/
-          retention-days: 7
-
-  # ─────────────────────────────────────────────────────────────────
-  # JOB 4 — Build Artifacts
-  # Only runs if ALL quality gate jobs pass
-  # ─────────────────────────────────────────────────────────────────
-  build:
-    name: 'Build — Compile & Bundle'
-    runs-on: ubuntu-latest
-    needs: [lint, test-backend, test-frontend]
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-          cache-dependency-path: |
-            mic-saas-omatic/package-lock.json
-            spa-saas-omatic/package-lock.json
-
-      - name: Install all dependencies
-        run: |
-          npm --prefix mic-saas-omatic ci
-          npm --prefix spa-saas-omatic ci
-
-      - name: Build backend (TypeScript → dist/)
+      - name: Build backend application
         run: npm --prefix mic-saas-omatic run build
-
-      - name: Build frontend (Angular → production bundle)
-        run: npm --prefix spa-saas-omatic run build -- --configuration production
 
       - name: Upload backend dist artifact
         uses: actions/upload-artifact@v4
@@ -159,30 +102,19 @@ jobs:
           path: mic-saas-omatic/dist/
           retention-days: 1
 
-      - name: Upload frontend dist artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: frontend-dist
-          path: spa-saas-omatic/dist/
-          retention-days: 1
-
-  # ─────────────────────────────────────────────────────────────────
-  # JOB 5 — Docker: Build & Push Images
-  # Only runs on push to main (not on PRs) after build passes
-  # ─────────────────────────────────────────────────────────────────
-  docker:
-    name: 'Deploy — Build & Push Docker Images'
+  deploy-backend:
+    name: '4. Backend — Docker Image (GHCR)'
     runs-on: ubuntu-latest
-    needs: [build]
+    needs: [build-backend]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     permissions:
       contents: read
-      packages: write  # required to push to GitHub Container Registry (GHCR)
+      packages: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx (multi-platform builder)
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
       - name: Log in to GitHub Container Registry
@@ -192,7 +124,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract Docker metadata for backend image
+      - name: Extract Docker metadata for backend
         id: meta-backend
         uses: docker/metadata-action@v5
         with:
@@ -212,7 +144,113 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Extract Docker metadata for frontend image
+  # ═════════════════════════════════════════════════════════════════
+  # TRACK 2: FRONTEND QUALITY GATES
+  # ═════════════════════════════════════════════════════════════════
+
+  lint-frontend:
+    name: '1. Frontend — Lint (Oxlint)'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: spa-saas-omatic/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm --prefix spa-saas-omatic ci
+
+      - name: Run frontend linter
+        run: npm --prefix spa-saas-omatic run lint
+
+  test-frontend:
+    name: '2. Frontend — Tests & Coverage (Vitest)'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: spa-saas-omatic/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm --prefix spa-saas-omatic ci
+
+      - name: Run frontend unit tests with coverage
+        run: npm --prefix spa-saas-omatic run test:coverage
+
+      - name: Publish frontend coverage summary table
+        if: always()
+        run: node scripts/coverage-summary.mjs "Frontend (Angular / Vitest)" spa-saas-omatic/coverage/dashboard/clover.xml
+
+      - name: Upload frontend coverage report artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: frontend-coverage
+          path: spa-saas-omatic/coverage/
+          retention-days: 7
+
+  build-frontend:
+    name: '3. Frontend — Build (Angular Production Bundle)'
+    runs-on: ubuntu-latest
+    needs: [lint-frontend, test-frontend]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: spa-saas-omatic/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm --prefix spa-saas-omatic ci
+
+      - name: Build frontend production bundle
+        run: npm --prefix spa-saas-omatic run build -- --configuration production
+
+      - name: Upload frontend dist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: spa-saas-omatic/dist/
+          retention-days: 1
+
+  deploy-frontend:
+    name: '4. Frontend — Docker Image (GHCR)'
+    runs-on: ubuntu-latest
+    needs: [build-frontend]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Docker metadata for frontend
         id: meta-frontend
         uses: docker/metadata-action@v5
         with:
@@ -231,17 +269,3 @@ jobs:
           labels: ${{ steps.meta-frontend.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-      - name: Deployment summary
-        run: |
-          echo "## 🚀 Deployment Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Image | Tag |" >> $GITHUB_STEP_SUMMARY
-          echo "|-------|-----|" >> $GITHUB_STEP_SUMMARY
-          echo "| Backend  | \`${{ env.IMAGE_BACKEND }}:latest\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| Frontend | \`${{ env.IMAGE_FRONTEND }}:latest\` |" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Pull and run on any server:" >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
-          echo "docker compose pull && docker compose up -d" >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY

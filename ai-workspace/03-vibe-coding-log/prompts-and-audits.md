@@ -4317,3 +4317,34 @@ Una vez consolidada la bitácora de auditoría en la carpeta del proyecto, se di
   - Oxlint backend: 0 errores, 0 advertencias.
   - Oxlint frontend: 0 errores, 0 advertencias.
 - **Valor para la evaluación:** Demuestra excelencia en Developer Experience (DX) y visibilidad de métricas en plataformas CI/CD, permitiendo a comités técnicos auditar la calidad del software a simple vista.
+
+
+---
+
+### 6.213. Desacoplamiento de Pipelines CI/CD: 8 Jobs Independientes en GitHub Actions y Simulador
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Prompt Verbatim del Usuario:**
+  > *«Me gustaría que estuviese dividido, aunque esté integrado dentro del mismo proyecto el backend y el front. Primero, que se pase el lint del backend, el lint del front, los tests del backend, los tests del front, los coverage de backend y front, luego el build del backend y build del front dividido y luego el deploy del backend y el front. Sé que son más pasos, pero creo que va a quedar más claro en la entrevista. Está todo como muy acoplado, creo yo.»*
+- **Contexto / Desafío:**
+  Evolución del pipeline monolítico hacia un flujo desacoplado por pistas paralelas (*Tracks*), permitiendo una visualización de grafo acíclico dirigido (DAG) nítida en GitHub Actions y una presentación técnica mucho más didáctica para el comité evaluador de Omatic/ICON.
+- **Decisión de Arquitectura y Solución Aplicada:**
+  1. *Refactorización Integral de [.github/workflows/ci-cd.yml](file:///c:/Users/Usuario/Documents/GitHub/saas-o-matic-tech-demo-icon/.github/workflows/ci-cd.yml) en 8 Jobs Desacoplados:*
+     - **Pista Backend (NestJS):**
+       - Job 1: `1. Backend — Lint (ESLint)`
+       - Job 2: `2. Backend — Tests & Coverage (Jest)`
+       - Job 3: `3. Backend — Build (TypeScript → dist/)` [depende de 1 y 2]
+       - Job 4: `4. Backend — Docker Image (GHCR)` [depende de 3, solo en `main`]
+     - **Pista Frontend (Angular):**
+       - Job 5: `1. Frontend — Lint (Oxlint)`
+       - Job 6: `2. Frontend — Tests & Coverage (Vitest)`
+       - Job 7: `3. Frontend — Build (Angular Production Bundle)` [depende de 5 y 6]
+       - Job 8: `4. Frontend — Docker Image (GHCR)` [depende de 7, solo en `main`]
+     - Ambas pistas corren en paralelo aprovechando la concurrencia de GitHub Actions sin bloquearse mutuamente.
+  2. *Actualización Sincrónica de [scripts/deploy-simulate.mjs](file:///c:/Users/Usuario/Documents/GitHub/saas-o-matic-tech-demo-icon/scripts/deploy-simulate.mjs):*
+     - Reestructuradas las etapas en 7 fases secuenciales con cabeceras específicas para Backend, Frontend, Dockerización y Healthchecks.
+- **Resultados de Verificación:**
+  - Sintaxis de workflow YAML validada.
+  - Oxlint backend: 0 errores / 0 advertencias.
+  - Oxlint frontend: 0 errores / 0 advertencias.
+- **Valor para la evaluación:** Refleja visión arquitectónica de microservicios y SPAs modernas, demostrando cómo gestionar monorrepositorios desacoplados con pipelines independientes de integración y despliegue continuo.

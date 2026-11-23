@@ -106,40 +106,53 @@ if (SKIP_TESTS)  warn('--skip-tests flag: Test suite will be skipped');
 console.log('');
 
 // ═══════════════════════════════════════════════════════════════════
-// STAGE 1 — Quality Gate
+// TRACK 1: BACKEND QUALITY GATES & BUILD
 // ═══════════════════════════════════════════════════════════════════
-header(1, 'Quality Gate  (Lint + Tests)');
+header(1, 'Backend — Quality Gate (ESLint + Jest + Coverage)');
+run('Backend lint (ESLint / NestJS)', 'npm run lint:backend');
 
-run('Backend lint (ESLint / NestJS)',   'npm run lint:backend');
+if (!SKIP_TESTS) {
+  if (WITH_COVERAGE) {
+    run('Backend unit tests + Coverage thresholds (Jest ≥75%)', 'npm run test:coverage:backend');
+    ok('Backend quality gate passed — 0 lint errors, 100% tests green, coverage ≥75% satisfied');
+  } else {
+    run('Backend unit tests (Jest)', 'npm run test:backend');
+    ok('Backend quality gate passed — 0 lint errors, 100% tests green');
+  }
+} else {
+  warn('Backend tests skipped by flag');
+}
+
+header(2, 'Backend — Build (TypeScript → dist/)');
+run('Compile TypeScript to production dist', 'npm run build:backend');
+ok('Backend artifact ready: mic-saas-omatic/dist');
+
+// ═══════════════════════════════════════════════════════════════════
+// TRACK 2: FRONTEND QUALITY GATES & BUILD
+// ═══════════════════════════════════════════════════════════════════
+header(3, 'Frontend — Quality Gate (Oxlint + Vitest + Coverage)');
 run('Frontend lint (Oxlint / Angular)', 'npm run lint:frontend');
 
 if (!SKIP_TESTS) {
   if (WITH_COVERAGE) {
-    run('Backend unit tests + Coverage thresholds (Jest ≥75%)',   'npm run test:coverage:backend');
     run('Frontend unit tests + Coverage thresholds (Vitest ≥75%)', 'npm run test:coverage:frontend');
-    ok('Quality gate passed — 0 lint errors, 100% tests green, coverage ≥75% satisfied');
+    ok('Frontend quality gate passed — 0 lint errors, 100% tests green, coverage ≥75% satisfied');
   } else {
-    run('Backend unit tests  (Jest)',    'npm run test:backend');
     run('Frontend unit tests (Vitest)', 'npm run test:frontend');
-    ok('Quality gate passed — 0 lint errors, 100% tests green');
+    ok('Frontend quality gate passed — 0 lint errors, 100% tests green');
   }
 } else {
-  warn('Tests skipped by flag');
+  warn('Frontend tests skipped by flag');
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// STAGE 2 — Build
-// ═══════════════════════════════════════════════════════════════════
-header(2, 'Build  (Compile TypeScript + Bundle Angular)');
-
-run('Backend TypeScript build  (tsc → dist/)', 'npm run build:backend');
-run('Frontend production build (ng build --configuration production)', 'npm run build:frontend');
-ok('Artifacts ready: mic-saas-omatic/dist  •  spa-saas-omatic/dist');
+header(4, 'Frontend — Build (Angular Production Bundle)');
+run('Bundle Angular application for production', 'npm run build:frontend');
+ok('Frontend artifact ready: spa-saas-omatic/dist/dashboard');
 
 // ═══════════════════════════════════════════════════════════════════
-// STAGE 3 — Docker
+// DEPLOYMENT TRACK: DOCKER CONTAINERIZATION
 // ═══════════════════════════════════════════════════════════════════
-header(3, 'Docker  (Build Images + Compose Up)');
+header(5, 'Deploy — Backend Container (Node 22 Slim)');
 
 if (SKIP_DOCKER) {
   warn('Stage skipped — run without --skip-docker to build & start containers');
@@ -154,23 +167,26 @@ if (SKIP_DOCKER) {
     warn('Docker Desktop is not running — skipping container stages');
     warn('Start Docker Desktop and run:  npm run deploy:docker');
   } else {
-    run('Build backend image  (multi-stage Node 22 → runner)',  'docker compose build backend',  { verbose: false });
-    run('Build frontend image (Angular build → Nginx Alpine)',   'docker compose build frontend', { verbose: false });
-    run('Compose up (detached — healthchecks enabled)',          'docker compose up -d',          { verbose: false });
+    run('Build backend image (multi-stage Node 22 → runner)', 'docker compose build backend', { verbose: false });
+    ok('Backend Docker image built successfully');
+
+    header(6, 'Deploy — Frontend Container (Nginx Alpine)');
+    run('Build frontend image (Angular bundle → Nginx Alpine)', 'docker compose build frontend', { verbose: false });
+    run('Compose up (detached — healthchecks enabled)', 'docker compose up -d', { verbose: false });
 
     // Brief wait for healthcheck
-    info('Waiting 20s for backend healthcheck...');
-    await new Promise((r) => setTimeout(r, 20_000));
+    info('Waiting 10s for backend and frontend healthchecks...');
+    await new Promise((r) => setTimeout(r, 10_000));
 
     run('Verify containers healthy', 'docker compose ps');
-    ok('Containers running:  saas-omatic-backend:3000  •  saas-omatic-frontend:80');
+    ok('Containers running: saas-omatic-backend:3000 • saas-omatic-frontend:80');
   }
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// STAGE 4 — Health Check
+// VERIFICATION: HEALTH CHECKS
 // ═══════════════════════════════════════════════════════════════════
-header(4, 'Health Check  (API + SPA reachability)');
+header(7, 'Health Check (API + SPA Reachability)');
 
 // API health (works in both dev and docker modes)
 const apiHealthy = await new Promise((resolve) => {
