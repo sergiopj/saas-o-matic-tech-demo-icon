@@ -536,15 +536,24 @@
 }
 
 /* Typing Indicator Animation */
+.typing-row {
+  margin-bottom: 0.25rem;
+}
+
 .typing-bubble {
-  display: flex;
+  display: inline-flex !important;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.85rem 1.25rem !important;
+  gap: 0.45rem;
+  padding: 0.75rem 1.15rem !important;
+  flex: 0 0 auto !important;
+  width: fit-content !important;
+  max-width: fit-content !important;
+  border-radius: var(--omatic-radius-lg, 16px);
+  border-bottom-left-radius: 4px;
 
   .typing-dot {
-    width: 7px;
-    height: 7px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
     background: var(--omatic-accent-blue);
     animation: typing-bounce 1.4s infinite ease-in-out both;

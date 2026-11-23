@@ -28,11 +28,6 @@ export class AiAssistantService {
       sender: 'assistant',
       content: this.getWelcomeContent(this.i18n.currentLanguage()),
       timestamp: new Date(),
-      sources: [
-        'ai-workspace/01-specs/functional-specs.md',
-        'ai-workspace/02-architecture/architecture-guidelines.md',
-        'AGENTS.md',
-      ],
     };
     this.messages.set([welcomeMessage]);
   }
@@ -53,8 +48,8 @@ export class AiAssistantService {
     this.messages.set([...this.messages(), userMessage]);
     this.isTyping.set(true);
 
-    // Realistic typing latency simulation (250ms)
-    await new Promise((resolve) => setTimeout(resolve, 250));
+    // Realistic typing latency simulation (650ms)
+    await new Promise((resolve) => setTimeout(resolve, 650));
 
     const response = this.resolveAnswer(trimmed, this.i18n.currentLanguage());
     const assistantMessage: ChatMessage = {
@@ -164,47 +159,21 @@ export class AiAssistantService {
   private getWelcomeContent(lang: string): string {
     switch (lang) {
       case 'en':
-        return `Hello! I am **SaaS-O-Matic AI Assistant**, your technical and commercial copilot.
+        return `Hi there! 👋 I'm your SaaS-O-Matic copilot.
 
-I am deeply indexed on the entire repository knowledge base, business rules, and technical specifications:
-• **Tiered Pricing Engine:** Marginal cumulative tiers (€10, €8, €5), storage, and API calls.
-• **Fiscal Verification:** Real AEAT algorithmic validation (DNI, NIE, CIF mod 23 & Luhn).
-• **Invoices & Billing:** \`INV-YYYY-XXXX\`, states, accessible modal cancellation, and PDF streaming.
-• **Architecture:** Hexagonal architecture, SQLite WAL mode, and RFC 7807 Problem Details.
-• **Multi-Currency:** EUR base, USD, GBP, CHF with offline-resilient cache fallback.
-
-How can I help you optimize your SaaS business today?`;
+How can I help you today? Feel free to ask me anything about tiered pricing calculations, customer and invoice management, technical architecture, or the technical challenge requirements.`;
       case 'de':
-        return `Hallo! Ich bin der **SaaS-O-Matic KI-Assistent**, Ihr technischer und kaufmännischer Kopilot.
+        return `Hallo! 👋 Ich bin dein SaaS-O-Matic Copilot.
 
-Ich kenne alle Spezifikationen, Geschäftsregeln und Architekturrichtlinien der Plattform:
-• **Staffelpreise:** Stufen 1–3 (10 €, 8 €, 5 €), Speicher und API-Aufrufe.
-• **Steuerprüfung:** Offizielle AEAT-Algorithmen (DNI, NIE, CIF) und EU-USt-IDs.
-• **Rechnungen:** \`INV-YYYY-XXXX\`, barrierefreie Stornierung und PDF-Export.
-• **Architektur:** Hexagonale Architektur, SQLite WAL-Modus und RFC 7807.
-
-Wie kann ich Ihnen heute behilflich sein?`;
+Wie kann ich dir heute helfen? Frag mich gerne alles über die Staffelpreisberechnung, Kunden- und Rechnungsverwaltung, die Systemarchitektur oder die technische Challenge.`;
       case 'fr':
-        return `Bonjour ! Je suis **l'Assistant IA SaaS-O-Matic**, votre copilote technique et commercial.
+        return `Bonjour ! 👋 Je suis votre copilote SaaS-O-Matic.
 
-Je suis entraîné sur l'ensemble des spécifications et règles métier de la plateforme :
-• **Tarification par paliers :** Paliers cumulatifs marginaux (10 €, 8 €, 5 €), stockage et appels API.
-• **Validation fiscale :** Algorithmes officiels de l'AEAT (DNI, NIE, CIF) et TVA internationale.
-• **Factures & PDF :** Numérotation \`INV-YYYY-XXXX\`, annulation sécurisée et export PDFKit.
-• **Architecture :** Architecture hexagonale, SQLite en mode WAL et RFC 7807.
-
-Comment puis-je vous aider aujourd'hui ?`;
+Comment puis-je vous aider aujourd'hui ? N'hésitez pas à me poser vos questions sur le calcul des tarifs par paliers, la gestion des clients et factures, l'architecture ou le défi technique.`;
       default:
-        return `¡Hola! Soy el **Asistente IA de SaaS-O-Matic**, tu copiloto técnico y comercial.
+        return `¡Hola! 👋 Soy tu copiloto en SaaS-O-Matic.
 
-Estoy alimentado con toda la documentación de \`ai-workspace/\`, reglas de negocio y directrices de arquitectura:
-• **Motor de Precios por Tramos:** Tramos acumulativos marginales (10 €, 8 €, 5 €), almacenamiento y llamadas API.
-• **Validación Fiscal AEAT:** Algoritmos oficiales de DNI, NIE y CIF (módulo 23 y Luhn ponderado).
-• **Facturas y PDF:** Numeración \`INV-YYYY-XXXX\`, anulación segura y generación binaria en PDFKit.
-• **Arquitectura Hexagonal:** Dominio inmaculado, SQLite en modo WAL y RFC 7807 Problem Details.
-• **Multi-Divisa:** EUR, USD, GBP, CHF con resiliencia offline ante fallos de conexión.
-
-¿En qué puedo ayudarte hoy a optimizar tus suscripciones?`;
+¿En qué te puedo ayudar hoy? Puedes preguntarme cualquier duda sobre el cálculo de precios por tramos, la gestión de clientes y facturas, nuestra arquitectura o los detalles del reto técnico.`;
     }
   }
 
@@ -245,6 +214,12 @@ Feel free to pick any of the quick suggestions above!`;
 
   private getLocalizedPromptQuery(promptId: string, lang: string): string {
     const queries: Record<string, Record<string, string>> = {
+      prompt_challenge: {
+        es: '¿Cuáles son los objetivos y criterios del reto técnico?',
+        en: 'What are the goals and criteria of the technical challenge?',
+        de: 'Was sind die Ziele und Kriterien der technischen Challenge?',
+        fr: 'Quels sont les objectifs et critères du défi technique ?',
+      },
       prompt_pricing: {
         es: '¿Cómo funciona el cálculo de precios por tramos?',
         en: 'How does tiered pricing calculation work?',

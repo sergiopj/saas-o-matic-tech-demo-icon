@@ -431,25 +431,39 @@ El módulo de Asistente IA (`/assistant`), accesible directamente bajo «Contact
 
 ### 10.1. Base de Conocimiento de Dominio Desacoplada y Multilingüe (`AiAssistantService` y `ai-knowledge.data.ts`)
 Siguiendo los principios de Responsabilidad Única y separación de datos y lógica, el corpus de conocimiento está desacoplado del servicio en un módulo de datos tipado (`src/app/modules/assistant/data/ai-knowledge.data.ts`), indexado con **palabras clave multilingües nativas** para los 4 idiomas soportados (`es`, `en`, `de`, `fr`):
-1. **Sub-Intenciones Específicas y Respuestas Concisas:**
-   - En lugar de respuestas enciclopédicas genéricas que saturen al usuario con jerga técnica innecesaria, el corpus desglosa intenciones operativas atómicas (ej. `download_invoice_pdf`, `cancel_invoice`, `pricing_tiers`, `fiscal_aeat`).
+1. **Tono Conversacional Humano y Mensaje de Bienvenida Cálido:**
+   - En lugar de un saludo robótico con un extenso listado enciclopédico de viñetas técnicas que sature al usuario, el asistente recibe con un saludo natural, empático y directo:
+     > *"¡Hola! 👋 Soy tu copiloto en SaaS-O-Matic. ¿En qué te puedo ayudar hoy? Puedes preguntarme cualquier duda sobre el cálculo de precios por tramos, la gestión de clientes y facturas, nuestra arquitectura o los detalles del reto técnico."*
+   - El mensaje inicial omite pies de página o fuentes técnicas irrelevantes para mantener la interfaz completamente limpia y acogedora.
+2. **Sub-Intenciones Específicas y Respuestas Concisas:**
+   - En lugar de bloques extensos de texto (*wall of text*), el corpus desglosa intenciones operativas atómicas (ej. `download_invoice_pdf`, `cancel_invoice`, `pricing_tiers`, `fiscal_aeat`, `challenge_criteria`, `run_locally_deployment`).
    - Consultas prácticas como *«¿dónde descargo el pdf de una factura?»* responden directamente con los 2 pasos claros de navegación visual hacia el botón de descarga en la tabla, acompañadas de un acceso rápido `[Ir a Facturas y Cobros]` y una nota sutil al pie.
-2. **Indexación Políglota de Palabras Clave (`keywords: { es, en, de, fr }`):**
+3. **Indexación Políglota de Palabras Clave (`keywords: { es, en, de, fr }`):**
    - El motor semántico pondera las palabras clave en el idioma activo del usuario con peso prioritario ($1.5\times$), apoyándose en las variantes secundarias como mecanismo de fallback si se formulan preguntas cruzadas.
    - Discrimina siglas cortas de $\le 3$ caracteres (`ci`, `cd`, `dni`, `nie`, `cif`, `eur`, `usd`, `vat`) mediante verificación estricta de límites léxicos/tokens, erradicando falsos positivos en términos como *desconocido*.
-2. **Motor de Facturación por Tramos:** Reglas de cálculo progresivo marginal (€10, €8, €5), almacenamiento adicional y llamadas API, con desglose matemático de ejemplos reales (ej. 60 usuarios = 470 €) y enlace directo al simulador.
-3. **Validación Fiscal Algorítmica (AEAT):** Verificación oficial de DNI, NIE y CIF (módulo 23 y algoritmo de control ponderado de la AEAT) y formatos de VAT internacional (DE, FR, US, CH).
-4. **Ciclo de Facturas y Emisión de PDF:** Ciclo de vida documental (`DRAFT` $\to$ `ISSUED` $\to$ `PAID` / `CANCELLED`), anulación segura con modal accesible (`ConfirmDialogComponent`) y descarga binaria en PDFKit.
-5. **Soporte Multi-Divisa y Resiliencia Offline:** Gestión de 4 divisas (EUR, USD, GBP, CHF) y conmutación automática a caché offline en memoria/localStorage.
-6. **Arquitectura Hexagonal:** Estructura en tres capas (Dominio puro, Puertos de Entrada/Salida y Adaptadores Primarios/Secundarios), SQLite en modo WAL (`enableWAL: true`) y Problem Details RFC 7807.
-7. **Pipeline CI/CD y Calidad:** 8 jobs paralelos en GitHub Actions, Oxlint con 0 errores/warnings y umbrales de cobertura $>96\%$.
+4. **Cobertura Integral del Reto Técnico Oficial (`Prueba_Devs_con_IA.docx`):**
+   - **Criterios Oficiales de Evaluación (`challenge_criteria`):** Ponderación exacta del reto (35% Planificación y Diseño con Spec-Driven Development, 25% Criterio Técnico y Control de Calidad con Vibe Coding, 30% Calidad del Software Entregado y 10% README y Despliegue sin fricción).
+   - **Propósito y Filosofía del Reto (`challenge_overview`):** Justificación de SaaS-O-Matic como optimizador comercial multi-divisa y superación del picado repetitivo de código en favor del diseño y criterio de sistemas.
+   - **Metodología y Espacio de Trabajo con IA (`ai_workspace_methodology`):** Estructura en tres dimensiones de `/ai-workspace` (`01-specs/`, `02-architecture/`, `03-vibe-coding-log/`).
+   - **Motor de Tarificación y Ejemplo Oficial (`pricing_tiers`):** Detalle matemático del caso de 15 usuarios del reto (10 a 10 € + 5 a 8 € = 140,00 € base) y el caso de 60 usuarios (470,00 € base).
+   - **Tabla de Impuestos por Jurisdicción (`pricing_taxes`):** Desglose fiscal exacto (España 21% IVA, Alemania 19% USt, Francia 20% TVA, Estados Unidos 0% / exento).
+   - **Instrucciones de Despliegue y Ejecución Local (`run_locally_deployment`):** Comandos rápidos para levantar en local (puertos 3000 y 4200) o en un comando con Docker Compose (`docker-compose up -d --build`).
+   - **Simulador Interactivo de Suscripciones (`simulations_flow`):** Uso de sliders en vivo, cálculo en tiempo real y persistencia en SQLite (`POST /simulations`).
+   - **Validación Fiscal Algorítmica (AEAT):** Verificación oficial de DNI, NIE y CIF (módulo 23 y algoritmo de control ponderado de la AEAT) y formatos de VAT internacional (DE, FR, US, CH).
+   - **Ciclo de Facturas y Emisión de PDF:** Ciclo de vida documental (`DRAFT` $\to$ `ISSUED` $\to$ `PAID` / `CANCELLED`), anulación segura con modal accesible (`ConfirmDialogComponent`) y descarga binaria en PDFKit.
+   - **Soporte Multi-Divisa y Resiliencia Offline:** Gestión de 4 divisas (EUR, USD, GBP, CHF) y conmutación automática a caché offline en memoria/localStorage.
+   - **Arquitectura Hexagonal:** Estructura en tres capas (Dominio puro, Puertos de Entrada/Salida y Adaptadores Primarios/Secundarios), SQLite en modo WAL (`enableWAL: true`) y Problem Details RFC 7807.
+   - **Pipeline CI/CD y Calidad:** 8 jobs paralelos en GitHub Actions, Oxlint con 0 errores/warnings y umbrales de cobertura $>96\%$.
 
 ### 10.2. Experiencia de Usuario y Accesibilidad Conversacional (`AssistantComponent`)
-- **Píldoras de Preguntas Frecuentes:** Botones interactivos superiores que permiten al usuario formular preguntas clave con un solo clic.
+- **Píldoras de Preguntas Frecuentes:** Botones interactivos superiores (`QUICK_PROMPTS`) que permiten al usuario formular preguntas clave con un solo clic, incluyendo el acceso directo a los criterios de evaluación del reto técnico con insignia `military_tech`.
+- **Burbuja Flotante Compacta de Pensamiento (`typing-bubble`):**
+  - Se desacopla la burbuja de carga del ancho completo del mensaje (`flex: 0 0 auto !important; width: fit-content !important;`), dotándola de un diseño compacto y orgánico de bordes redondeados.
+  - Se simula una latencia realista de reflexión (~650ms) en la que 3 puntos saltarines animados con desfase armónico (`typing-bounce`) comunican visualmente que el asistente está componiendo la respuesta.
+  - Auto-desplazamiento suave hacia el fondo (`scrollToBottom`) al iniciar la redacción y al recibir la respuesta.
 - **Formato Enriquecido y Sanitización Anti-XSS:** Renderizado seguro de párrafos, listas con viñetas, términos en negrita y etiquetas de código inline (`code-token`) mediante escape estricto de HTML antes del marcado visual.
-- **Enlaces de Navegación Contextuales:** Cada respuesta del asistente incluye píldoras interactivas (`[Abrir Simulador de Tramos]`, `[Ver Clientes]`, `[Ver Facturas]`) que permiten saltar directamente al módulo relevante sin perder contexto.
-- **Citas de Fuentes Documentales:** Desglose visual de los archivos de especificación consultados (ej. `ai-workspace/01-specs/functional-specs.md`, `Real Decreto 1065/2007`).
-- **Simulación Realista de Redacción:** Indicador visual de tres puntos pulsantes (`isTyping`) que emula la composición de respuesta.
+- **Enlaces de Navegación Contextuales:** Cada respuesta del asistente incluye píldoras interactivas (`[Abrir Simulador de Tramos]`, `[Ver Clientes]`, `[Ver Facturas]`, `[Ver Guía y Arquitectura]`) que permiten saltar directamente al módulo relevante sin perder contexto.
+- **Citas de Fuentes Documentales:** Desglose visual discreto al pie con los archivos de especificación consultados (ej. `Prueba_Devs_con_IA.docx`, `ai-workspace/01-specs/functional-specs.md`).
 - **Copia al Portapapeles y Reinicio:** Botón de copiado por mensaje con retroalimentación vía `ToastService` y opción de reiniciar conversación.
 - **Internacionalización Total (i18n):** Respuestas y preguntas frecuentes completamente adaptadas a los 4 idiomas (`es`, `en`, `de`, `fr`).
 - **Accesibilidad W3C:** Notificación de mensajes mediante elemento nativo `<output class="sr-only" aria-live="polite">` (cumpliendo SonarQube `Web:S6819`).

@@ -22,18 +22,19 @@ describe('AiAssistantService', () => {
     expect(service).toBeTruthy();
     expect(service.messages().length).toBe(1);
     expect(service.messages()[0].sender).toBe('assistant');
-    expect(service.messages()[0].content).toContain('Asistente IA de SaaS-O-Matic');
+    expect(service.messages()[0].content).toContain('¡Hola! 👋 Soy tu copiloto en SaaS-O-Matic.');
     expect(service.isTyping()).toBe(false);
   });
 
   it('should have predefined quick prompts', () => {
     expect(service.quickPrompts().length).toBe(QUICK_PROMPTS.length);
-    expect(service.quickPrompts()[0].id).toBe('prompt_pricing');
+    expect(service.quickPrompts()[0].id).toBe('prompt_challenge');
   });
 
   it('should resolve pricing tiers answer with action and calculation details in Spanish', () => {
     const answer = service.resolveAnswer('¿Cómo se calculan los precios por tramos?', 'es');
     expect(answer.content).toContain('Tramo 1 (0–10 usuarios)');
+    expect(answer.content).toContain('140,00 €');
     expect(answer.content).toContain('470,00 €');
     expect(answer.actions).toBeTruthy();
     expect(answer.actions?.[0].route).toBe('/simulations');
@@ -173,7 +174,7 @@ describe('AiAssistantService', () => {
   });
 
   it('should handle askQuickPrompt using localized prompt text', async () => {
-    const prompt = QUICK_PROMPTS[0]; // prompt_pricing
+    const prompt = QUICK_PROMPTS.find((p) => p.id === 'prompt_pricing')!;
     await service.askQuickPrompt(prompt);
 
     const msgs = service.messages();
@@ -182,26 +183,79 @@ describe('AiAssistantService', () => {
     expect(msgs[2].content).toContain('Tramo 1');
   });
 
-  it('should reset conversation to a single welcome message', async () => {
+  it('should reset conversation to a single welcome message without sources clutter', async () => {
     await service.sendMessage('Hola');
     expect(service.messages().length).toBe(3);
 
     service.resetConversation();
     expect(service.messages().length).toBe(1);
     expect(service.messages()[0].sender).toBe('assistant');
+    expect(service.messages()[0].sources).toBeUndefined();
   });
 
   it('should welcome in German and French when language is set', () => {
     i18nService.setLanguage('de');
     service.resetConversation();
-    expect(service.messages()[0].content).toContain('Hallo! Ich bin der');
+    expect(service.messages()[0].content).toContain('Hallo! 👋');
 
     i18nService.setLanguage('fr');
     service.resetConversation();
-    expect(service.messages()[0].content).toContain('Bonjour ! Je suis');
+    expect(service.messages()[0].content).toContain('Bonjour ! 👋');
 
     i18nService.setLanguage('en');
     service.resetConversation();
-    expect(service.messages()[0].content).toContain('Hello! I am');
+    expect(service.messages()[0].content).toContain('Hi there! 👋');
+  });
+
+  it('should resolve official challenge evaluation criteria', () => {
+    const answer = service.resolveAnswer('¿Cuáles son los criterios de evaluación del reto técnico?', 'es');
+    expect(answer.content).toContain('Planificación y Diseño (35%)');
+    expect(answer.content).toContain('Calidad del Software Entregado (30%)');
+    expect(answer.content).toContain('Criterio Técnico y Control de Calidad (25%)');
+    expect(answer.content).toContain('README y Despliegue (10%)');
+    expect(answer.actions?.[0].route).toBe('/guide');
+  });
+
+  it('should resolve challenge purpose and philosophy overview', () => {
+    const answer = service.resolveAnswer('¿Qué es SaaS-O-Matic y cuál es el objetivo del reto?', 'es');
+    expect(answer.content).toContain('SaaS-O-Matic');
+    expect(answer.content).toContain('Spec-Driven Development');
+    expect(answer.content).toContain('Vibe Coding');
+    expect(answer.actions?.[0].route).toBe('/simulations');
+  });
+
+  it('should resolve ai-workspace methodology and structure', () => {
+    const answer = service.resolveAnswer('¿Cómo está organizado el espacio de trabajo ai-workspace y la bitácora?', 'es');
+    expect(answer.content).toContain('01-specs/');
+    expect(answer.content).toContain('02-architecture/');
+    expect(answer.content).toContain('03-vibe-coding-log/prompts-and-audits.md');
+    expect(answer.actions?.[0].route).toBe('/guide');
+  });
+
+  it('should resolve country taxes calculation details', () => {
+    const answer = service.resolveAnswer('¿Cómo se calcula el impuesto y el IVA por país?', 'es');
+    expect(answer.content).toContain('España (ES)');
+    expect(answer.content).toContain('21% IVA');
+    expect(answer.content).toContain('Alemania (DE)');
+    expect(answer.content).toContain('19% USt');
+    expect(answer.content).toContain('Francia (FR)');
+    expect(answer.content).toContain('20% TVA');
+    expect(answer.content).toContain('Estados Unidos (US)');
+    expect(answer.actions?.[0].route).toBe('/simulations');
+  });
+
+  it('should resolve local run and Docker deployment instructions', () => {
+    const answer = service.resolveAnswer('¿Cómo levantar el backend y frontend en local o con Docker?', 'es');
+    expect(answer.content).toContain('docker-compose up -d --build');
+    expect(answer.content).toContain('mic-saas-omatic');
+    expect(answer.content).toContain('spa-saas-omatic');
+    expect(answer.actions?.[0].route).toBe('/guide');
+  });
+
+  it('should resolve interactive simulation flow details', () => {
+    const answer = service.resolveAnswer('¿Cómo uso el simulador interactivo y los sliders?', 'es');
+    expect(answer.content).toContain('Simulador Interactivo');
+    expect(answer.content).toContain('POST /simulations');
+    expect(answer.actions?.[0].route).toBe('/simulations');
   });
 });

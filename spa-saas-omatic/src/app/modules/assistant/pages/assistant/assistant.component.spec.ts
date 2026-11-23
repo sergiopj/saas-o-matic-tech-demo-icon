@@ -149,7 +149,7 @@ describe('AssistantComponent', () => {
   });
 
   it('should compute the last assistant message for live accessibility output', async () => {
-    expect(component.lastAssistantMessage()).toContain('Asistente IA de SaaS-O-Matic');
+    expect(component.lastAssistantMessage()).toContain('copiloto en SaaS-O-Matic');
 
     await assistantService.sendMessage('¿Cómo se calculan los precios?');
     expect(component.lastAssistantMessage()).toContain('Tramo 1');

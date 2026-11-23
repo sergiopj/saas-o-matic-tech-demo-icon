@@ -79,8 +79,10 @@ export class AssistantComponent implements AfterViewChecked {
 
     this.inputText.set('');
     this.shouldScrollToBottom = true;
+    setTimeout(() => this.scrollToBottom(), 20);
     await this.assistantService.sendMessage(query);
     this.shouldScrollToBottom = true;
+    setTimeout(() => this.scrollToBottom(), 20);
   }
 
   async onSelectPrompt(prompt: QuickPrompt): Promise<void> {
@@ -88,8 +90,10 @@ export class AssistantComponent implements AfterViewChecked {
       return;
     }
     this.shouldScrollToBottom = true;
+    setTimeout(() => this.scrollToBottom(), 20);
     await this.assistantService.askQuickPrompt(prompt);
     this.shouldScrollToBottom = true;
+    setTimeout(() => this.scrollToBottom(), 20);
   }
 
   onKeyDown(event: KeyboardEvent): void {

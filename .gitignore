@@ -25,8 +25,9 @@ coverage/
 *.sqlite-shm
 mic-saas-omatic/*.sqlite*
 database.sqlite
-data/
-*/data/
+/data/
+mic-saas-omatic/data/
+!spa-saas-omatic/src/**/data/
 
 # IDE & OS
 .idea/
