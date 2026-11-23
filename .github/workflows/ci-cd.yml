@@ -23,7 +23,7 @@ jobs:
   # ═════════════════════════════════════════════════════════════════
 
   lint-backend:
-    name: '1. Backend — Lint (ESLint)'
+    name: '1. Backend — Lint (Oxlint)'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -106,7 +106,7 @@ jobs:
           retention-days: 1
 
   deploy-backend:
-    name: '4. Backend — Docker Image (GHCR)'
+    name: '4. Backend — Deploy (CD / GHCR)'
     runs-on: ubuntu-latest
     needs: [build-backend]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
@@ -234,7 +234,7 @@ jobs:
           retention-days: 1
 
   deploy-frontend:
-    name: '4. Frontend — Docker Image (GHCR)'
+    name: '4. Frontend — Deploy (CD / GHCR)'
     runs-on: ubuntu-latest
     needs: [build-frontend]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'

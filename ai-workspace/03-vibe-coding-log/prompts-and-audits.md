@@ -5287,3 +5287,30 @@ Una vez consolidada la bitácora de auditoría en la carpeta del proyecto, se di
   - Oxlint: **0 errores y 0 advertencias** en 143 archivos inspeccionados.
 - **Valor para la evaluación:**
   Garantiza una arquitectura hexagonal de libro (*Ports & Adapters*), protegiendo la regla del Inmaculate Domain exigida en `AGENTS.md` (Sección 3.A) y demostrando máxima disciplina en la separación de capas de software empresarial.
+---
+
+### 6.248. Armonización de Nomenclatura CI/CD: Diferenciación Explícita de Integración Continua (CI) y Despliegue Continuo (CD / Deploy)
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Contexto / Desafío:**
+  El usuario sugirió mejorar la semántica visual del pipeline de GitHub Actions (*"en el paso de Backend Docker Image no seria mejor Backend - Deploy y Frontend - Deploy? de backend y frontend? de cd ci?"*), señalando que el nombre *"Docker Image (GHCR)"* describía el detalle de implementación en lugar de evidenciar la compuerta de **Despliegue Continuo (CD)** dentro del ciclo de vida del software.
+- **Diagnóstico Técnico y Solución de Arquitectura Aplicada:**
+  1. *Renombrado de Jobs en `.github/workflows/ci-cd.yml`:*
+     - Backend (Track 1):
+       - Fase 1 (CI): `1. Backend — Lint (Oxlint)` (actualizado también desde ESLint para reflejar Oxlint).
+       - Fase 2 (CI): `2. Backend — Tests & Coverage (Jest)`.
+       - Fase 3 (CI): `3. Backend — Build (TypeScript → dist/)`.
+       - Fase 4 (CD): `4. Backend — Deploy (CD / GHCR)` (anteriormente *Docker Image*).
+     - Frontend (Track 2):
+       - Fase 1 (CI): `1. Frontend — Lint (Oxlint)`.
+       - Fase 2 (CI): `2. Frontend — Tests & Coverage (Vitest)`.
+       - Fase 3 (CI): `3. Frontend — Build (Angular Production Bundle)`.
+       - Fase 4 (CD): `4. Frontend — Deploy (CD / GHCR)` (anteriormente *Docker Image*).
+  2. *Sincronización en Documentación y Reglas de Agente:*
+     - Actualizados los diagramas y especificaciones en `ai-workspace/01-specs/functional-specs.md` y `ai-workspace/02-architecture/architecture-guidelines.md`.
+     - Actualizado `AGENTS.md` (Sección 4).
+- **Resultados de Verificación:**
+  - Sintaxis de workflow GitHub Actions validada al 100%.
+  - Trazabilidad y claridad ejecutiva inmediata en la consola de GitHub Actions diferenciando las fases de integración (CI) frente a las de entrega/despliegue (CD).
+- **Valor para la evaluación:**
+  Alinea la nomenclatura con las mejores prácticas de la industria DevOps/SRE, permitiendo al evaluador técnico identificar de un vistazo las compuertas de calidad de CI frente a los artefactos de entrega en producción de CD.

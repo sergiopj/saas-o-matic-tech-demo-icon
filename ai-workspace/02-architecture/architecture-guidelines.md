@@ -1278,12 +1278,12 @@ Para evitar el acoplamiento monolítico tradicional de los monorrepositorios don
 ```
 PISTA BACKEND (NestJS API):
 [1. Backend Lint] ──┐
-                    ├──► [3. Backend Build] ──► [4. Backend Docker Image (GHCR)]
+                    ├──► [3. Backend Build] ──► [4. Backend Deploy (CD / GHCR)]
 [2. Backend Tests] ─┘
 
 PISTA FRONTEND (Angular SPA):
 [1. Frontend Lint] ──┐
-                     ├──► [3. Frontend Build] ──► [4. Frontend Docker Image (GHCR)]
+                     ├──► [3. Frontend Build] ──► [4. Frontend Deploy (CD / GHCR)]
 [2. Frontend Tests] ─┘
 ```
 

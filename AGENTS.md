@@ -98,7 +98,7 @@ Whenever you operate in this repository, you MUST strictly adhere to the followi
   - Functions / Methods: $\ge 75\%$ (Current: $>96\%$)
   - Branches / Conditions: $\ge 65\%$ (Current: $>83\%$)
   - If any commit or pull request drops coverage below these thresholds, the test runner must exit with code 1 and abort the pipeline.
-- **Decoupled CI/CD Pipeline (8 Parallel Jobs)**: The repository maintains an 8-job decoupled GitHub Actions workflow (`.github/workflows/ci-cd.yml`) with independent execution tracks for Backend (Lint $\to$ Test $\to$ Build $\to$ Docker) and Frontend (Lint $\to$ Test $\to$ Build $\to$ Docker), publishing live coverage Markdown tables directly into `$GITHUB_STEP_SUMMARY`.
+- **Decoupled CI/CD Pipeline (8 Parallel Jobs)**: The repository maintains an 8-job decoupled GitHub Actions workflow (`.github/workflows/ci-cd.yml`) with independent execution tracks for Backend (Lint $\to$ Test $\to$ Build $\to$ Deploy) and Frontend (Lint $\to$ Test $\to$ Build $\to$ Deploy), publishing live coverage Markdown tables directly into `$GITHUB_STEP_SUMMARY`.
 - **Docker & Deployment Hygiene**:
   - Always maintain a root `.dockerignore` excluding `node_modules`, `dist`, `.git`, and test databases to keep build context transfer under 1 MB.
   - Multi-stage Dockerfiles: Node 22 slim `builder` with native compilation tools, and lightweight production `runner` (Nginx 1.27 Alpine for frontend, Node 22 slim for backend).

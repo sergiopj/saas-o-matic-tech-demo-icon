@@ -396,8 +396,8 @@ Para maximizar la versatilidad de la solución según el contexto técnico de la
 
 ### 8.2. Pipeline CI/CD Desacoplado en 8 Jobs (GitHub Actions)
 La integración y entrega continua se estructura en dos pistas paralelas (*Tracks*) completamente desacopladas:
-- **Pista Backend (NestJS):** Lint (ESLint) $\to$ Tests & Coverage (Jest) $\to$ Build (tsc) $\to$ Docker Image (GHCR).
-- **Pista Frontend (Angular):** Lint (Oxlint) $\to$ Tests & Coverage (Vitest) $\to$ Build (ng build production) $\to$ Docker Image (GHCR).
+- **Pista Backend (NestJS):** Lint (Oxlint) $\to$ Tests & Coverage (Jest) $\to$ Build (tsc) $\to$ Deploy (CD / GHCR).
+- **Pista Frontend (Angular):** Lint (Oxlint) $\to$ Tests & Coverage (Vitest) $\to$ Build (ng build production) $\to$ Deploy (CD / GHCR).
 - **Visibilidad Ejecutiva:** Publicación automática de tablas de cobertura Markdown con porcentajes y badges en el *Step Summary* de GitHub Actions sin requerir descargas de archivos ZIP.
 
 ### 8.3. Compuertas de Calidad (Quality Gates) con Umbrales Estrictos
