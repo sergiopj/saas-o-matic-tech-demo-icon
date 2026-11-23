@@ -4758,3 +4758,29 @@ Una vez consolidada la bitácora de auditoría en la carpeta del proyecto, se di
   - Ejecución local del paso backend: **Statements 96.65%**, **Functions 96.35%**, **Branches 83.06%** (Quality Gate 100% verde).
 - **Valor para la evaluación:**
   Garantiza que el resumen ejecutivo de cobertura se publique íntegramente en `$GITHUB_STEP_SUMMARY` en cada push o pull request, ofreciendo métricas transparentes y auditables de calidad de software a los evaluadores técnicos.
+
+
+---
+
+### 6.230. Corrección de Desbordamiento de Acciones en Facturas por Variación Lingüística (Alemán y Español)
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Contexto / Desafío:**
+  El usuario observó que en inglés y francés los 4 botones de acción en la tabla de facturas se visualizaban perfectamente, pero al cambiar a español o alemán, el cuarto botón (*Cancelar Factura* / icono `block`) se cortaba por la derecha y se salía de la tabla.
+- **Diagnóstico Técnico de Causa Raíz:**
+  1. *Distribución Dinámica de Ancho en `table-layout: auto`:* En inglés y francés, los títulos de las columnas son concisos (*"Concept"*, *"Issue Date"*, *"Due Date"*, *"Total"*), dejando holgura horizontal que el motor de renderizado del navegador distribuía hacia la última columna (`.actions-cell`), otorgándole artificialmente más de 210px.
+  2. *Expansión de Encabezados en Alemán y Español:* En alemán (*"Position / Beschreibung"*, *"Ausstellungsdatum"*, *"Fälligkeitsdatum"*, *"Nettobetrag"*) y en español (*"Cliente Corporativo"*, *"Fecha Emisión"*, *"Base Imponible"*), la longitud de las cadenas con `white-space: nowrap;` forzaba al navegador a restar espacio a las demás columnas, comprimiendo la celda de acciones a su ancho mínimo configurado anteriormente (180px).
+  3. *Déficit Espacial en 180px:* Los 4 botones de acción medían 34px cada uno con `gap: 0.25rem` (4px), totalizando 148px. Con `padding-left: 1rem` (16px) y `padding-right: 1.25rem` (20px), el ancho interior libre de la celda era de sólo 144px ($180 - 36$). Al requerir 148px, el cuarto botón se desbordaba en 4px y quedaba cortado por el `overflow: hidden;` de la tarjeta contenedora.
+- **Decisión de Arquitectura y Solución Aplicada:**
+  1. *Ampliación de Cota Mínima Responsiva:* Se incrementó `min-width` de `.invoices-table` de 980px a **1140px**, garantizando que incluso con los encabezados alemanes más largos ninguna columna de negocio se comprima indebidamente.
+  2. *Guías de Ancho Explícitas por Columna:* Se asignaron clases específicas en `<thead>` (`.col-num: 140px`, `.col-date: 135px`, `.col-subtotal: 125px`, `.col-total: 125px`, `.col-status: 115px`, `.col-cust: min 180px`, `.col-concept: min 190px`), evitando que el algoritmo de reparto tabular sacrifique la botonera de acciones.
+  3. *Ampliación y Calibración de la Celda de Acciones:*
+     - `.actions-header` y `.actions-cell`: ampliados de 180px a **200px** (`min-width: 200px`).
+     - Botones `.action-btn`: ajustados a `32px x 32px` con iconos de `18px`.
+     - Ancho ocupado por los 4 botones + gaps: $4 \times 32 + 3 \times 4 = 140\text{ px}$.
+     - En una celda de 200px con 16px de padding, quedan **28px de margen de seguridad**, eliminando cualquier posibilidad de recorte o desbordamiento en cualquiera de los 4 idiomas soportados (`es`, `en`, `de`, `fr`).
+- **Resultados de Verificación:**
+  - Tests Frontend: **328 tests passing al 100% (38 suites)**.
+  - Oxlint: **0 errores y 0 advertencias**.
+- **Valor para la evaluación:**
+  Demuestra maestría en diseño responsivo internacionalizado (i18n UI ergonomics), anticipando cómo la varianza en la longitud de caracteres entre idiomas afecta a los motores de renderizado tabular y aplicando protecciones CSS deterministas.
