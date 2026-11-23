@@ -1,6 +1,3 @@
-import { Injectable } from '@nestjs/common';
-
-@Injectable()
 export class HtmlSanitizerService {
   /**
    * Strips active script tags, iframes, embed/object nodes, and inline javascript handlers.

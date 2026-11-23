@@ -5,7 +5,13 @@ import { HtmlSanitizerService } from './domain/services/html-sanitizer.service';
 
 @Module({
   controllers: [EmailController],
-  providers: [HtmlSanitizerService, SendEmailUseCase],
+  providers: [
+    {
+      provide: HtmlSanitizerService,
+      useFactory: () => new HtmlSanitizerService(),
+    },
+    SendEmailUseCase,
+  ],
   exports: [SendEmailUseCase],
 })
 export class EmailsModule {}

@@ -10,7 +10,13 @@ describe('EmailController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [EmailController],
-      providers: [HtmlSanitizerService, SendEmailUseCase],
+      providers: [
+        {
+          provide: HtmlSanitizerService,
+          useFactory: () => new HtmlSanitizerService(),
+        },
+        SendEmailUseCase,
+      ],
     }).compile();
 
     controller = module.get<EmailController>(EmailController);

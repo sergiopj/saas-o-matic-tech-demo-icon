@@ -1,6 +1,6 @@
 import { SendEmailUseCase } from './send-email.use-case';
 import { HtmlSanitizerService } from '../../domain/services/html-sanitizer.service';
-import { SendEmailDto } from '../../infrastructure/adapters/in/rest/dto/send-email.dto';
+import { SendEmailCommand } from '../ports/in/send-email.command';
 
 describe('SendEmailUseCase', () => {
   let useCase: SendEmailUseCase;
@@ -12,13 +12,13 @@ describe('SendEmailUseCase', () => {
   });
 
   it('should execute and return dispatch confirmation with messageId', async () => {
-    const dto: SendEmailDto = {
+    const command: SendEmailCommand = {
       to: 'billing@acme.com',
       subject: 'Commercial Proposal',
       htmlBody: '<p>Offer details</p>',
     };
 
-    const result = await useCase.execute(dto);
+    const result = await useCase.execute(command);
 
     expect(result.success).toBe(true);
     expect(result.recipient).toBe('billing@acme.com');

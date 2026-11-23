@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import type { SendEmailCommand } from '../../../application/ports/in/send-email.command';
 
-export class SendEmailDto {
+export class SendEmailDto implements SendEmailCommand {
   @ApiProperty({
     description: 'Valid recipient email address conforming to RFC 5322',
     example: 'billing@acme.com',
