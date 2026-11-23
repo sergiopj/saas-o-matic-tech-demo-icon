@@ -5388,3 +5388,33 @@ Una vez consolidada la bitácora de auditoría en la carpeta del proyecto, se di
   - Oxlint: **0 errores y 0 advertencias** en backend (143 archivos).
 - **Valor para la evaluación:**
   Demuestra rigor algorítmico y capacidad de diagnóstico inmediato ante problemas de colisión semántica en procesamiento de lenguaje natural, garantizando que el asistente de soporte actúe con precisión quirúrgica y en el tono de producto adecuado.
+---
+
+### 6.251. Purga Total de Preguntas Rápidas Técnicas en Asistente IA y Sustitución por Flujos Comerciales Reales
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Contexto / Desafío:**
+  El usuario señaló con total acierto que las preguntas técnicas visibles en los botones rápidos del chat (*"¿Cómo está estructurada la arquitectura hexagonal del proyecto?"* y *"¿Cuáles son los objetivos y criterios del reto técnico?"*) sobraban por completo en una aplicación SaaS empresarial (*"preguntas tecnicas sobran"* adjuntando capturas de ambas píldoras).
+- **Diagnóstico Técnico y Solución de Arquitectura Aplicada:**
+  1. *Purga de Preguntas Rápidas Técnicas (`ai-knowledge.data.ts`):*
+     - Se eliminaron definitivamente `prompt_architecture` y `prompt_challenge` de la lista pública `QUICK_PROMPTS`.
+     - Ninguna sugerencia en la interfaz expone la trastienda de desarrollo, arquitectura o criterios de evaluación.
+  2. *Incorporación del Flujo Comercial de Contacto y Propuestas (`prompt_contact`):*
+     - Se añadió la sugerencia funcional:
+       - `es`: *"¿Para qué sirve el módulo de contacto y cómo envío propuestas?"*
+       - `en`: *"What is the contact module for and how do I send proposals?"*
+       - `fr`: *"À quoi sert le module de contact et comment envoyer des devis ?"*
+     - Con icono `contact_support` y vinculación directa al nuevo tema de conocimiento de contacto.
+  3. *Catálogo de Sugerencias Rápidas 100% Funcional (7 Flujos de Negocio):*
+     - Cálculo de Tramos de Precios (`prompt_pricing`).
+     - Simulador de Costes y Desglose (`prompt_simulations`).
+     - Validación Fiscal AEAT y CIF/NIF (`prompt_fiscal`).
+     - Emisión, Anulación y Descarga de Facturas PDF (`prompt_invoices`).
+     - Multi-Divisa y Resiliencia Offline (`prompt_currencies`).
+     - Gestión y Registro de Clientes Corporativos (`prompt_customers`).
+     - Contacto y Soporte Comercial (`prompt_contact`).
+- **Resultados de Verificación:**
+  - Pruebas Frontend (Vitest): **367/367 tests passing al 100% (43 suites)**.
+  - Oxlint: **0 errores y 0 advertencias** en 106 archivos inspeccionados.
+- **Valor para la evaluación:**
+  Consolida una experiencia de usuario orientada al producto (*Product-Led Excellence*), erradicando el sesgo de auto-evaluación en la UI del asistente y ofreciendo únicamente consultas de alto valor para equipos comerciales y clientes.

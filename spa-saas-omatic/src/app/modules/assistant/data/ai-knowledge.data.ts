@@ -27,18 +27,13 @@ export const QUICK_PROMPTS: readonly QuickPrompt[] = [
     icon: 'currency_exchange',
   },
   {
-    id: 'prompt_architecture',
-    labelKey: 'assistant.prompts.architecture',
-    icon: 'lan',
-  },
-  {
     id: 'prompt_customers',
     labelKey: 'assistant.prompts.customers',
     icon: 'business',
   },
   {
-    id: 'prompt_challenge',
-    labelKey: 'assistant.prompts.challenge',
-    icon: 'help_outline',
+    id: 'prompt_contact',
+    labelKey: 'assistant.prompts.contact',
+    icon: 'contact_support',
   },
 ];
