@@ -4,7 +4,7 @@ export const TRANSLATIONS = {
     'currency.status.aria': 'Estado de sincronización de tipos de cambio',
     'currency.sync.loading': 'Conectando: Actualizando divisas...',
     'currency.sync.error': 'API Offline: Usando tipos en caché',
-    'currency.sync.synced': 'API Online: Tipos de cambio online
+    'currency.sync.synced': 'API Online: Tipos de cambio online',
     'navbar.title': 'SaaS-O-Matic',
     'navbar.subtitle': 'Optimizador Comercial',
     'navbar.lang.aria': 'Cambiar idioma de la aplicación',
