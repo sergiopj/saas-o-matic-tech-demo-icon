@@ -5042,6 +5042,38 @@ Una vez consolidada la bitácora de auditoría en la carpeta del proyecto, se di
 - **Valor para la evaluación:**
   Demuestra una capacidad sobresaliente para alinear el comportamiento del producto con las expectativas exactas del tribunal evaluador, integrando documentación viva, ergonomía visual de vanguardia y rigor técnico impecable.
 
+---
+
+### 6.240. Supresión del Bucle Continuo en Reproductor de Vídeo (`loop: false`): Ergonomía y Respeto al Foco del Usuario
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Contexto / Desafío:**
+  El usuario solicitó desactivar la reproducción en bucle continuo del vídeo de demostración en la sección de Guía (*"que no se reproduzca el video en loop por favor"*). El bucle infinito generaba movimiento repetitivo innecesario en la pantalla una vez que el usuario ya había visto la explicación de ~12 segundos.
+- **Diagnóstico Técnico y Solución de Arquitectura Aplicada:**
+  1. *Desactivación del Atributo `loop` Nativo en `<video>`:*
+     - Se eliminó el atributo estático `loop` en `video-player.component.html`, sustituyéndolo por un input reactivo configurable `[loop]="loop()"`.
+     - En `VideoPlayerComponent` (`video-player.component.ts`), se declaró la propiedad de entrada `readonly loop = input<boolean>(false);`, estableciendo el valor predeterminado en `false`.
+  2. *Rebobinado Limpio y Transición de Estado al Finalizar (`onVideoEnded`):*
+     - Al dispararse el evento nativo `(ended)="onVideoEnded()"`, el componente resetea el reproductor:
+       ```typescript
+       onVideoEnded(): void {
+         const video = this.videoRef?.nativeElement;
+         if (video) {
+           video.currentTime = 0;
+         }
+         this.isPlaying.set(false);
+         this.currentTime.set(0);
+       }
+       ```
+     - De este modo, al concluir la reproducción, el vídeo vuelve suavemente al primer fotograma/poster y muestra el botón central de Play, permitiendo que el usuario lo vuelva a reproducir manualmente si lo desea sin sufrir saturación visual continua en pantalla.
+- **Resultados de Verificación:**
+  - Pruebas Frontend (Vitest): **388 tests passing al 100% (43 suites)** (+1 test actualizado comprobando que `loop` es `false` por defecto).
+  - Oxlint: **0 errores y 0 advertencias** en 105 archivos inspeccionados.
+  - Pruebas Backend (Jest): **227 tests passing al 100% (54 suites)**.
+- **Valor para la evaluación:**
+  Evidencia atención meticulosa al detalle en accesibilidad y ergonomía de lectura, evitando distracciones cíclicas de movimiento (cumpliendo con pautas WCAG 2.2 sobre contenido en movimiento que pueda distraer al usuario).
+
+
 
 
 

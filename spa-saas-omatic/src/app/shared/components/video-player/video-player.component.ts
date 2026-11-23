@@ -41,6 +41,7 @@ export class VideoPlayerComponent {
   readonly title = input<string>('');
   readonly badge = input<string>('');
   readonly caption = input<string>('');
+  readonly loop = input<boolean>(false);
 
   @ViewChild('videoRef') videoRef?: ElementRef<HTMLVideoElement>;
   @ViewChild('playerContainer') playerContainer?: ElementRef<HTMLElement>;
@@ -111,6 +112,10 @@ export class VideoPlayerComponent {
   }
 
   onVideoEnded(): void {
+    const video = this.videoRef?.nativeElement;
+    if (video) {
+      video.currentTime = 0;
+    }
     this.isPlaying.set(false);
     this.currentTime.set(0);
   }

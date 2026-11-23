@@ -417,7 +417,7 @@ El módulo de Guía (`/guide`) proporciona a los nuevos usuarios, decisores come
 - **Vídeo Demo Integrado:** Reproduce una demostración visual interactiva (`saas-omatic-intro.mp4`, ~12.2 segundos) que explica el propósito comercial de la plataforma (optimización de suscripciones SaaS, simulación por tramos y facturación oficial).
 - **Densidad Visual y Ergonomía (Sin Ruido Duplicado):** Se prescinde de cabeceras de texto redundantes exteriores («Vídeo Demostración», «¿Para qué sirve SaaS-O-Matic?») aprovechando la propia carátula/poster y las etiquetas nativas del reproductor para maximizar el espacio útil vertical y la limpieza visual.
 - **Controles Personalizados:** Línea de tiempo interactiva con cálculo reactivo de tiempo transcurrido (`mm:ss`), botón play/pause central y en barra, control de volumen/silencio y pantalla completa, sin exponer metadatos técnicos innecesarios (etiquetado limpiamente como *"Vídeo Demo"*).
-- **Bucle Continuo (`loop`):** Reproducción fluida y continua que permite mantener la ambientación mientras el usuario consulta la documentación.
+- **Reproducción Finita y Respetuosa (Sin Bucle / `loop: false`):** La reproducción finaliza limpiamente al concluir la demostración (`(ended)="onVideoEnded()"`), rebobinando el reproductor al inicio (`currentTime = 0`) y mostrando nuevamente el botón de play central para evitar distracciones visuales o saturación cognitiva en bucle mientras el usuario consulta la documentación.
 
 ### 9.2. Carrusel Interactivo de Diapositivas Comerciales
 - **Formato Diapositiva Amplia:** Una tarjeta destacada que presenta cada etapa del flujo de trabajo comercial con número en gran formato, icono ilustrativo, descripción operativa y checklist de capacidades clave.

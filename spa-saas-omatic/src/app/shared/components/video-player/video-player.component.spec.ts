@@ -21,8 +21,9 @@ describe('VideoPlayerComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create the video player component', () => {
+  it('should create the video player component with loop disabled by default', () => {
     expect(component).toBeTruthy();
+    expect(component.loop()).toBe(false);
     expect(component.isPlaying()).toBe(false);
     expect(component.isMuted()).toBe(false);
     expect(component.currentTime()).toBe(0);

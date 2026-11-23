@@ -14,7 +14,7 @@
       class="video-element"
       [src]="src()"
       [poster]="poster()"
-      loop
+      [loop]="loop()"
       preload="metadata"
       playsinline
       (timeupdate)="onTimeUpdate()"
