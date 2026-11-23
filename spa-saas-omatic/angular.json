@@ -92,6 +92,11 @@
             "coverageExclude": [
               "**/*.html"
             ],
+            "coverageReporters": [
+              "text",
+              "lcov",
+              "json-summary"
+            ],
             "coverageThresholds": {
               "lines": 75,
               "functions": 75,

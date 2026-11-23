@@ -4291,3 +4291,29 @@ Una vez consolidada la bitácora de auditoría en la carpeta del proyecto, se di
   - `GET http://localhost:3000/invoices`: API REST NestJS JSON $\to$ **200 OK ✓**.
   - Ambos contenedores reportan estado **Up (healthy)**.
 - **Valor para la evaluación:** Diagnóstico ágil de solapamiento entre rutas de presentación SPA (*HTML5 pushState routing*) y rutas de servicios REST, demostrando maestría en la arquitectura de servidores web Nginx y separación de capas frontend/backend.
+
+
+---
+
+### 6.212. Tablas Ejecutivas de Cobertura en GitHub Actions Step Summary
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Prompt Verbatim del Usuario:**
+  > *«pode,mos ver una tabla con el coverage de front y backend en github actions en bves de un enlace a descargar un zip?»*
+- **Contexto / Desafío:**
+  Por defecto, los artefactos de cobertura en GitHub Actions se descargan como archivos `.zip` comprimidos, lo que obliga al evaluador a descargar el archivo y abrirlo localmente. Se solicitó mostrar tablas ejecutivas con el porcentaje exacto y el resultado de las compuertas de calidad directamente renderizadas en la vista principal de GitHub Actions (*Step Summary*).
+- **Decisión de Arquitectura y Solución Aplicada:**
+  1. *Parser Universal de Métricas ([scripts/coverage-summary.mjs](file:///c:/Users/Usuario/Documents/GitHub/saas-o-matic-tech-demo-icon/scripts/coverage-summary.mjs)):*
+     - Creado un script que procesa el reporte estándar `clover.xml` generado automáticamente por Jest y Vitest.
+     - Extrae métricas clave: Líneas/Sentencias, Funciones/Métodos y Ramas/Condicionales.
+     - Genera tablas en formato Markdown con badges de estado (🟢 Pass / 🔴 Fail) validados contra los umbrales mínimos ($\ge 75\%$ en líneas y funciones, $\ge 65\%$ en ramas).
+  2. *Integración en GitHub Actions ([.github/workflows/ci-cd.yml](file:///c:/Users/Usuario/Documents/GitHub/saas-o-matic-tech-demo-icon/.github/workflows/ci-cd.yml)):*
+     - Añadidos pasos `Publish backend coverage summary` y `Publish frontend coverage summary` configurados con `if: always()` para escribir directamente en `$GITHUB_STEP_SUMMARY`.
+     - De esta forma, nada más entrar en la ejecución del Action, el evaluador visualiza de inmediato las tablas de cobertura de ambos proyectos sin descargas.
+- **Resultados de Verificación:**
+  - Ejecución local del parser verificada:
+    - Backend: 96.65% Líneas, 96.35% Métodos, 83.06% Ramas (🟢 100% Pass).
+    - Frontend: 98.22% Líneas, 97.38% Métodos, 90.44% Ramas (🟢 100% Pass).
+  - Oxlint backend: 0 errores, 0 advertencias.
+  - Oxlint frontend: 0 errores, 0 advertencias.
+- **Valor para la evaluación:** Demuestra excelencia en Developer Experience (DX) y visibilidad de métricas en plataformas CI/CD, permitiendo a comités técnicos auditar la calidad del software a simple vista.

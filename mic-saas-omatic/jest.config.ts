@@ -30,6 +30,7 @@ const config: Config = {
     '!src/data-source.ts',
   ],
   coverageDirectory: './coverage',
+  coverageReporters: ['text', 'lcov', 'json-summary', 'clover'],
   // Coverage thresholds: pipeline fails loudly if quality drops below these minimums.
   // Equivalent to SonarQube quality gate enforcement at the CI level.
   coverageThreshold: {
