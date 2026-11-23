@@ -4709,3 +4709,30 @@ Una vez consolidada la bitácora de auditoría en la carpeta del proyecto, se di
 - **Valor para la evaluación:**
   Demuestra maestría en CSS layout tabular y responsivo, previniendo fallos de renderizado y garantizando que todas las acciones operativas de facturación permanezcan 100% visibles, accesibles y estéticamente impecables.
 
+
+
+---
+
+### 6.228. Corrección de Validación de UUIDs y Coerción Numérica en Emisión de Facturas (`CreateInvoiceDto`)
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Contexto / Desafío:**
+  Al intentar emitir una nueva factura corporativa (ej. Banco Santander S.A., 200 usuarios, base imponible 117.000 € vinculada a su simulación de seed), la API devolvía un error HTTP 400 Bad Request con el mensaje genérico `"Validation failed for one or more fields."`.
+- **Diagnóstico Técnico de Causa Raíz:**
+  1. *Rigidez en Validador `@IsUUID('4')` frente a UUIDs Estándar:* `CreateInvoiceDto` empleaba `@IsUUID('4')` de `class-validator`, el cual exige de forma estricta que la posición 13 sea `4` y la posición 17 (variante RFC 4122) pertenezca exclusivamente al conjunto `[8, 9, a, b]`. En los datasets de seed y mocks históricos (`database-seeder.service.ts`), algunas simulaciones y clientes (ej. Banco Santander `f88109fe-0425-4c10-2399-0530683ec278`, SEAT `5d7201ff-155c-4a34-0d01-4e65b3467044`) poseían variantes distintas de `8-b`, provocando que el validador las rechazara inmediatamente (`simulationId must be a valid UUID v4`). En contraposición, `CreateSimulationDto` utilizaba el patrón universal canónico `/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/`, generando una disparidad de criterios entre módulos.
+  2. *Ausencia de Coerción Numérica Declarativa (`@Type(() => Number)`):* En `CreateInvoiceDto`, los campos `subtotal` y `taxRate` carecían del decorador `@Type(() => Number)` de `class-transformer`. Si un valor numérico proveniente de un input HTML o payload JSON llegaba como string, `ValidationPipe({ transform: true })` no lo convertía a tipo numérico primitivo, provocando el fallo de `@IsNumber()` y `@Min(0)`.
+  3. *Manejo de Cadenas Vacías en Propiedades Opcionales:* Cuando `simulationId` o `notes` se transmitían como cadenas vacías `""`, `@IsOptional()` no las descartaba, activando los validadores `@IsUUID()` y provocando falsos positivos.
+  4. *Ocultamiento de Causas de Error en UI (`err.detail` vs `err.invalidParams`):* En el diálogo de creación de factura (`InvoiceCreateDialogComponent`), ante un error de validación, la interfaz sólo mostraba `err.detail` ("Validation failed for one or more fields.") en lugar de mapear `err.invalidParams` para indicar al usuario qué campo y qué regla exacta habían fallado.
+- **Decisión de Arquitectura y Solución Aplicada:**
+  1. *Unificación de Validación UUID con Regex Canónica:* En `CreateInvoiceDto`, se unificó la validación de `customerId` y `simulationId` utilizando `@Matches(/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/)`, garantizando interoperabilidad plena con cualquier UUID de 128 bits estándar.
+  2. *Coerción y Normalización Declarativa (`@Type` y `@Transform`):* Se añadieron `@Type(() => Number)` en `subtotal` y `taxRate`, y `@Transform(({ value }) => (typeof value === 'string' && value.trim() === '' ? undefined : value))` en `simulationId` y `notes`. Asimismo, se blindó `CreateSimulationDto` con `@Type(() => Number)`.
+  3. *Sanitización Defensiva en Frontend (`InvoiceCreateDialogComponent`):* Se aseguró la conversión explícita de `subtotal` mediante `cleanSubtotal = typeof rawSubtotal === 'number' ? rawSubtotal : parseFloat(String(rawSubtotal))`, y el mapeo de `simulationId` limpio o `undefined`.
+  4. *Feedback de Validación Enriquecido en UI:* Se actualizó el manejador de error para extraer y concatenar las razones de `err.invalidParams`:
+     `const detailedMsg = err?.invalidParams?.length ? err.invalidParams.map((p) => p.reason).join('. ') : err?.detail;`
+- **Resultados de Verificación:**
+  - Creación de factura verificada en caliente con el payload real de Santander (200 usuarios, 117.000 € base, 141.570 € total): éxito `201 Created` (`INV-2026-2644`).
+  - Tests Backend: **227/227 tests passing (54 suites)**.
+  - Tests Frontend: **328/328 tests passing (38 suites)**.
+  - Oxlint: **0 errores y 0 advertencias** en ambos módulos.
+- **Valor para la evaluación:**
+  Refuerza la robustez de la arquitectura Hexagonal y la interoperabilidad declarativa entre capas (NestJS `ValidationPipe`, `class-transformer` y Angular Reactive Forms), erradicando puntos ciegos de validación y garantizando un feedback visual granular al usuario final.

@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { validate } from 'class-validator';
 import { CreateSimulationDto } from './create-simulation.dto';
 

@@ -134,7 +134,8 @@ export class InvoiceCreateDialogComponent implements OnInit {
     });
 
     this.form.get('subtotal')?.valueChanges.subscribe((val) => {
-      this.currentSubtotal.set(typeof val === 'number' && !Number.isNaN(val) ? val : 0);
+      const num = typeof val === 'number' ? val : (val ? parseFloat(String(val)) : 0);
+      this.currentSubtotal.set(!Number.isNaN(num) && num >= 0 ? num : 0);
     });
   }
 
@@ -172,15 +173,18 @@ export class InvoiceCreateDialogComponent implements OnInit {
     this.submitting.set(true);
     this.errorMessage.set(null);
 
+    const cleanSimulationId = this.data?.simulationId?.trim() ? this.data.simulationId.trim() : undefined;
+    const cleanSubtotal = typeof subtotal === 'number' ? subtotal : parseFloat(String(subtotal));
+
     this.invoiceApi
       .create({
         customerId,
-        simulationId: this.data?.simulationId,
-        concept,
-        subtotal,
+        simulationId: cleanSimulationId,
+        concept: concept.trim(),
+        subtotal: Number.isNaN(cleanSubtotal) ? 0 : cleanSubtotal,
         taxRate: this.taxRate(),
         currency: 'EUR',
-        notes: notes ? notes.trim() : undefined,
+        notes: notes?.trim() ? notes.trim() : undefined,
       })
       .subscribe({
         next: (created: Invoice) => {
@@ -190,7 +194,10 @@ export class InvoiceCreateDialogComponent implements OnInit {
         },
         error: (err: ProblemDetail) => {
           this.submitting.set(false);
-          this.errorMessage.set(err?.detail || this.i18n.t('error.communication.detail'));
+          const detailedMsg = err?.invalidParams?.length
+            ? err.invalidParams.map((p) => p.reason).join('. ')
+            : err?.detail;
+          this.errorMessage.set(detailedMsg || this.i18n.t('error.communication.detail'));
         },
       });
   }
