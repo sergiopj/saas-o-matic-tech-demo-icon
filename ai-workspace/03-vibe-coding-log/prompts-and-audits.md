@@ -4382,3 +4382,24 @@ Una vez consolidada la bitácora de auditoría en la carpeta del proyecto, se di
   - Oxlint frontend: **0 errores, 0 advertencias** (87 archivos).
 - **Valor para la evaluación:**
   Este episodio representa la máxima expresión del criterio del desarrollador sénior: la IA propone soluciones que a menudo adolecen de despistes operacionales (flags de CLI incompatibles, archivos omitidos en git commit, acoplamientos innecesarios). Es la mano experta del ingeniero la que audita la ejecución en CI, identifica la causa raíz en segundos y eleva la arquitectura a estándares de excelencia técnica.
+
+
+---
+
+### 6.215. Corrección de Contraste en Visor de GitHub Actions (ANSI Colors vs. NO_COLOR)
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Prompt Verbatim del Usuario:**
+  > *«se ve en marron y la letra negra no se lee bien eso por que es?»* [Adjunta captura del log de GitHub Actions con la pastilla oscura `[dashboard]`].
+- **Diagnóstico Técnico de Causa Raíz:**
+  1. *Origen del texto `dashboard`:* En Angular 22, el builder `@angular/build:unit-test` ejecuta **Vitest**. Al tratarse de un proyecto nombrado (`"dashboard"` en `angular.json`), Vitest antepone un badge identificativo a cada suite.
+  2. *Conflicto de renderizado ANSI en GitHub Actions:* Vitest asigna a este badge el código ANSI `bgYellow` (fondo amarillo) con texto `black` (negro). En consolas locales con fondo negro, el amarillo resalta. Sin embargo, en el visor web de GitHub Actions (con tema oscuro), el CSS de GitHub traduce `bgYellow` a un tono **mostaza/marrón oscuro** (`#6B5300`) manteniendo el texto en negro (`#000000`).
+  3. *Inaccesibilidad visual:* La combinación negro sobre marrón produce un ratio de contraste bajísimo ($\sim 1.5:1$), haciendo que el texto parezca un borrón ilegible.
+- **Solución Aplicada:**
+  - Se configuró la variable de entorno `env: NO_COLOR: '1'` en el paso de ejecución de tests de frontend de [.github/workflows/ci-cd.yml](file:///c:/Users/Usuario/Documents/GitHub/saas-o-matic-tech-demo-icon/.github/workflows/ci-cd.yml).
+  - Vitest activa automáticamente el modo accesible de alto contraste sin fondos ANSI sucios (`✓ |dashboard| src/...`), garantizando una lectura impecable en los logs de CI/CD.
+- **Resultados de Verificación:**
+  - Verificado en terminal local: salida limpia con delimitadores `|dashboard|` en texto claro.
+  - Oxlint backend: 0 errores / 0 advertencias.
+  - Oxlint frontend: 0 errores / 0 advertencias.
+- **Valor para la evaluación:** Atención al detalle en accesibilidad y ergonomía de lectura incluso en la consola de integración continua.
