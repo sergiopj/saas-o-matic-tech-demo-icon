@@ -49,6 +49,13 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'assistant',
+    loadChildren: () =>
+      import('./modules/assistant/assistant.routes').then(
+        (m) => m.ASSISTANT_ROUTES
+      ),
+  },
+  {
     path: '**',
     redirectTo: 'home',
   },

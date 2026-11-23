@@ -36,6 +36,9 @@
             <mat-icon class="nav-icon" aria-hidden="true">{{ item.icon }}</mat-icon>
             @if (!isCollapsed()) {
               <span class="nav-label">{{ item.labelKey | translate }}</span>
+              @if (item.badge) {
+                <span class="nav-badge">{{ item.badge }}</span>
+              }
             }
           </a>
         </li>
@@ -59,6 +62,9 @@
             <mat-icon class="nav-icon" aria-hidden="true">{{ item.icon }}</mat-icon>
             @if (!isCollapsed()) {
               <span class="nav-label">{{ item.labelKey | translate }}</span>
+              @if (item.badge) {
+                <span class="nav-badge">{{ item.badge }}</span>
+              }
             }
           </a>
         </li>

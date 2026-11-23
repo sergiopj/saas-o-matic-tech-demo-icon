@@ -4909,6 +4909,53 @@ Una vez consolidada la bitácora de auditoría en la carpeta del proyecto, se di
 - **Valor para la evaluación:**
   Evidencia rigor senior en la adopción de estándares ECMAScript modernos y orientación al detalle en la ergonomía de usuario y consistencia de documentación.
 
+---
+
+### 6.236. Asistente Conversacional Inteligente con IA Local (`AiAssistantService`, `AssistantComponent`), Integración en Sidebar y Base de Conocimiento de Dominio (Specs y Arquitectura)
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Contexto / Desafío:**
+  El usuario solicitó diseñar e implementar un robot de chat por IA ubicado estratégicamente en el menú de navegación lateral izquierdo, justo debajo de «Contacto y Soporte», alimentado exhaustivamente con la funcionalidad, reglas de negocio y directrices técnicas descritas en los archivos markdown (`ai-workspace/`, specs funcionales, arquitectura hexagonal, normativa fiscal AEAT, divisas y facturación en PDF) (*"que guapisimo estaria un robot chat por ia justo debajo de contacto y soporte y que este alimentado con la funcionalidad definida en los mds y en mas sitios que se te ocurra dentro de la app"*).
+- **Diagnóstico Técnico y Solución de Arquitectura Aplicada:**
+  1. *Navegación y Enrutamiento (`sidebar.component.ts`, `app.routes.ts`, `navbar.component.html`):*
+     - Se añadió el elemento de navegación `/assistant` en `BOTTOM_NAV_ITEMS` directamente tras `/contact` con etiqueta `'sidebar.assistant'`, icono `smart_toy` y badge visual `'AI'`.
+     - El badge `'AI'` se estilizÃ³ con gradiente sutil y tokens `--omatic-*` tanto en el sidebar de escritorio como en el panel desplegable de navegación móvil.
+     - Se configuró la ruta `/assistant` con carga perezosa (`loadChildren`) hacia `ASSISTANT_ROUTES`.
+  2. *Motor de Base de Conocimiento Local (`AiAssistantService` en `src/app/modules/assistant/services/`):*
+     - Servicio standalone (`providedIn: 'root'`) reactivo con Signals (`messages`, `isTyping`, `quickPrompts`).
+     - Se dotó al asistente de un corpus de conocimiento indexado (`AI_KNOWLEDGE_TOPICS`) que abarca:
+       - **Tarificación por Tramos:** Reglas marginales acumulativas (10 €, 8 €, 5 €), almacenamiento (0.15 €/GB), llamadas API (0.001 €) y ejemplos paso a paso con enlace a `/simulations`.
+       - **Validación Fiscal Estricta AEAT:** Algoritmos oficiales de DNI, NIE y CIF (módulo 23, algoritmo ponderado de la AEAT) y validación internacional de VAT (DE, FR, US, CH) con enlace a `/customers`.
+       - **Facturación y Generación PDF:** Ciclo de estados (`DRAFT`, `ISSUED`, `PAID`, `CANCELLED`), anulación segura con modal (`ConfirmDialogComponent`) y generación binaria en PDFKit con enlace a `/invoices`.
+       - **Multi-Divisa y Resiliencia Offline:** EUR base, USD, GBP, CHF con conmutación automática a caché offline en caso de fallo de red.
+       - **Arquitectura Hexagonal:** Dominio puro sin dependencias, puertos y adaptadores NestJS, SQLite en modo WAL y RFC 7807 Problem Details.
+       - **CI/CD y Calidad:** 8 jobs paralelos en GitHub Actions, Oxlint 0/0 y cobertura $>96\%$.
+       - **Guía Multimedia y Vídeo Demo:** Atajos de teclado y diapositivas comerciales con enlace a `/guide`.
+       - **Contacto y Soporte:** Sanitización anti-XSS y despacho transaccional con enlace a `/contact`.
+     - Algoritmo de resolución semántica robusto: discriminación de términos cortos mediante coincidencia exacta de palabras completas (`queryTokens.includes`) e inmunidad a falsos positivos por substrings (ej. evitar que `ci` o `cd` coincidan con *desconocido*).
+  3. *Interfaz Conversacional Comercial (`AssistantComponent` en `src/app/modules/assistant/pages/assistant/`):*
+     - Cabecera con badge corporativo (*SaaS-O-Matic AI Core v2.0*), título, subtítulo e indicador de estado pulsante (*En línea • Base de conocimiento sincronizada*).
+     - Parrilla de preguntas rápidas recomendadas (*Quick Prompts*) para interacción en un solo clic.
+     - Flujo de mensajes diferenciado (burbujas de usuario en azul y burbujas del asistente en superficie blanca/oscura con avatar, nombre, fecha/hora y botón de copiado al portapapeles).
+     - Renderizado seguro de formato enriquecido (`formatContent`) convirtiendo negritas, tokens de código y saltos de línea con previo escape de HTML para prevenir inyecciones XSS.
+     - Píldoras de navegación contextual activa con `routerLink` para saltar inmediatamente a los módulos relevantes del optimizador.
+     - Fichas de fuentes y especificaciones referenciadas para máxima transparencia y trazabilidad de las respuestas.
+     - Animación de redacción reactiva con tres puntos suspensivos pulsantes (`typing-bubble`).
+     - Botón de reinicio de conversación con confirmación toast y autoscroll suave al pie de la conversación.
+     - Cumplimiento de accesibilidad W3C con elemento nativo `<output class="sr-only" aria-live="polite">` para lectores de pantalla.
+  4. *Internacionalización Integral (i18n):*
+     - Soporte completo y paridad de claves en los 4 idiomas (`es`, `en`, `de`, `fr`) en `translations.ts` para todas las cadenas del asistente y respuestas de la base de conocimiento.
+  5. *Estilos Estrictos y Diseño Modular:*
+     - 100% tokens CSS `--omatic-*`, cero código hexadecimal directo ni valores RGB/RGBA crudos, transiciones con propiedades explícitas y compatibilidad total con tema claro y tema oscuro.
+- **Resultados de Verificación:**
+  - Pruebas Frontend (Vitest): **377 tests passing al 100% (43 suites)** (+31 tests nuevos).
+  - Quality Gate de Cobertura Frontend: **Statements: 96.18%**, **Functions: 95.90%**, **Lines: 97.03%**, **Branches: 88.19%** (100% verde).
+  - Pruebas Backend (Jest): **227 tests passing al 100% (54 suites)**.
+  - Oxlint: **0 errores y 0 advertencias** en 105 archivos inspeccionados.
+- **Valor para la evaluación:**
+  Convierte la aplicación en una experiencia inteligente interactiva de vanguardia, permitiendo al evaluador técnico o decisor de negocio consultar cualquier duda sobre la plataforma de forma inmediata sin salir de la interfaz, combinando Product-Led Growth con gobernanza estricta de Clean Architecture.
+
+
 
 
 

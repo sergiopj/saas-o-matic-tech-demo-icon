@@ -46,6 +46,12 @@ export const BOTTOM_NAV_ITEMS: readonly NavItem[] = [
     labelKey: 'sidebar.contact',
     icon: 'support_agent',
   },
+  {
+    path: '/assistant',
+    labelKey: 'sidebar.assistant',
+    icon: 'smart_toy',
+    badge: 'AI',
+  },
 ] as const;
 
 export const APP_NAV_ITEMS: readonly NavItem[] = [

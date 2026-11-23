@@ -26,15 +26,24 @@ describe('SidebarComponent', () => {
 
   it('should render all navigation items', () => {
     const navLinks = fixture.nativeElement.querySelectorAll('.nav-link');
-    expect(navLinks.length).toBe(6);
+    expect(navLinks.length).toBe(7);
   });
 
-  it('should render primary items in main nav and secondary items in bottom section', () => {
+  it('should render primary items in main nav and secondary items in bottom section including AI assistant', () => {
     const mainLinks = fixture.nativeElement.querySelectorAll('.sidebar-nav .nav-link');
     expect(mainLinks.length).toBe(4);
 
     const bottomLinks = fixture.nativeElement.querySelectorAll('.sidebar-bottom-section .nav-link');
-    expect(bottomLinks.length).toBe(2);
+    expect(bottomLinks.length).toBe(3);
+
+    const assistantLink = Array.from(bottomLinks).find((el: any) =>
+      el.getAttribute('href') === '/assistant'
+    );
+    expect(assistantLink).toBeTruthy();
+
+    const badgeEl = fixture.nativeElement.querySelector('.nav-badge');
+    expect(badgeEl).toBeTruthy();
+    expect(badgeEl.textContent.trim()).toBe('AI');
   });
 
   it('should toggle collapse state on button click', () => {

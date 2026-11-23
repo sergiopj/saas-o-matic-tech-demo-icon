@@ -421,3 +421,28 @@ El módulo de Guía (`/guide`) proporciona a los nuevos usuarios, decisores come
 ### 9.2. Carrusel Interactivo de Diapositivas Comerciales
 - **Formato Diapositiva Amplia:** Una tarjeta destacada que presenta cada etapa del flujo de trabajo comercial con número en gran formato, icono ilustrativo, descripción operativa y checklist de capacidades clave.
 - **Navegación Intuitiva:** Botonera ergonómica de avance y retroceso (`[ Retroceder ]` / `[ Avanzar ]`) junto con barra superior de píldoras de navegación rápida (`01`, `02`, `03`) para saltar de inmediato a cualquier fase.
+
+---
+
+## 10. Asistente Conversacional Inteligente con IA Local (`Assistant`)
+
+El módulo de Asistente IA (`/assistant`), accesible directamente bajo «Contacto y Soporte» en la barra lateral de navegación con insignia destacada (`AI`), proporciona un copiloto conversacional inteligente embebido en la aplicación.
+
+### 10.1. Base de Conocimiento de Dominio Integrada (`AiAssistantService`)
+El asistente está indexado sobre las directrices de arquitectura y especificaciones funcionales del repositorio:
+1. **Motor de Facturación por Tramos:** Reglas de cálculo progresivo marginal (€10, €8, €5), almacenamiento adicional y llamadas API, con desglose matemático de ejemplos reales (ej. 60 usuarios = 470 €) y enlace directo al simulador.
+2. **Validación Fiscal Algorítmica (AEAT):** Verificación oficial de DNI, NIE y CIF (módulo 23 y algoritmo de control ponderado de la AEAT) y formatos de VAT internacional (DE, FR, US, CH).
+3. **Ciclo de Facturas y Emisión de PDF:** Ciclo de vida documental (`DRAFT` $\to$ `ISSUED` $\to$ `PAID` / `CANCELLED`), anulación segura con modal accesible (`ConfirmDialogComponent`) y descarga binaria en PDFKit.
+4. **Soporte Multi-Divisa y Resiliencia Offline:** Gestión de 4 divisas (EUR, USD, GBP, CHF) y conmutación automática a caché offline en memoria/localStorage.
+5. **Arquitectura Hexagonal:** Estructura en tres capas (Dominio puro, Puertos de Entrada/Salida y Adaptadores Primarios/Secundarios), SQLite en modo WAL (`enableWAL: true`) y Problem Details RFC 7807.
+6. **Pipeline CI/CD y Calidad:** 8 jobs paralelos en GitHub Actions, Oxlint con 0 errores/warnings y umbrales de cobertura $>96\%$.
+
+### 10.2. Experiencia de Usuario y Accesibilidad Conversacional (`AssistantComponent`)
+- **Píldoras de Preguntas Frecuentes:** Botones interactivos superiores que permiten al usuario formular preguntas clave con un solo clic.
+- **Formato Enriquecido y Sanitización Anti-XSS:** Renderizado seguro de párrafos, listas con viñetas, términos en negrita y etiquetas de código inline (`code-token`) mediante escape estricto de HTML antes del marcado visual.
+- **Enlaces de Navegación Contextuales:** Cada respuesta del asistente incluye píldoras interactivas (`[Abrir Simulador de Tramos]`, `[Ver Clientes]`, `[Ver Facturas]`) que permiten saltar directamente al módulo relevante sin perder contexto.
+- **Citas de Fuentes Documentales:** Desglose visual de los archivos de especificación consultados (ej. `ai-workspace/01-specs/functional-specs.md`, `Real Decreto 1065/2007`).
+- **Simulación Realista de Redacción:** Indicador visual de tres puntos pulsantes (`isTyping`) que emula la composición de respuesta.
+- **Copia al Portapapeles y Reinicio:** Botón de copiado por mensaje con retroalimentación vía `ToastService` y opción de reiniciar conversación.
+- **Internacionalización Total (i18n):** Respuestas y preguntas frecuentes completamente adaptadas a los 4 idiomas (`es`, `en`, `de`, `fr`).
+- **Accesibilidad W3C:** Notificación de mensajes mediante elemento nativo `<output class="sr-only" aria-live="polite">` (cumpliendo SonarQube `Web:S6819`).

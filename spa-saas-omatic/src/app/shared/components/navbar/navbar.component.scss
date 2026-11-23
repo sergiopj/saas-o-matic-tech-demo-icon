@@ -171,6 +171,18 @@
       transition: color 0.15s ease-in-out;
     }
 
+    .mobile-nav-badge {
+      margin-left: auto;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.15rem 0.45rem;
+      border-radius: var(--omatic-radius-full, 9999px);
+      background: linear-gradient(135deg, var(--omatic-accent-blue), var(--omatic-accent-purple));
+      color: var(--omatic-text-inverse);
+      line-height: 1;
+      letter-spacing: 0.04em;
+    }
+
     &:hover {
       color: var(--omatic-accent-blue);
       background-color: var(--omatic-accent-blue-subtle);

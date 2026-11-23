@@ -1,0 +1,188 @@
+<div class="assistant-container">
+  <!-- Page Header -->
+  <header class="assistant-header">
+    <div class="header-badge">
+      <mat-icon class="badge-icon" aria-hidden="true">smart_toy</mat-icon>
+      <span>{{ 'assistant.badge' | translate }}</span>
+    </div>
+    <div class="header-main">
+      <div class="header-texts">
+        <h1 class="header-title">{{ 'assistant.title' | translate }}</h1>
+        <p class="header-subtitle">{{ 'assistant.subtitle' | translate }}</p>
+      </div>
+      <div class="status-pill" [attr.aria-label]="'assistant.statusAria' | translate">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span class="status-text">{{ 'assistant.online' | translate }}</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Quick Prompts Section -->
+  <section class="quick-prompts-section" [attr.aria-label]="'assistant.quickPromptsTitle' | translate">
+    <div class="section-title-wrap">
+      <mat-icon class="section-icon" aria-hidden="true">lightbulb</mat-icon>
+      <span class="section-title">{{ 'assistant.quickPromptsTitle' | translate }}</span>
+    </div>
+    <div class="quick-prompts-grid">
+      @for (prompt of quickPrompts(); track prompt.id) {
+        <button
+          type="button"
+          class="quick-prompt-card"
+          (click)="onSelectPrompt(prompt)"
+          [disabled]="isTyping()"
+          [attr.aria-label]="prompt.labelKey | translate"
+        >
+          <div class="prompt-icon-wrap" aria-hidden="true">
+            <mat-icon>{{ prompt.icon }}</mat-icon>
+          </div>
+          <span class="prompt-label">{{ prompt.labelKey | translate }}</span>
+          <mat-icon class="prompt-arrow" aria-hidden="true">arrow_forward</mat-icon>
+        </button>
+      }
+    </div>
+  </section>
+
+  <!-- Main Chat Conversation Card -->
+  <mat-card class="chat-card">
+    <!-- Chat Card Top Bar -->
+    <div class="chat-card-header">
+      <div class="chat-identity">
+        <div class="robot-avatar" aria-hidden="true">
+          <mat-icon>smart_toy</mat-icon>
+        </div>
+        <div class="robot-info">
+          <span class="robot-title">{{ 'assistant.agentName' | translate }}</span>
+          <span class="robot-desc">{{ 'assistant.agentRole' | translate }}</span>
+        </div>
+      </div>
+      <button
+        type="button"
+        mat-stroked-button
+        class="reset-btn"
+        (click)="resetChat()"
+        [matTooltip]="'assistant.clearTooltip' | translate"
+        [attr.aria-label]="'assistant.clearAria' | translate"
+      >
+        <mat-icon class="reset-icon" aria-hidden="true">restart_alt</mat-icon>
+        <span class="reset-text">{{ 'assistant.clearBtn' | translate }}</span>
+      </button>
+    </div>
+
+    <!-- Scrollable Messages Container -->
+    <div #scrollContainer class="messages-container" [attr.aria-label]="'assistant.chatAria' | translate">
+      @for (msg of messages(); track msg.id) {
+        @if (msg.sender === 'user') {
+          <div class="message-row message-user">
+            <div class="bubble user-bubble">
+              <p class="bubble-text">{{ msg.content }}</p>
+              <span class="bubble-timestamp">{{ msg.timestamp | date:'shortTime' }}</span>
+            </div>
+            <div class="avatar user-avatar" aria-hidden="true">
+              <mat-icon>person</mat-icon>
+            </div>
+          </div>
+        } @else {
+          <div class="message-row message-assistant">
+            <div class="avatar assistant-avatar" aria-hidden="true">
+              <mat-icon>smart_toy</mat-icon>
+            </div>
+            <div class="bubble assistant-bubble">
+              <div class="bubble-top-meta">
+                <span class="sender-name">SaaS-O-Matic AI Core</span>
+                <span class="bubble-timestamp">{{ msg.timestamp | date:'shortTime' }}</span>
+                <button
+                  type="button"
+                  mat-icon-button
+                  class="action-copy-btn"
+                  (click)="copyContent(msg.content)"
+                  [matTooltip]="'assistant.copyAria' | translate"
+                  [attr.aria-label]="'assistant.copyAria' | translate"
+                >
+                  <mat-icon>content_copy</mat-icon>
+                </button>
+              </div>
+
+              <div class="bubble-content" [innerHTML]="formatContent(msg.content)"></div>
+
+              @if (msg.actions && msg.actions.length > 0) {
+                <div class="actions-wrapper">
+                  @for (act of msg.actions; track act.route) {
+                    <a [routerLink]="act.route" class="link-action-pill">
+                      <mat-icon class="pill-icon" aria-hidden="true">{{ act.icon }}</mat-icon>
+                      <span>{{ act.label }}</span>
+                      <mat-icon class="pill-arrow" aria-hidden="true">chevron_right</mat-icon>
+                    </a>
+                  }
+                </div>
+              }
+
+              @if (msg.sources && msg.sources.length > 0) {
+                <div class="sources-wrapper">
+                  <span class="sources-title">{{ 'assistant.sourcesLabel' | translate }}:</span>
+                  <div class="sources-list">
+                    @for (src of msg.sources; track src) {
+                      <span class="source-item">
+                        <mat-icon class="source-tag-icon" aria-hidden="true">description</mat-icon>
+                        <span>{{ src }}</span>
+                      </span>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      }
+
+      @if (isTyping()) {
+        <div class="message-row message-assistant typing-row">
+          <div class="avatar assistant-avatar" aria-hidden="true">
+            <mat-icon>smart_toy</mat-icon>
+          </div>
+          <div class="bubble assistant-bubble typing-bubble" [attr.aria-label]="'assistant.typing' | translate">
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Chat Input Bar -->
+    <div class="chat-input-container">
+      <div class="input-controls-wrap">
+        <input
+          type="text"
+          class="chat-input-box"
+          [ngModel]="inputText()"
+          (ngModelChange)="inputText.set($event)"
+          (keydown)="onKeyDown($event)"
+          [placeholder]="'assistant.inputPlaceholder' | translate"
+          [attr.aria-label]="'assistant.inputPlaceholder' | translate"
+          [disabled]="isTyping()"
+        />
+        <button
+          type="button"
+          mat-flat-button
+          color="primary"
+          class="send-action-btn"
+          (click)="onSend()"
+          [disabled]="!inputText().trim() || isTyping()"
+          [attr.aria-label]="'assistant.sendAria' | translate"
+        >
+          <mat-icon class="send-icon" aria-hidden="true">send</mat-icon>
+          <span class="send-text">{{ 'assistant.sendBtn' | translate }}</span>
+        </button>
+      </div>
+      <div class="input-footer-hint">
+        <mat-icon class="hint-icon" aria-hidden="true">info</mat-icon>
+        <span class="hint-text">{{ 'assistant.disclaimer' | translate }}</span>
+      </div>
+    </div>
+  </mat-card>
+
+  <!-- Accessible Polite Live Announcement Element for W3C A11y -->
+  <output class="sr-only" aria-live="polite">
+    {{ lastAssistantMessage() }}
+  </output>
+</div>
