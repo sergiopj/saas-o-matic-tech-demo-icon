@@ -1,0 +1,268 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Background Gradients -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b1329" />
+      <stop offset="45%" stop-color="#111c38" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+
+    <radialGradient id="backdropGlow" cx="50%" cy="45%" r="48%">
+      <stop offset="0%" stop-color="#1061e2" stop-opacity="0.45" />
+      <stop offset="45%" stop-color="#06b6d4" stop-opacity="0.25" />
+      <stop offset="85%" stop-color="#0b1329" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Pedestal Gradients -->
+    <linearGradient id="pedestalSurface" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#e2e8f0" />
+      <stop offset="100%" stop-color="#94a3b8" />
+    </linearGradient>
+    <linearGradient id="pedestalRim" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#64748b" />
+      <stop offset="100%" stop-color="#334155" />
+    </linearGradient>
+
+    <!-- Robot Porcelain Shading -->
+    <radialGradient id="porcelainHead" cx="38%" cy="32%" r="65%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="55%" stop-color="#f1f5f9" />
+      <stop offset="85%" stop-color="#cbd5e1" />
+      <stop offset="100%" stop-color="#94a3b8" />
+    </radialGradient>
+
+    <radialGradient id="porcelainBody" cx="35%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="60%" stop-color="#e2e8f0" />
+      <stop offset="90%" stop-color="#94a3b8" />
+      <stop offset="100%" stop-color="#64748b" />
+    </radialGradient>
+
+    <!-- Visor Gradient -->
+    <linearGradient id="visorBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1d" />
+      <stop offset="60%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#020617" />
+    </linearGradient>
+
+    <!-- Cyan Glow Gradients -->
+    <linearGradient id="cyanGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#22d3ee" />
+    </linearGradient>
+
+    <radialGradient id="eyeGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#a5f3fc" />
+      <stop offset="50%" stop-color="#38bdf8" />
+      <stop offset="90%" stop-color="#0284c7" />
+      <stop offset="100%" stop-color="#0369a1" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Cobalt Chestplate -->
+    <linearGradient id="cobaltPlate" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb" />
+      <stop offset="50%" stop-color="#1d4ed8" />
+      <stop offset="100%" stop-color="#1e3a8a" />
+    </linearGradient>
+
+    <!-- Tier Cube 3D Faces -->
+    <linearGradient id="cubeTop" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#0284c7" />
+    </linearGradient>
+    <linearGradient id="cubeLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0369a1" />
+      <stop offset="100%" stop-color="#075985" />
+    </linearGradient>
+    <linearGradient id="cubeRight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7" />
+      <stop offset="100%" stop-color="#0c4a6e" />
+    </linearGradient>
+
+    <!-- Amber Cube 3D Faces -->
+    <linearGradient id="amberTop" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+    <linearGradient id="amberLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d97706" />
+      <stop offset="100%" stop-color="#b45309" />
+    </linearGradient>
+    <linearGradient id="amberRight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#b45309" />
+      <stop offset="100%" stop-color="#78350f" />
+    </linearGradient>
+
+    <!-- Filter for Soft Shadows and Glows -->
+    <filter id="shadowFilter" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#020617" flood-opacity="0.6" />
+    </filter>
+    <filter id="glowFilter" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <filter id="subtleGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background Canvas: Squircle Badge Container -->
+  <rect x="8" y="8" width="496" height="496" rx="108" fill="url(#bgGrad)" stroke="#334155" stroke-width="3" />
+
+  <!-- Inner Ambient Lighting & Glow -->
+  <circle cx="256" cy="230" r="190" fill="url(#backdropGlow)" />
+
+  <!-- Base Pedestal (3D Elliptical Diorama Stage) -->
+  <g id="pedestal" transform="translate(0, 395)">
+    <!-- Soft Contact Shadow -->
+    <ellipse cx="256" cy="38" rx="160" ry="24" fill="#020617" opacity="0.65" filter="url(#shadowFilter)" />
+    <!-- Pedestal Rim -->
+    <path d="M 120,24 C 120,44 392,44 392,24 L 392,38 C 392,58 120,58 120,38 Z" fill="url(#pedestalRim)" />
+    <!-- Pedestal Top Surface -->
+    <ellipse cx="256" cy="24" rx="136" ry="18" fill="url(#pedestalSurface)" stroke="#cbd5e1" stroke-width="1.5" />
+    <!-- Glowing Ring on Pedestal -->
+    <ellipse cx="256" cy="24" rx="116" ry="13" fill="none" stroke="#38bdf8" stroke-width="2.5" opacity="0.8" filter="url(#subtleGlow)" />
+  </g>
+
+  <!-- Floating Floating Shadow of the Robot -->
+  <ellipse cx="256" cy="392" rx="72" ry="14" fill="#020617" opacity="0.5" filter="url(#shadowFilter)" />
+
+  <!-- ==================== ROBOT BODY ==================== -->
+  <g id="robot" transform="translate(0, -6)">
+    <!-- Antenna Left -->
+    <path d="M 204,136 Q 186,104 176,92" fill="none" stroke="#94a3b8" stroke-width="5" stroke-linecap="round" />
+    <circle cx="174" cy="88" r="9" fill="url(#porcelainHead)" stroke="#38bdf8" stroke-width="2" />
+    <circle cx="174" cy="88" r="4" fill="#38bdf8" filter="url(#glowFilter)" />
+
+    <!-- Antenna Right -->
+    <path d="M 308,136 Q 326,104 336,92" fill="none" stroke="#94a3b8" stroke-width="5" stroke-linecap="round" />
+    <circle cx="338" cy="88" r="9" fill="url(#porcelainHead)" stroke="#38bdf8" stroke-width="2" />
+    <circle cx="338" cy="88" r="4" fill="#38bdf8" filter="url(#glowFilter)" />
+
+    <!-- Robot Ears / Headphone Cushions (Ear Cups) -->
+    <rect x="136" y="162" width="22" height="48" rx="10" fill="#1e293b" stroke="#38bdf8" stroke-width="2" />
+    <circle cx="147" cy="186" r="6" fill="#38bdf8" filter="url(#subtleGlow)" />
+
+    <rect x="354" y="162" width="22" height="48" rx="10" fill="#1e293b" stroke="#38bdf8" stroke-width="2" />
+    <circle cx="365" cy="186" r="6" fill="#38bdf8" filter="url(#subtleGlow)" />
+
+    <!-- Robot Head Capsule (Porcelain White 3D Sphere) -->
+    <rect x="150" y="122" width="212" height="150" rx="66" fill="url(#porcelainHead)" filter="url(#shadowFilter)" />
+    <!-- Head Specular Highlight Curve -->
+    <path d="M 176,140 Q 256,128 336,140" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" opacity="0.85" />
+
+    <!-- Glossy Dark Visor Screen -->
+    <rect x="174" y="148" width="164" height="96" rx="42" fill="url(#visorBg)" stroke="#1e293b" stroke-width="3" />
+    <!-- Visor Glass Reflection Highlight -->
+    <path d="M 188,160 Q 256,150 324,160 Q 310,172 196,172 Z" fill="#ffffff" opacity="0.14" />
+
+    <!-- Glowing Cyan Eyes (Friendly Arched Curves) -->
+    <!-- Left Eye Glow & Arc -->
+    <ellipse cx="218" cy="192" rx="18" ry="14" fill="url(#eyeGlow)" filter="url(#glowFilter)" />
+    <path d="M 204,196 Q 218,178 232,196" fill="none" stroke="#e0f2fe" stroke-width="5" stroke-linecap="round" />
+    <circle cx="212" cy="188" r="2.5" fill="#ffffff" />
+
+    <!-- Right Eye Glow & Arc -->
+    <ellipse cx="294" cy="192" rx="18" ry="14" fill="url(#eyeGlow)" filter="url(#glowFilter)" />
+    <path d="M 280,196 Q 294,178 308,196" fill="none" stroke="#e0f2fe" stroke-width="5" stroke-linecap="round" />
+    <circle cx="288" cy="188" r="2.5" fill="#ffffff" />
+
+    <!-- Cheerful Digital Blush / Smile Indicator -->
+    <circle cx="196" cy="214" r="5" fill="#38bdf8" opacity="0.4" filter="url(#subtleGlow)" />
+    <circle cx="316" cy="214" r="5" fill="#38bdf8" opacity="0.4" filter="url(#subtleGlow)" />
+    <path d="M 244,212 Q 256,222 268,212" fill="none" stroke="#38bdf8" stroke-width="3.5" stroke-linecap="round" filter="url(#subtleGlow)" />
+
+    <!-- Neck Connector Ring -->
+    <ellipse cx="256" cy="274" rx="38" ry="10" fill="#334155" stroke="#1e293b" stroke-width="2" />
+
+    <!-- Torso (Main Ceramic Body) -->
+    <path d="M 188,284 Q 256,276 324,284 Q 346,368 256,376 Q 166,368 188,284 Z" fill="url(#porcelainBody)" filter="url(#shadowFilter)" />
+
+    <!-- Cobalt Blue Chest Plate -->
+    <path d="M 214,298 Q 256,292 298,298 Q 312,352 256,358 Q 200,352 214,298 Z" fill="url(#cobaltPlate)" stroke="#3b82f6" stroke-width="1.5" />
+
+    <!-- Glowing Core Energy Reactor (Cyan Arc & Star) -->
+    <circle cx="256" cy="326" r="16" fill="#0f172a" stroke="#06b6d4" stroke-width="2" />
+    <circle cx="256" cy="326" r="10" fill="url(#eyeGlow)" filter="url(#glowFilter)" />
+    <circle cx="256" cy="326" r="4" fill="#ffffff" />
+
+    <!-- Torso Specular Light -->
+    <path d="M 204,304 Q 202,342 222,354" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity="0.6" />
+
+    <!-- Left Floating Hand (Welcoming Wave Gesture) -->
+    <g id="leftHand" transform="translate(138, 308) rotate(-16)">
+      <ellipse cx="0" cy="0" rx="20" ry="15" fill="url(#porcelainBody)" filter="url(#shadowFilter)" />
+      <!-- Finger Details -->
+      <path d="M -8,-6 Q -4,-18 4,-16 Q 10,-8 6,-1" fill="url(#porcelainBody)" stroke="#cbd5e1" stroke-width="1" />
+      <circle cx="0" cy="0" r="5" fill="#38bdf8" opacity="0.7" filter="url(#subtleGlow)" />
+    </g>
+
+    <!-- Right Floating Hand (Pointing / Offering Analytics) -->
+    <g id="rightHand" transform="translate(374, 308) rotate(16)">
+      <ellipse cx="0" cy="0" rx="20" ry="15" fill="url(#porcelainBody)" filter="url(#shadowFilter)" />
+      <circle cx="0" cy="0" r="5" fill="#38bdf8" opacity="0.7" filter="url(#subtleGlow)" />
+    </g>
+  </g>
+
+  <!-- ==================== FLOATING 3D TIER CUBES & ICONS ==================== -->
+  <!-- 3D Cyan Tier Cube (Left Floating) -->
+  <g id="tierCubeLeft" transform="translate(94, 218) scale(0.95)" filter="url(#shadowFilter)">
+    <!-- Top Face -->
+    <polygon points="26,0 52,14 26,28 0,14" fill="url(#cubeTop)" />
+    <!-- Left Face -->
+    <polygon points="0,14 26,28 26,58 0,44" fill="url(#cubeLeft)" />
+    <!-- Right Face -->
+    <polygon points="26,28 52,14 52,44 26,58" fill="url(#cubeRight)" />
+    <!-- Sparkline on cube face -->
+    <polyline points="6,26 16,34 22,29" fill="none" stroke="#a5f3fc" stroke-width="2" stroke-linecap="round" />
+  </g>
+
+  <!-- 3D Amber Tier Cube (Right Floating - Volume Tier) -->
+  <g id="tierCubeRight" transform="translate(382, 184) scale(0.85)" filter="url(#shadowFilter)">
+    <!-- Top Face -->
+    <polygon points="26,0 52,14 26,28 0,14" fill="url(#amberTop)" />
+    <!-- Left Face -->
+    <polygon points="0,14 26,28 26,58 0,44" fill="url(#amberLeft)" />
+    <!-- Right Face -->
+    <polygon points="26,28 52,14 52,44 26,58" fill="url(#amberRight)" />
+    <!-- Euro symbol on top face -->
+    <text x="22" y="18" font-family="sans-serif" font-size="13" font-weight="900" fill="#ffffff" text-anchor="middle">€</text>
+  </g>
+
+  <!-- Floating Holographic Analytics Card (Top Right) -->
+  <g id="holoCard" transform="translate(366, 102) rotate(-8)" filter="url(#shadowFilter)">
+    <!-- Glassmorphic Card -->
+    <rect x="0" y="0" width="62" height="42" rx="8" fill="#1e293b" fill-opacity="0.8" stroke="#38bdf8" stroke-width="1.5" />
+    <!-- Mini Bars -->
+    <rect x="8" y="24" width="7" height="11" rx="2" fill="#38bdf8" />
+    <rect x="18" y="16" width="7" height="19" rx="2" fill="#06b6d4" />
+    <rect x="28" y="10" width="7" height="25" rx="2" fill="#10b981" />
+    <rect x="38" y="18" width="7" height="17" rx="2" fill="#fbbf24" />
+    <circle cx="50" cy="12" r="3" fill="#38bdf8" filter="url(#subtleGlow)" />
+  </g>
+
+  <!-- Floating Stardust & AI Sparkles -->
+  <g id="sparkles">
+    <!-- Star 1 (Top Left) -->
+    <path d="M 132,108 Q 132,118 122,118 Q 132,118 132,128 Q 132,118 142,118 Q 132,118 132,108 Z" fill="#38bdf8" filter="url(#subtleGlow)" />
+    <circle cx="132" cy="118" r="2" fill="#ffffff" />
+
+    <!-- Star 2 (Middle Left) -->
+    <circle cx="82" cy="316" r="3" fill="#38bdf8" filter="url(#subtleGlow)" />
+    <circle cx="82" cy="316" r="1.5" fill="#ffffff" />
+
+    <!-- Star 3 (Right) -->
+    <path d="M 438,284 Q 438,292 430,292 Q 438,292 438,300 Q 438,292 446,292 Q 438,292 438,284 Z" fill="#fbbf24" filter="url(#subtleGlow)" />
+    <circle cx="438" cy="292" r="1.5" fill="#ffffff" />
+
+    <!-- Star 4 (Top Center) -->
+    <circle cx="256" cy="62" r="2.5" fill="#a5f3fc" filter="url(#subtleGlow)" />
+  </g>
+</svg>

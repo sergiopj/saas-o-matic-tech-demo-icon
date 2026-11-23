@@ -6,9 +6,19 @@
       <span>{{ 'assistant.badge' | translate }}</span>
     </div>
     <div class="header-main">
-      <div class="header-texts">
-        <h1 class="header-title">{{ 'assistant.title' | translate }}</h1>
-        <p class="header-subtitle">{{ 'assistant.subtitle' | translate }}</p>
+      <div class="header-titles-group">
+        <img
+          src="images/ai-assistant-badge.svg"
+          [alt]="'assistant.badgeAlt' | translate"
+          class="assistant-badge-img"
+          width="64"
+          height="64"
+          loading="eager"
+        />
+        <div class="header-texts">
+          <h1 class="header-title">{{ 'assistant.title' | translate }}</h1>
+          <p class="header-subtitle">{{ 'assistant.subtitle' | translate }}</p>
+        </div>
       </div>
       <div class="status-pill" [attr.aria-label]="'assistant.statusAria' | translate">
         <span class="status-dot" aria-hidden="true"></span>

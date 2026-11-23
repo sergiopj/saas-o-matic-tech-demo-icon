@@ -456,6 +456,11 @@ Siguiendo los principios de Responsabilidad Única y separación de datos y lóg
    - **Pipeline CI/CD y Calidad:** 8 jobs paralelos en GitHub Actions, Oxlint con 0 errores/warnings y umbrales de cobertura $>96\%$.
 
 ### 10.2. Experiencia de Usuario y Accesibilidad Conversacional (`AssistantComponent`)
+- **Emblema 3D Robot del Asistente en Encabezado (`.assistant-badge-img`):**
+  - Integrado a la izquierda del grupo de títulos (`.header-titles-group`), en estricta coherencia y alineación con los medallones de los módulos de Clientes (`corporate-customer-badge.jpg`) y Simulaciones (`simulations-badge.jpg`).
+  - Representa un robot asistente 3D futurista y amigable con chasis en porcelana blanca y azul cobalto Omatic, visor de cristal oscuro con ojos LED curvados en cian brillante, cubos tridimensionales de tramos de precios y partículas holográficas de datos.
+  - Dimensiones canónicas de 64×64 px (52×52 px en móviles bajo `@media (max-width: 640px)`), esquinas redondeadas (`--omatic-radius-md`), borde sutil (`1px solid var(--omatic-border)`), sombra suave (`var(--omatic-shadow-sm)`) y micro-interacción hover (`transform: translateY(-2px) scale(1.05); box-shadow: var(--omatic-shadow-md);`).
+  - Etiqueta alternativa accesible e internacionalizada: `[alt]="'assistant.badgeAlt' | translate"` en los 4 idiomas (`es`, `en`, `de`, `fr`).
 - **Píldoras de Preguntas Frecuentes:** Botones interactivos superiores (`QUICK_PROMPTS`) que permiten al usuario formular preguntas clave con un solo clic, incluyendo el acceso directo a los criterios de evaluación del reto técnico con insignia `military_tech`.
 - **Burbuja Flotante Compacta de Pensamiento (`typing-bubble`):**
   - Se desacopla la burbuja de carga del ancho completo del mensaje (`flex: 0 0 auto !important; width: fit-content !important;`), dotándola de un diseño compacto y orgánico de bordes redondeados.

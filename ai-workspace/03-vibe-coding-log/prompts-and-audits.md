@@ -5101,6 +5101,35 @@ Una vez consolidada la bitácora de auditoría en la carpeta del proyecto, se di
 - **Valor para la evaluación:**
   Demuestra madurez de producto (*Product Mindset*), asegurando que una herramienta interna destinada a comerciales se exprese en el lenguaje del dominio (DDD Ubiquitous Language) sin exponer la trastienda de desarrollo ni romper la inmersión del usuario.
 
+---
+
+### 6.242. Integración Visual del Emblema 3D del Robot Asistente IA y Simplificación del Enlace de Inicio
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Contexto / Desafío:**
+  El usuario solicitó dos refinamientos de interfaz visual para potenciar la coherencia estética del diseño en toda la suite:
+  1. Incorporar una imagen destacada del robot asistente de IA en el encabezado del módulo `/assistant`, alineándola formalmente a la izquierda del título (*"Asistente Inteligente SaaS-O-Matic"*) y subtítulo (*"Tu copiloto interactivo entrenado con la arquitectura, motor de precios por tramos y especificaciones de la plataforma"*), emulando la jerarquía visual de los medallones 3D de los módulos de Clientes (`corporate-customer-badge.jpg`) y Simulador (`simulations-badge.jpg`).
+  2. Simplificar la etiqueta del primer elemento de la barra de navegación lateral (`sidebar.home`), pasando de *"Inicio / Dashboard"* a un conciso y elegante *"Inicio"* (y sus correspondientes homólogos internacionales *"Home"*, *"Startseite"*, *"Accueil"*).
+- **Diagnóstico Técnico y Solución de Arquitectura Aplicada:**
+  1. *Diseño del Emblema Vectorial 3D (`public/images/ai-assistant-badge.svg`):*
+     - Se compuso un medallón de diorama 3D isométrico en formato vectorial SVG nativo con gradientes de arcilla (claymorphism), chasis en porcelana blanca con reflejos curvos, placa pectoral en azul cobalto Omatic (`#1061e2`), visor negro de cristal con ojos LED en arco cian luminoso (`#38bdf8`), halo radial de energía, cubos 3D tridimensionales de tramos de tarificación (ámbar y cian) y partículas holográficas de datos sobre pedestal elíptico.
+  2. *Integración en el Encabezado (`assistant.component.html` y `assistant.component.scss`):*
+     - Se encapsuló la imagen junto a `.header-texts` dentro de `.header-titles-group`, ubicándola a la izquierda del bloque de títulos con dimensiones canónicas de 64×64 px (52×52 px en móvil), bordes redondeados (`--omatic-radius-md`), borde sutil (`1px solid var(--omatic-border)`), sombra suave (`--omatic-shadow-sm`) y micro-interacción hover (`transform: translateY(-2px) scale(1.05); box-shadow: var(--omatic-shadow-md);`), sin violar la prohibición de `transition: all`.
+     - Cumplimiento estricto de accesibilidad W3C con texto alternativo dinámico e internacionalizado: `[alt]="'assistant.badgeAlt' | translate"`.
+  3. *Armonización de Textos e i18n (`translations.ts`):*
+     - Añadida la clave `assistant.badgeAlt` en los 4 idiomas (`es`, `en`, `de`, `fr`).
+     - Actualizado `assistant.subtitle` para reflejar con precisión el valor formativo y operacional del asistente en todas las lenguas.
+     - Actualizado `sidebar.home` en los 4 diccionarios (`Inicio`, `Home`, `Startseite`, `Accueil`).
+  4. *Actualización de Pruebas Unitarias (`assistant.component.spec.ts`):*
+     - Añadida aserción validando la existencia de `.assistant-badge-img`, su ruta `src` y su atributo `alt` traducido.
+- **Resultados de Verificación:**
+  - Pruebas Frontend (Vitest): **388 tests passing al 100% (43 suites)**.
+  - Oxlint: **0 errores y 0 advertencias** en 106 archivos inspeccionados.
+  - Build de Producción (`ng build`): **Compilación limpia en 4.97s** sin advertencias ni regresiones de tamaño.
+- **Valor para la evaluación:**
+  Consolida una identidad de marca cohesiva (*Design System Consistency*), replicando los patrones de diseño establecidos en el resto de la suite sin redundancias visuales y manteniendo una accesibilidad y rendimiento impecables.
+
+
 
 
 

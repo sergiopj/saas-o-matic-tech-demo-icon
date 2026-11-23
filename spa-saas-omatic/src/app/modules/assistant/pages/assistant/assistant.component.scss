@@ -40,15 +40,44 @@
 
   .header-main {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
     gap: 1.5rem;
     flex-wrap: wrap;
   }
 
+  .header-titles-group {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    flex: 1 1 auto;
+    min-width: 280px;
+
+    .assistant-badge-img {
+      width: 64px;
+      height: 64px;
+      border-radius: var(--omatic-radius-md);
+      object-fit: cover;
+      border: 1px solid var(--omatic-border);
+      box-shadow: var(--omatic-shadow-sm);
+      flex-shrink: 0;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+
+      &:hover {
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: var(--omatic-shadow-md);
+      }
+
+      @media (max-width: 640px) {
+        width: 52px;
+        height: 52px;
+      }
+    }
+  }
+
   .header-texts {
     flex: 1;
-    min-width: 280px;
+    min-width: 240px;
   }
 
   .header-title {
