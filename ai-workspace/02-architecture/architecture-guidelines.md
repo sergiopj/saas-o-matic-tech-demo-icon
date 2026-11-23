@@ -1265,3 +1265,63 @@ El documento [prompts-and-audits.md](file:///c:/Users/Usuario/Documents/GitHub/s
 - **Accepted Ground Truth (Salida Aceptada):** Código final refactorizado, tipado y verificado con 100% de tests unitarios y 0 advertencias de linter.
 
 Este artefacto constituye un dataset de alto valor técnico preparado para ser serializado a formato JSONL `{ instruction, input, output }` si la organización decidiera realizar un fine-tuning con LoRA o Vertex AI sobre modelos fundacionales.
+
+
+---
+
+## 7. Estrategia de Despliegue, CI/CD Desacoplado y Contenerización Docker
+
+### 7.1 Arquitectura de Pipelines CI/CD Desacoplados (8 Jobs en GitHub Actions)
+
+Para evitar el acoplamiento monolítico tradicional de los monorrepositorios donde el fallo de una prueba de interfaz bloquea la integración de la API (o viceversa), SaaS-O-Matic implementa un **Grafo Acíclico Dirigido (DAG)** estructurado en **dos pistas paralelas totalmente desacopladas**:
+
+```
+PISTA BACKEND (NestJS API):
+[1. Backend Lint] ──┐
+                    ├──► [3. Backend Build] ──► [4. Backend Docker Image (GHCR)]
+[2. Backend Tests] ─┘
+
+PISTA FRONTEND (Angular SPA):
+[1. Frontend Lint] ──┐
+                     ├──► [3. Frontend Build] ──► [4. Frontend Docker Image (GHCR)]
+[2. Frontend Tests] ─┘
+```
+
+1. **Independencia de Ejecución:** La pista de backend y la de frontend se ejecutan de forma simultánea en runners paralelos de GitHub Actions (`ubuntu-latest`).
+2. **Concurrencia Inteligente:** La directiva `concurrency: cancel-in-progress: true` cancela inmediatamente ejecuciones obsoletas de la misma rama ante nuevos commits, optimizando los minutos de cómputo en la nube.
+3. **Compuerta Final de Despliegue:** La etapa de construcción y publicación de imágenes Docker (`docker/build-push-action@v6`) únicamente se activa en la rama `main` tras validar que los jobs de lint, testing y compilación de su respectiva pista han finalizado en verde.
+
+---
+
+### 7.2 Compuertas de Calidad y Umbrales de Cobertura (SonarQube-Equivalent)
+
+En lugar de requerir una instancia dedicada de SonarQube para el control de regresión en fases tempranas, el arnés de pruebas incorpora **Quality Gates de cobertura estrictos** directamente en los ejecutores de pruebas:
+- **Backend ([jest.config.ts](file:///c:/Users/Usuario/Documents/GitHub/saas-o-matic-tech-demo-icon/mic-saas-omatic/jest.config.ts)):** `coverageThreshold: { global: { lines: 75, functions: 75, branches: 65, statements: 75 } }`.
+- **Frontend ([angular.json](file:///c:/Users/Usuario/Documents/GitHub/saas-o-matic-tech-demo-icon/spa-saas-omatic/angular.json)):** `coverageThresholds: { lines: 75, functions: 75, branches: 65, statements: 75 }`.
+- **Ejecución y Resultados Obtenidos:**
+  - Backend: **96.65%** en líneas, **96.35%** en métodos y **83.06%** en condiciones (226 tests).
+  - Frontend: **98.22%** en líneas, **97.38%** en métodos y **90.44%** en condiciones (316 tests).
+  - Si cualquier cambio degrada la cobertura por debajo del umbral mínimo, el runner falla con código de salida 1 e interrumpe el pipeline.
+- **Tablas Ejecutivas en GitHub Step Summary:** El script `scripts/coverage-summary.mjs` procesa los ficheros estándar `clover.xml` e inyecta dinámicamente tablas formateadas en Markdown con badges verdes/rojos directamente en la vista principal de GitHub Actions, erradicando la necesidad de descargar archivos `.zip` de cobertura.
+
+---
+
+### 7.3 Contenerización Multi-Etapa y Enrutamiento Nginx SPA
+
+La arquitectura de contenedores Docker se rige por directrices de alto rendimiento y seguridad:
+
+1. **Construcción Multi-Etapa (*Multi-stage Builds*):**
+   - **Backend ([Dockerfile](file:///c:/Users/Usuario/Documents/GitHub/saas-o-matic-tech-demo-icon/mic-saas-omatic/Dockerfile)):**
+     - Etapa `builder`: Imagen `node:22-slim` con compiladores nativos (`python3`, `make`, `g++`) para compilar el driver C++ `better-sqlite3` y compilar TypeScript con `nest build`.
+     - Etapa `runner`: Imagen `node:22-slim` limpia sin compiladores, copiando únicamente la carpeta `dist/` y las dependencias de producción (`npm ci --omit=dev`), reduciendo el tamaño a < 150 MB.
+   - **Frontend ([Dockerfile](file:///c:/Users/Usuario/Documents/GitHub/saas-o-matic-tech-demo-icon/spa-saas-omatic/Dockerfile)):**
+     - Etapa `builder`: Node 22 slim para compilar los bundles minificados de producción (`ng build --configuration production`).
+     - Etapa `stage-1`: Servidor web **Nginx 1.27 Alpine** ultraligero que aloja los archivos estáticos en `/usr/share/nginx/html`.
+2. **Enrutamiento PushState HTML5 en Nginx ([nginx.conf](file:///c:/Users/Usuario/Documents/GitHub/saas-o-matic-tech-demo-icon/spa-saas-omatic/nginx.conf)):**
+   - La regla `location / { try_files $uri $uri/ /index.html; }` asegura que todas las rutas del cliente (`/customers`, `/invoices`, `/simulations`) carguen el bootstrap de Angular sin devolver 404 ni colisionar con endpoints REST.
+   - Compresión Gzip activa para assets estáticos (`.js`, `.css`, `.svg`, `.json`) y cabeceras de protección (`X-Frame-Options: SAMEORIGIN`, `X-Content-Type-Options: nosniff`).
+3. **Higiene de Contexto de Construcción (`.dockerignore`):**
+   - Exclusión de `node_modules`, `dist`, `.git` y bases de datos locales en la raíz, reduciendo el envío de contexto a Docker BuildKit de 196 MB a menos de 400 KB (< 0.5 segundos).
+4. **Resiliencia de Healthchecks e IPv4 Loopback:**
+   - Para evitar el fallo de conexión `Connection refused` en distribuciones Alpine Linux (donde `localhost` resuelve prioritariamente a IPv6 `::1`), el healthcheck del frontend interroga explícitamente la interfaz de loopback IPv4:
+     `CMD wget --quiet --tries=1 --spider http://127.0.0.1:80/ || exit 1`.

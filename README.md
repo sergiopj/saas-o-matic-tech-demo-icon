@@ -7,7 +7,7 @@ Proyecto construido bajo **Arquitectura Hexagonal (Puertos y Adaptadores)**, met
 > [!IMPORTANT]
 > **🤖 Nota de Transparencia sobre el Modelo de IA y la Dirección de Vibe Coding:**  
 > La implementación asistida por IA de este proyecto se ha llevado a cabo utilizando el modelo **Gemini Flash** (al tratarse de la licencia personal disponible para este desarrollo), cuyas capacidades de razonamiento contextual en repositorios extensos, consistencia arquitectónica y precisión de código son sensiblemente inferiores a modelos de frontera como **Claude 3.5 / 3.7 Sonnet**.  
-> Debido a las simplificaciones apresuradas, alucinaciones de sintaxis y pérdida de memoria contextual recurrentes de este modelo ligero, **estabilizar la arquitectura hexagonal, blindar los algoritmos fiscales transfronterizos y alcanzar el 100% de tests unitarios (479 pruebas) ha requerido un esfuerzo de supervisión humana, auditoría minuciosa y refactorización mucho más exhaustivo de lo deseable**.  
+> Debido a las simplificaciones apresuradas, alucinaciones de sintaxis y pérdida de memoria contextual recurrentes de este modelo ligero, **estabilizar la arquitectura hexagonal, blindar los algoritmos fiscales transfronterizos y alcanzar el 100% de tests unitarios (542 pruebas) ha requerido un esfuerzo de supervisión humana, auditoría minuciosa y refactorización mucho más exhaustivo de lo deseable**.  
 > **¿Qué diferencia hubiese supuesto un modelo como Claude?** Un modelo de frontera como **Claude 3.5/3.7 Sonnet (o Claude Code)** habría aportado una **agilidad drásticamente superior** (comprensión contextual 'one-shot' de contratos y dominios complejos sin degradación tras múltiples turnos) y una **calidad de código de primer borrador mucho más refinada**, reduciendo el ciclo de desarrollo a una fracción del tiempo y erradicando decenas de micro-iteraciones de corrección. La bitácora en `ai-workspace/03-vibe-coding-log/prompts-and-audits.md` documenta con total transparencia cómo la dirección técnica sénior es el factor determinante para transformar sugerencias defectuosas de una IA en software robusto de grado producción.
 
 ---
@@ -80,17 +80,20 @@ npm start
 ### Paso 3: Verificación de Calidad y Tests en 1 Comando
 
 ```bash
-# 1. Ejecución de la suite completa de 479 tests unitarios (187 backend Jest + 292 frontend Vitest)
+# 1. Ejecución de la suite completa de 542 tests unitarios (226 backend Jest + 316 frontend Vitest)
 npm test
 
-# 2. Informes de cobertura de código unificados (> 90% ramas y 100% líneas en backend / > 99% en frontend)
+# 2. Informes de cobertura con umbrales estrictos (>96% líneas en backend / >98% en frontend)
 npm run test:coverage
 
-# 3. Análisis estático ultra-rápido con Oxlint (0 errores, 0 advertencias)
+# 3. Pipeline de calidad integral local (Linter + Cobertura con Quality Gate + Build)
+npm run ci:coverage
+
+# 4. Análisis estático ultra-rápido con Oxlint (0 errores, 0 advertencias en 212 ficheros)
 npm run lint
 
-# 4. Compilación de producción unificada (Backend dist + Frontend dist)
-npm run build
+# 5. Simulador interactivo local del pipeline CI/CD (con colores y tiempos por etapa)
+npm run deploy:simulate
 ```
 
 ---
@@ -134,25 +137,32 @@ Para evaluadores que prefieran levantar todo el ecosistema de forma aislada sin 
 > *💡 Si en tu terminal ves `'docker' no se reconoce como un comando`, significa que no tienes Docker Desktop instalado o configurado en el PATH. En ese caso, utiliza la **Opción Rápida con `npm start`**, que no requiere Docker.*
 
 ```bash
-# Compilar y arrancar ambos contenedores en una red aislada:
-docker compose up --build
+# Opción 1: Reconstrucción limpia de cero y levantamiento:
+npm run deploy:docker
+
+# Opción 2: Despliegue rápido en 2 segundos (usando caché de capas Docker):
+npm run deploy:docker:quick
+
+# Comprobación de estado y healthchecks:
+npm run deploy:status
+npm run deploy:health
 ```
 
 ### Arquitectura de Contenedores:
 1. **Backend (`saas-omatic-backend`):**
    - Construcción multi-stage en `node:22-slim` con compilación nativa de `better-sqlite3`.
-   - Purga de dependencias de desarrollo (`--omit=dev`) y herramientas de compilación para una imagen ultra-ligera y segura.
+   - Purga de dependencias de desarrollo (`--omit=dev`) y herramientas de compilación para una imagen ultra-ligera (< 150 MB).
    - Volumen persistente Docker (`sqlite-data`) montado en `/app/data/saas_o_matic.sqlite` con modo WAL.
    - Healthcheck nativo en Node.js que valida la disponibilidad de la API antes de permitir tráfico.
    - Expuesto en **`http://localhost:3000`** (con Swagger UI en `/docs`).
 2. **Frontend (`saas-omatic-frontend`):**
    - Construcción multi-stage: compilación de producción de Angular 22 en Node 22 y servido en servidor web **Nginx 1.27 Alpine**.
    - Configuración `nginx.conf` con compresión gzip, cabeceras de seguridad OWASP y soporte de enrutamiento HTML5 pushState (`try_files $uri $uri/ /index.html;`).
-   - Reverse proxy interno hacia el contenedor backend para las rutas `/customers`, `/simulations`, `/emails` y `/docs`.
    - Expuesto en **`http://localhost:4200`** (y también en puerto HTTP estándar **`http://localhost:80`**).
 3. **Parada limpia de contenedores:**
    ```bash
-   docker compose down
+   npm run deploy:stop
+   # o: docker compose down
    ```
 
 ---

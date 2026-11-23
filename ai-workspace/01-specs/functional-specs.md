@@ -377,3 +377,32 @@ El catálogo incluye **18 clientes corporativos internacionales** y **19 simulac
 - **Jurisdicciones variadas:** España (`ES`), Alemania (`DE`), Francia (`FR`), Estados Unidos (`US`), Italia (`IT`), Reino Unido (`GB`).
 - **Identificadores fiscales 100% matemáticamente válidos:** CIFs y NIFs verificados algorítmicamente según el Real Decreto 1065/2007 de la AEAT (Telefónica `A28010833`, Inditex `A15075062`, Mercadona `A46103834`, SEAT `A08004558`, Santander `A39000013`, Celonis `DE315935872`, Snowflake `US824219503`, etc.).
 - **Simulaciones pre-calculadas:** Clientes con 0, 1 y múltiples simulaciones históricas para validar el estudio de costes, el recálculo interactivo en vivo y la pre-carga de propuestas comerciales por email.
+
+---
+
+## 8. Estrategia de Despliegue y Validación CI/CD
+
+### 8.1. Dualidad Operativa: Onboarding Local vs Contenedores de Producción
+Para maximizar la versatilidad de la solución según el contexto técnico de la evaluación:
+1. **Modo Local Rápido (`npm start`):**
+   - Diseñado para onboarding de cero fricción: levantar la plataforma completa (API + SPA + Base de datos) en **menos de 30 segundos**.
+   - Concurrencia unificada con `concurrently`: NestJS en puerto 3000 y Angular en puerto 4200.
+   - Base de datos SQLite embebida en memoria/disco con auto-seeding idempotente en el arranque.
+2. **Modo Contenedores de Producción (`npm run deploy:docker` / `npm run deploy:docker:quick`):**
+   - Construcción multi-etapa (*Multi-stage builds*) aislando herramientas de compilación de los ejecutables finales.
+   - Frontend servido mediante **Nginx 1.27 Alpine** de alto rendimiento con compresión Gzip y headers de seguridad OWASP.
+   - Persistencia de datos mediante volumen nombrado de Docker (`sqlite-data`) montado en `/app/data`.
+   - Pruebas de salud (*Healthchecks*) automáticas coordinadas: la SPA no acepta tráfico hasta que la API responde `200 OK`.
+
+### 8.2. Pipeline CI/CD Desacoplado en 8 Jobs (GitHub Actions)
+La integración y entrega continua se estructura en dos pistas paralelas (*Tracks*) completamente desacopladas:
+- **Pista Backend (NestJS):** Lint (ESLint) $\to$ Tests & Coverage (Jest) $\to$ Build (tsc) $\to$ Docker Image (GHCR).
+- **Pista Frontend (Angular):** Lint (Oxlint) $\to$ Tests & Coverage (Vitest) $\to$ Build (ng build production) $\to$ Docker Image (GHCR).
+- **Visibilidad Ejecutiva:** Publicación automática de tablas de cobertura Markdown con porcentajes y badges en el *Step Summary* de GitHub Actions sin requerir descargas de archivos ZIP.
+
+### 8.3. Compuertas de Calidad (Quality Gates) con Umbrales Estrictos
+Tanto Jest como Vitest aplican umbrales mínimos de cobertura automáticos:
+- Sentencias y Líneas $\ge 75\%$ (obtenido: $>96\%$).
+- Funciones y Métodos $\ge 75\%$ (obtenido: $>96\%$).
+- Ramas y Condiciones $\ge 65\%$ (obtenido: $>83\%$).
+Cualquier regresión que degrade la cobertura por debajo de estos umbrales aborta el pipeline de integración continua con código de salida 1.
