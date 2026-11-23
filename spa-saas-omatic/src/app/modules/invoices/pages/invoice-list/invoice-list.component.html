@@ -67,40 +67,42 @@
   </section>
 
   <!-- Filter Controls -->
-  <section class="filter-bar">
-    <div class="filter-chips" role="group" [attr.aria-label]="'invoices.title' | translate">
-      <button
-        type="button"
-        class="filter-chip"
-        [class.is-active]="selectedStatus() === 'ALL'"
-        (click)="filterByStatus('ALL')"
-      >
-        {{ 'invoices.filter.all' | translate }}
-      </button>
-      <button
-        type="button"
-        class="filter-chip"
-        [class.is-active]="selectedStatus() === 'ISSUED'"
-        (click)="filterByStatus('ISSUED')"
-      >
-        {{ 'invoices.filter.issued' | translate }}
-      </button>
-      <button
-        type="button"
-        class="filter-chip"
-        [class.is-active]="selectedStatus() === 'PAID'"
-        (click)="filterByStatus('PAID')"
-      >
-        {{ 'invoices.filter.paid' | translate }}
-      </button>
-      <button
-        type="button"
-        class="filter-chip"
-        [class.is-active]="selectedStatus() === 'CANCELLED'"
-        (click)="filterByStatus('CANCELLED')"
-      >
-        {{ 'invoices.filter.cancelled' | translate }}
-      </button>
+  <section class="controls-section" [attr.aria-label]="'invoices.filter.label' | translate">
+    <div class="toolbar-row">
+      <div class="filter-select-wrapper">
+        <mat-form-field appearance="outline" class="status-filter-field" subscriptSizing="dynamic">
+          <mat-label>{{ 'invoices.filter.label' | translate }}</mat-label>
+          <mat-icon matPrefix class="filter-icon" aria-hidden="true">filter_list</mat-icon>
+          <mat-select
+            [value]="selectedStatus()"
+            [disabled]="loading()"
+            (selectionChange)="filterByStatus($event.value)"
+            [attr.aria-label]="'invoices.filter.dropdownAria' | translate"
+          >
+            @for (opt of statusOptions; track opt.value) {
+              <mat-option [value]="opt.value">
+                {{ opt.labelKey | translate }}
+              </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="results-meta">
+        <span class="count-badge">{{ totalInvoices() }}</span>
+        <span class="count-text">{{ 'invoices.list.count' | translate }}</span>
+        @if (selectedStatus() !== 'ALL') {
+          <button
+            type="button"
+            class="reset-filter-link"
+            (click)="filterByStatus('ALL')"
+            [attr.aria-label]="'invoices.filter.reset' | translate"
+          >
+            <mat-icon class="reset-icon" aria-hidden="true">restart_alt</mat-icon>
+            <span>{{ 'invoices.filter.reset' | translate }}</span>
+          </button>
+        }
+      </div>
     </div>
   </section>
 

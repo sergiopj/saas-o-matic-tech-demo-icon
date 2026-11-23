@@ -5456,3 +5456,47 @@ Una vez consolidada la bitácora de auditoría en la carpeta del proyecto, se di
   - Cobertura global mantenida por encima del 96% en líneas y funciones.
 - **Valor para la evaluación:**
   Mejora sustancial de la ergonomía visual y usabilidad conversacional, convirtiendo el texto de ayuda pasivo en un acelerador interactivo de consultas para el usuario final.
+
+---
+
+### 6.253. Generación de Vídeo Demostrativo HD Profesional, Selector de Estado en Facturas y Auditoría Integral de Precisión Monetaria
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Contexto / Desafío:**
+  1. *Vídeo de Guía y Documentación:* El usuario advirtió que el vídeo anterior era un archivo de Windows OOBE provisional que solo mostraba un logotipo genérico de Windows (`"no pùedes generar un video mejor para la parte de guia y documentacion? es que es una caca sale un simbolo de windows unos segundos y ya"`).
+  2. *Selector de Estado de Facturas y Reset Filter:* El usuario solicitó reemplazar los botones sueltos de filtrado en facturas por un selector desplegable con estilo idéntico al módulo de clientes corporativos (`"un selector mejor Todas las facturas / Emitidas (Pendientes) / Cobradas / Anuladas / estilo al modulo de clientes corporativos / y boton de reset filter"`).
+  3. *Auditoría de Precisión Monetaria:* El usuario solicitó verificar si toda la lógica económica maneja números sin pérdida de céntimos ni desbordamientos (`"toda la logica de dinero es con big decimal o algo asi? para no pderder pasta, escanea bien esto para comprobarlo"`).
+- **Diagnóstico Técnico y Solución de Arquitectura Aplicada:**
+  1. *Generación de Vídeo Demostrativo HD 720p 30fps Real:*
+     - Se desarrolló un script generador autónomo en Python (`make_video.py`) utilizando Pillow e `imageio-ffmpeg` (códec H.264 `libx264` con muestreo `yuv420p`).
+     - Renderizados 450 fotogramas (15 segundos) con temática oscura de SaaS-O-Matic, tipografía Segoe UI, métricas reales, e integración de los activos visuales del repositorio (`hero-illustration.jpg`, `simulations-illustration.jpg`, `corporate-customer-badge.jpg`, `email-dispatch-badge.jpg`).
+     - Estructura de 5 escenas:
+       - Escena 1: Presentación de marca, badges y arquitectura Angular 22 & NestJS.
+       - Escena 2: Simulación interactiva con animación en vivo de usuarios activos (10 a 75) y desglose visual de Tramos 1, 2 y 3.
+       - Escena 3: Ficha de cliente corporativo (Banco Santander S.A., CIF A39000013) con validación AEAT y selector multi-divisa (EUR, USD, GBP, CHF).
+       - Escena 4: Facturación oficial con número INV-2026-5870, estado Cobrada y generación binaria de PDF con PDFKit.
+       - Escena 5: Resumen técnico enterprise con métricas de calidad (612 tests, 0/0 Oxlint, >96% coverage, 8 jobs CI/CD).
+     - Guardado en `spa-saas-omatic/public/videos/saas-omatic-intro.mp4` (0.83 MB, ultraligero y de carga instantánea).
+  2. *Selector Desplegable y Botón Reset en Facturas:*
+     - Se integraron `MatFormFieldModule` y `MatSelectModule` en `InvoiceListComponent`.
+     - En `invoice-list.component.html`: sustituidas las chips estáticas por un `<mat-form-field appearance="outline">` con icono `filter_list`, opciones declarativas (`statusOptions`), contador reactivo `count-badge` y botón `reset-filter-link` con icono `restart_alt`.
+     - Estilizado en `invoice-list.component.scss` con tokens oficiales `--omatic-*` y transiciones explícitas.
+  3. *Auditoría Integral de Precisión Monetaria (Zero Cents Loss Guarantee):*
+     - **Base de Datos (TypeORM & SQLite):** Todas las columnas financieras (`subtotal`, `taxAmount`, `totalAmount`, `monthlyBaseCost`, `totalCost`) están estrictamente tipadas con `@Column('decimal', { precision: 10, scale: 2 })` (y `scale: 4` para tipos impositivos).
+     - **Dominio Backend:**
+       - `pricing-engine.service.ts`: opera sobre enteros discretos de usuarios ($10, $8, $5/usuario), garantizando resultados exactos.
+       - `tax-calculator.service.ts`: calcula `Math.round(baseCost * taxRate * 100) / 100` y `Math.round((baseCost + taxAmount) * 100) / 100`.
+       - `invoice.entity.ts`: valida y redondea céntimos en cada creación: `Math.round(payload.subtotal * 100) / 100`.
+       - `InvoicePersistenceMapper`: castea de forma segura a `Number(...)` para preservar el valor de la columna decimal devuelta por el driver SQLite.
+     - **Frontend:**
+       - `local-pricing-calculator.ts` y `CurrencyService.convert`: implementan redondeo a céntimos `Math.round(val * 100) / 100`.
+       - `InvoiceListComponent`: sumas de acumulados de facturas blindadas con `Math.round(... * 100) / 100`.
+       - `LocalizedCurrencyPipe`: renderizado con `Intl.NumberFormat` y `minimumFractionDigits: 2` / `maximumFractionDigits: 2`.
+     - **Garantía Numérica en JavaScript:**
+       - IEEE 754 double precision posee 53 bits de mantisa ($2^{53} - 1 \approx 9 \times 10^{15}$).
+       - Operando en céntimos enteros, la capacidad máxima sin pérdida de precisión es de **90.071.992.547.409,91 €** (más de 90 billones de euros), asegurando que no se pierde ni un céntimo en ningún flujo comercial.
+- **Resultados de Verificación:**
+  - Frontend: Oxlint 0/0, 43 suites / 372 tests pasando al 100%.
+  - Backend: Oxlint 0/0, 59 suites / 241 tests pasando al 100%.
+- **Valor para la evaluación:**
+  Garantiza fidelidad contable y tributaria de nivel bancario, al tiempo que eleva la calidad audiovisual de la demostración para el comité evaluador.

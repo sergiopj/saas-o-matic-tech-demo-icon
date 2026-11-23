@@ -134,6 +134,17 @@ describe('InvoiceListComponent', () => {
     );
   });
 
+  it('should reset filter to ALL when reset filter is called', () => {
+    component.filterByStatus('CANCELLED');
+    expect(component.selectedStatus()).toBe('CANCELLED');
+
+    component.filterByStatus('ALL');
+    expect(component.selectedStatus()).toBe('ALL');
+    expect(invoiceApi.search).toHaveBeenCalledWith(
+      expect.objectContaining({ status: undefined, page: 1 }),
+    );
+  });
+
   it('should open and close the slide-over drawer with selected invoice', () => {
     expect(component.isDrawerOpen()).toBe(false);
     expect(component.selectedInvoice()).toBeNull();

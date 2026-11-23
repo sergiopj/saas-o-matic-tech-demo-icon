@@ -11,6 +11,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { PaginatorComponent } from '../../../../shared/components/paginator/paginator.component';
@@ -30,6 +32,8 @@ import { InvoiceCreateDialogComponent } from '../../components/invoice-create-di
     MatButtonModule,
     MatTooltipModule,
     MatChipsModule,
+    MatFormFieldModule,
+    MatSelectModule,
     TranslatePipe,
     PaginatorComponent,
     SlideOverDrawerComponent,
@@ -45,6 +49,13 @@ export class InvoiceListComponent implements OnInit {
   private readonly dialog = inject(MatDialog);
   private readonly confirm = inject(ConfirmService);
 
+  readonly statusOptions = [
+    { value: 'ALL', labelKey: 'invoices.filter.all' },
+    { value: 'ISSUED', labelKey: 'invoices.filter.issued' },
+    { value: 'PAID', labelKey: 'invoices.filter.paid' },
+    { value: 'CANCELLED', labelKey: 'invoices.filter.cancelled' },
+  ] as const;
+
   readonly invoices = signal<Invoice[]>([]);
   readonly totalInvoices = signal<number>(0);
   readonly currentPage = signal<number>(1);
@@ -55,19 +66,23 @@ export class InvoiceListComponent implements OnInit {
   readonly loading = this.invoiceApi.loading;
 
   readonly totalInvoiced = computed(() =>
-    this.invoices().reduce((acc, inv) => acc + inv.totalAmount, 0),
+    Math.round(this.invoices().reduce((acc, inv) => acc + inv.totalAmount, 0) * 100) / 100,
   );
 
   readonly pendingAmount = computed(() =>
-    this.invoices()
-      .filter((inv) => inv.status === 'ISSUED')
-      .reduce((acc, inv) => acc + inv.totalAmount, 0),
+    Math.round(
+      this.invoices()
+        .filter((inv) => inv.status === 'ISSUED')
+        .reduce((acc, inv) => acc + inv.totalAmount, 0) * 100,
+    ) / 100,
   );
 
   readonly paidAmount = computed(() =>
-    this.invoices()
-      .filter((inv) => inv.status === 'PAID')
-      .reduce((acc, inv) => acc + inv.totalAmount, 0),
+    Math.round(
+      this.invoices()
+        .filter((inv) => inv.status === 'PAID')
+        .reduce((acc, inv) => acc + inv.totalAmount, 0) * 100,
+    ) / 100,
   );
 
   ngOnInit(): void {
