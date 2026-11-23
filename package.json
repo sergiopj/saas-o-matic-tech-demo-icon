@@ -29,7 +29,6 @@
     "docker": "docker compose down --remove-orphans && docker compose build --no-cache && docker compose up -d && docker compose ps",
     "docker:quick": "docker compose up -d --build && docker compose ps",
     "docker:stop": "docker compose down",
-    "docker:down": "docker compose down",
     "docker:logs": "docker compose logs -f",
     "docker:status": "docker compose ps && docker compose logs --tail=20",
     "deploy:docker": "npm run docker",
@@ -37,6 +36,10 @@
     "deploy:logs": "npm run docker:logs",
     "deploy:stop": "npm run docker:stop",
     "deploy:status": "npm run docker:status",
+    "k8s:apply": "kubectl apply -k k8s/",
+    "k8s:delete": "kubectl delete -k k8s/",
+    "k8s:status": "kubectl get all -n saas-omatic",
+    "k8s:validate": "kubectl apply -k k8s/ --dry-run=client",
     "deploy:simulate": "node scripts/deploy-simulate.mjs",
     "deploy:health": "node -e \"require('http').get('http://localhost:3000/customers?limit=1',(r)=>console.log('API Health:',r.statusCode===200?'OK ✓':'FAIL ✗')).on('error',()=>console.log('API Health: UNREACHABLE'))\""
   },

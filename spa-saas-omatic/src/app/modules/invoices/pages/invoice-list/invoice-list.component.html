@@ -195,6 +195,16 @@
                     >
                       <mat-icon>check_circle</mat-icon>
                     </button>
+                    <button
+                      mat-icon-button
+                      type="button"
+                      class="action-btn action-btn--cancel"
+                      [matTooltip]="'invoices.actions.cancel' | translate"
+                      [attr.aria-label]="'invoices.actions.cancel' | translate"
+                      (click)="cancelInvoice(invoice)"
+                    >
+                      <mat-icon>block</mat-icon>
+                    </button>
                   }
                 </td>
               </tr>
@@ -290,6 +300,15 @@
             >
               <mat-icon>check_circle</mat-icon>
               <span>{{ 'invoices.actions.markPaid' | translate }}</span>
+            </button>
+            <button
+              mat-stroked-button
+              type="button"
+              class="btn-cancel-invoice"
+              (click)="cancelInvoice(inv)"
+            >
+              <mat-icon>block</mat-icon>
+              <span>{{ 'invoices.actions.cancel' | translate }}</span>
             </button>
           }
         </div>

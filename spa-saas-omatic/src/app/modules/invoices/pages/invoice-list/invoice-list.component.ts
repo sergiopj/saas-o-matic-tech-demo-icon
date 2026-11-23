@@ -120,6 +120,23 @@ export class InvoiceListComponent implements OnInit {
     });
   }
 
+  cancelInvoice(invoice: Invoice): void {
+    if (!window.confirm(this.i18n.t('invoices.actions.cancelConfirm'))) {
+      return;
+    }
+    this.invoiceApi.updateStatus(invoice.id, 'CANCELLED').subscribe({
+      next: (updated) => {
+        this.toast.success(this.i18n.t('invoices.actions.cancelSuccess'));
+        this.invoices.update((list) =>
+          list.map((inv) => (inv.id === updated.id ? updated : inv)),
+        );
+        if (this.selectedInvoice()?.id === updated.id) {
+          this.selectedInvoice.set(updated);
+        }
+      },
+    });
+  }
+
   downloadPdf(invoice: Invoice): void {
     this.invoiceApi.downloadPdf(invoice.id).subscribe({
       next: (blob) => {

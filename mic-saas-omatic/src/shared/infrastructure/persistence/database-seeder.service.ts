@@ -481,6 +481,20 @@ export const SEED_INVOICES: SeedInvoiceDefinition[] = [
     paidAt: new Date('2026-10-02T11:00:00Z'),
     notes: 'Servicio profesional paquetizado complementario.',
   },
+  {
+    id: 'b8888888-8888-4888-8888-888888888888',
+    invoiceNumber: 'INV-2026-0008',
+    customerId: '00b14cae-4bb4-4db4-9b58-3fd764614bd0',
+    simulationId: null,
+    concept: 'SaaS Enterprise Addon - Módulo de Analítica Avanzada',
+    subtotal: 1250.00,
+    taxRate: 0.21,
+    status: InvoiceStatus.CANCELLED,
+    issueDate: new Date('2026-08-01T09:00:00Z'),
+    dueDate: new Date('2026-09-01T09:00:00Z'),
+    paidAt: null,
+    notes: 'Anulada administrativamente por duplicidad de concepto antes de remesa bancaria.',
+  },
 ];
 
 @Injectable()

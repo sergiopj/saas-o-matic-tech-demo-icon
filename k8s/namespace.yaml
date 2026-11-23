@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: saas-omatic
+  labels:
+    app.kubernetes.io/name: saas-omatic
+    app.kubernetes.io/part-of: saas-o-matic-suite

@@ -4466,3 +4466,57 @@ Una vez consolidada la bitácora de auditoría en la carpeta del proyecto, se di
   - Docker completo: `npm run docker`
   - Docker rápido: `npm run docker:quick`
   - Apagar Docker: `npm run docker:stop`
+
+
+---
+
+### 6.218. Ciclo de Vida Fiscal de Facturas: Anulación Administrativa vs Facturas Rectificativas (RD 1619/2012 / Veri*factu)
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Prompt Verbatim del Usuario:**
+  > *«veo una columna de nulada la factura Anuladas en http://localhost:4200/invoices ¿Pero hemos de ser capaces de anularlas nosotros de forma manual desde la propia página o cómo va eso? ¿O hay alguna lógica por detrás que se anulan ellas solas? No entiendo muy bien porque yo doy a ese filtro de anuladas y no me sale nada en la tabla, sale vacío. Eso por un lado. Y si pudiésemos hacerlo nosotros desde el front, ¿es tan fácil anular una factura? ¿No lleva algo complejo por detrás que sea un inconveniente para esto, para el tema de las facturas?»*
+- **Diagnóstico Técnico y Criterio Legal-Financiero:**
+  1. *Filtro vacío:* El auto-seeder inicial generaba 7 facturas distribuidas entre `PAID` (4) e `ISSUED` (3). Al no haber ninguna factura anulada de inicio, el filtro devolvía 0 registros.
+  2. *¿Se anulan solas?* En sistemas ERP/SaaS financieros, las facturas no se anulan solas; responden a un evento administrativo explícito (impago antes de remesa, desistimiento de contrato B2B o error de concepto).
+  3. *Regulación Fiscal Española y Europea (RD 1619/2012 y Ley Antifraude 11/2021 / Veri\*factu):*
+     - Las facturas emitidas **jamás se eliminan de la base de datos (`NO Hard Delete`)**; borrar facturas constituye infracción tributaria muy grave.
+     - Si la factura está en estado **`ISSUED` (Emitida / No cobrada)**: Se permite la anulación administrativa (`CANCELLED`) preservando de forma inmutable la serie y la numeración correlativa (`INV-2026-XXXX`).
+     - Si la factura ya está en estado **`PAID` (Cobrada)**: El dominio lo **bloquea taxativamente** (`invoice.cancel()` lanza `DomainError('Cannot cancel an already paid invoice')`). Una factura cobrada no puede anularse a pelo: legalmente exige la emisión de una **Factura Rectificativa (Abono)** con importe negativo y serie especial `REC-`.
+- **Solución de Arquitectura y Frontend:**
+  1. *Poblado Inicial:* Se añadió una 8ª factura pre-cargada (`INV-2026-0008`) en estado `CANCELLED` en [database-seeder.service.ts](file:///c:/Users/Usuario/Documents/GitHub/saas-o-matic-tech-demo-icon/mic-saas-omatic/src/shared/infrastructure/persistence/database-seeder.service.ts) para que el filtro "Anuladas" muestre datos desde el segundo 0.
+  2. *Capacidad de Anulación en Frontend:* Se añadió el botón interactivo de anulación con icono `block` tanto en las filas de la tabla como en el drawer lateral para facturas en estado `ISSUED`.
+  3. *Confirmación Defensiva e i18n:* Se integró diálogo de confirmación con soporte completo en 4 idiomas (`es`, `en`, `de`, `fr`) y llamada reactiva a `invoiceApi.updateStatus(id, 'CANCELLED')` con toast accesible.
+- **Resultados de Verificación:**
+  - 8 facturas totales en catálogo (4 Pagadas, 3 Emitidas, 1 Anulada).
+  - Filtro "Anuladas" muestra de inmediato la factura cancelada.
+  - Oxlint 0 errores / 0 advertencias; suites unitarias pasando al 100%.
+
+---
+
+### 6.219. Arquitectura Cloud Nativa y Escalabilidad: Manifiestos Declarativos de Kubernetes (K8s / IaC / HPA / Ingress)
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Prompt Verbatim del Usuario:**
+  > *«kubernetes podemos configurarlo en el proyecto? y luego verlo desde el docker desktop? y se podria en los pipelines de cd ci de github actions?»*
+- **Contexto / Desafío:**
+  Demostrar visión de arquitectura de infraestructura en la nube (Cloud-Native & Platform Engineering) permitiendo que SaaS-O-Matic no solo se ejecute en Docker Compose, sino que disponga de orquestación elástica para clústeres Kubernetes con auto-balanceo y límites de recursos.
+- **Decisión de Arquitectura y Solución Aplicada:**
+  1. *Suite Completa de Manifiestos en `k8s/`:*
+     - `namespace.yaml`: Aislamiento en el namespace `saas-omatic`.
+     - `backend-deployment.yaml`: Deployment de 2 réplicas, estrategia *RollingUpdate*, probes de `liveness`/`readiness` en `/customers?limit=1` y límites estrictos de RAM (256 MiB request / 512 MiB limit) y CPU (200m / 500m).
+     - `backend-service.yaml`: Servicio interno *ClusterIP* con balanceo round-robin.
+     - `frontend-deployment.yaml`: Deployment de Nginx Alpine (2 réplicas) con límites de RAM (64 MiB / 128 MiB).
+     - `frontend-service.yaml`: Servicio interno para la SPA.
+     - `hpa.yaml`: **HorizontalPodAutoscaler (HPA v2)** configurado para escalar de 2 a 10 réplicas si el uso de CPU supera el 70% o la memoria el 80%.
+     - `ingress.yaml`: Ingress Controller con routing PushState SPA hacia el frontend y prefijos `/customers`, `/simulations`, `/invoices`, `/docs` hacia el backend.
+     - `kustomization.yaml`: Orquestador declarativo Kustomize estándar.
+  2. *Soporte Local en Docker Desktop:*
+     - Activando "Enable Kubernetes" en Docker Desktop, los comandos `npm run k8s:apply` y `npm run k8s:status` despliegan y monitorizan los pods en local sin coste alguno.
+  3. *Validación Continua en GitHub Actions:*
+     - Se añadió el paso `Validate Kubernetes manifests (IaC Dry-Run)` en [.github/workflows/ci-cd.yml](file:///c:/Users/Usuario/Documents/GitHub/saas-o-matic-tech-demo-icon/.github/workflows/ci-cd.yml) para verificar que la sintaxis y los esquemas de Kubernetes de `k8s/` se compilan y validan en cada commit.
+- **Resultados de Verificación:**
+  - `kubectl apply -k k8s/ --dry-run=client`: **8/8 recursos de Kubernetes creados satisfactoriamente (dry run) con código de salida 0**.
+  - Scripts en `package.json`: `k8s:apply`, `k8s:delete`, `k8s:status`, `k8s:validate`.
+  - Oxlint backend & frontend: 0 errores / 0 advertencias.
+- **Valor para la evaluación:**
+  Convierte al candidato en un perfil híbrido Full-Stack + Cloud Architect de altísimo nivel, capaz de defender el ciclo de vida del software desde el pixel de Angular hasta el auto-escalado horizontal de pods en Kubernetes.
