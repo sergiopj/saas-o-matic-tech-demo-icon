@@ -4840,3 +4840,20 @@ Una vez consolidada la bitácora de auditoría en la carpeta del proyecto, se di
 - **Valor para la evaluación:**
   Proporciona una infraestructura UI reutilizable y desacoplada para toda la plataforma SaaS, elevando la calidad percibida de la aplicación al sustituir prompts nativos por componentes accesibles, internacionalizados y alineados con el sistema de diseño corporativo.
 
+---
+
+### 6.233. Refinamiento Semántico de Iconografía de Navegación: Adopción del Icono de Casita (`home`) en Menú Lateral
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Contexto / Desafío:**
+  El usuario solicitó actualizar el icono de la sección Home en el menú lateral izquierdo para que muestre una casita con tejado (*"el icono del home del m enu lateral izquierdo que sea una casita con tejadito"*).
+- **Diagnóstico Técnico y Solución Aplicada:**
+  - El elemento de navegación `/home` utilizaba anteriormente el identificador `dashboard` de Material Symbols / Material Icons.
+  - Se actualizó `MAIN_NAV_ITEMS` en [`sidebar.component.ts`](file:///c:/Users/Usuario/Documents/GitHub/saas-o-matic-tech-demo-icon/spa-saas-omatic/src/app/shared/components/sidebar/sidebar.component.ts) para asignar `icon: 'home'`. Al heredarse automáticamente en `APP_NAV_ITEMS`, tanto la barra lateral izquierda como la navegación móvil del navbar reflejan de forma coherente la casita clásica con tejado (`home`).
+- **Resultados de Verificación:**
+  - Pruebas Frontend (Vitest): **339 tests passing al 100% (40 suites)**.
+  - Oxlint: **0 errores y 0 advertencias**.
+- **Valor para la evaluación:**
+  Asegura consistencia y familiaridad ergonómica en la navegación principal del usuario conforme a los patrones visuales estándar de interfaz.
+
+

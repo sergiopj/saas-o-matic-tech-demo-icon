@@ -16,7 +16,7 @@ export const MAIN_NAV_ITEMS: readonly NavItem[] = [
   {
     path: '/home',
     labelKey: 'sidebar.home',
-    icon: 'dashboard',
+    icon: 'home',
   },
   {
     path: '/customers',
