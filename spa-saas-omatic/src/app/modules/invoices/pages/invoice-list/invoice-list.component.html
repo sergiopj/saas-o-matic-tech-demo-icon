@@ -132,7 +132,7 @@
               <th class="text-right">{{ 'invoices.table.subtotal' | translate }}</th>
               <th class="text-right">{{ 'invoices.table.total' | translate }}</th>
               <th>{{ 'invoices.table.status' | translate }}</th>
-              <th class="text-center">{{ 'invoices.table.actions' | translate }}</th>
+              <th class="text-center actions-header">{{ 'invoices.table.actions' | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -164,48 +164,50 @@
                   </span>
                 </td>
                 <td class="actions-cell">
-                  <button
-                    mat-icon-button
-                    type="button"
-                    class="action-btn action-btn--pdf"
-                    [matTooltip]="'invoices.actions.downloadPdf' | translate"
-                    [attr.aria-label]="'invoices.actions.downloadPdf' | translate"
-                    (click)="downloadPdf(invoice)"
-                  >
-                    <mat-icon>picture_as_pdf</mat-icon>
-                  </button>
-                  <button
-                    mat-icon-button
-                    type="button"
-                    class="action-btn"
-                    [matTooltip]="'invoices.actions.viewDetail' | translate"
-                    [attr.aria-label]="'invoices.actions.viewDetail' | translate"
-                    (click)="openDrawer(invoice)"
-                  >
-                    <mat-icon>visibility</mat-icon>
-                  </button>
-                  @if (invoice.status === 'ISSUED') {
+                  <div class="actions-wrapper">
                     <button
                       mat-icon-button
                       type="button"
-                      class="action-btn action-btn--paid"
-                      [matTooltip]="'invoices.actions.markPaid' | translate"
-                      [attr.aria-label]="'invoices.actions.markPaid' | translate"
-                      (click)="markAsPaid(invoice)"
+                      class="action-btn action-btn--pdf"
+                      [matTooltip]="'invoices.actions.downloadPdf' | translate"
+                      [attr.aria-label]="'invoices.actions.downloadPdf' | translate"
+                      (click)="downloadPdf(invoice)"
                     >
-                      <mat-icon>check_circle</mat-icon>
+                      <mat-icon>picture_as_pdf</mat-icon>
                     </button>
                     <button
                       mat-icon-button
                       type="button"
-                      class="action-btn action-btn--cancel"
-                      [matTooltip]="'invoices.actions.cancel' | translate"
-                      [attr.aria-label]="'invoices.actions.cancel' | translate"
-                      (click)="cancelInvoice(invoice)"
+                      class="action-btn"
+                      [matTooltip]="'invoices.actions.viewDetail' | translate"
+                      [attr.aria-label]="'invoices.actions.viewDetail' | translate"
+                      (click)="openDrawer(invoice)"
                     >
-                      <mat-icon>block</mat-icon>
+                      <mat-icon>visibility</mat-icon>
                     </button>
-                  }
+                    @if (invoice.status === 'ISSUED') {
+                      <button
+                        mat-icon-button
+                        type="button"
+                        class="action-btn action-btn--paid"
+                        [matTooltip]="'invoices.actions.markPaid' | translate"
+                        [attr.aria-label]="'invoices.actions.markPaid' | translate"
+                        (click)="markAsPaid(invoice)"
+                      >
+                        <mat-icon>check_circle</mat-icon>
+                      </button>
+                      <button
+                        mat-icon-button
+                        type="button"
+                        class="action-btn action-btn--cancel"
+                        [matTooltip]="'invoices.actions.cancel' | translate"
+                        [attr.aria-label]="'invoices.actions.cancel' | translate"
+                        (click)="cancelInvoice(invoice)"
+                      >
+                        <mat-icon>block</mat-icon>
+                      </button>
+                    }
+                  </div>
                 </td>
               </tr>
             }

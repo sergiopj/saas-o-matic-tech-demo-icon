@@ -196,6 +196,7 @@
   width: 100%;
   border-collapse: collapse;
   font-size: 0.875rem;
+  min-width: 980px;
 
   thead {
     background-color: var(--omatic-surface);
@@ -295,15 +296,43 @@
   }
 }
 
+.actions-header {
+  width: 180px;
+  min-width: 180px;
+  text-align: center;
+  padding-right: 1.25rem !important;
+}
+
 .actions-cell {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.25rem;
+  width: 180px;
+  min-width: 180px;
+  text-align: center;
+  white-space: nowrap;
+  padding-right: 1.25rem !important;
+
+  .actions-wrapper {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    white-space: nowrap;
+  }
 
   .action-btn {
+    width: 34px;
+    height: 34px;
+    line-height: 34px;
+    padding: 0;
+    flex-shrink: 0;
     color: var(--omatic-text-secondary);
     transition: color 0.12s ease-in-out, background-color 0.12s ease-in-out;
+
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      line-height: 18px;
+    }
 
     &:hover {
       color: var(--omatic-accent-blue);

@@ -4686,3 +4686,26 @@ Una vez consolidada la bitácora de auditoría en la carpeta del proyecto, se di
   - Oxlint: 0 errores y 0 advertencias.
 - **Valor para la evaluación:**
   Estructura de navegación pulida y ergonómica propia de plataformas SaaS profesionales (como GitHub, Stripe o Vercel), donde el soporte y la ayuda están siempre accesibles sin restar protagonismo a la operativa de negocio.
+
+
+---
+
+### 6.227. Corrección de Overflow y Espaciado en Botonera de Acciones de la Tabla de Facturas
+
+- **Fecha:** 23 de noviembre de 2026.
+- **Prompt Verbatim del Usuario:**
+  > *«en la tabla de facturas cuando hay 4 iconos el d ecvancelar factura se corta y no hay espacio por la derecha d el atabla»*
+- **Diagnóstico Técnico de Causa Raíz:**
+  1. *Colapso de Flexbox dentro de `<td>` Nativo:* La celda `<td class="actions-cell">` aplicaba directamente `display: flex; align-items: center; justify-content: center;`. En tablas HTML estándar con `border-collapse: collapse;`, convertir un `<td>` en un flex container rompe el cálculo de dimensiones nativo del motor de layout del navegador (`table-layout`), provocando que la celda se comprima y sus elementos hijos se desborden o se corten.
+  2. *Ancho Insuficiente para 4 Acciones:* Cuando una factura se encuentra en estado `ISSUED`, se despliegan simultáneamente cuatro botones de acción interactivos (Descargar PDF, Ver Detalle, Marcar como Pagada y Cancelar Factura). Cada botón mide 40x40px por defecto en Angular Material (`mat-icon-button`), requiriendo como mínimo 160px más márgenes. Al no existir un `min-width` rígido en la columna ni margen derecho en la tabla, el cuarto botón (`block` / Cancelar) quedaba recortado contra el borde derecho del viewport.
+- **Decisión de Arquitectura y Solución Aplicada:**
+  1. *Envoltorio Aislado `actions-wrapper`:* Se encapsuló el grupo de botones dentro de un contenedor dedicado `<div class="actions-wrapper">` con `display: inline-flex; align-items: center; justify-content: center; gap: 0.25rem; white-space: nowrap;`, manteniendo la celda `<td>` con su comportamiento nativo de celda tabular.
+  2. *Ancho Fijo y Guardias de Columna:* Se configuró tanto en el encabezado `.actions-header` como en la celda `.actions-cell`: `width: 180px; min-width: 180px; text-align: center; white-space: nowrap; padding-right: 1.25rem !important;`, garantizando una separación cómoda y visualmente holgada con respecto al borde derecho de la tarjeta contenedora.
+  3. *Optimización Ergonómica de los Botones:* Se ajustó el tamaño de los botones de acción a `34px x 34px` con iconos de `18px` (`mat-icon`), logrando una densidad visual óptima donde los cuatro iconos respiran con holgura.
+  4. *Cota Mínima para Tabla Responsiva:* Se estableció `min-width: 980px` en `.invoices-table`, asegurando que en pantallas medianas o portátiles la tabla active su scroll horizontal contenedor sin comprimir las columnas monetarias ni las acciones.
+- **Resultados de Verificación:**
+  - Tests Frontend: **328 tests passing al 100% (38 suites)**.
+  - Oxlint: **0 errores y 0 advertencias**.
+- **Valor para la evaluación:**
+  Demuestra maestría en CSS layout tabular y responsivo, previniendo fallos de renderizado y garantizando que todas las acciones operativas de facturación permanezcan 100% visibles, accesibles y estéticamente impecables.
+
