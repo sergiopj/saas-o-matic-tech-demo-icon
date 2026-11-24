@@ -36,7 +36,6 @@
     "deploy:logs": "npm run docker:logs",
     "deploy:stop": "npm run docker:stop",
     "deploy:status": "npm run docker:status",
-    "deploy:simulate": "node scripts/deploy-simulate.mjs",
     "deploy:health": "node -e \"require('http').get('http://localhost:3000/customers?limit=1',(r)=>console.log('API Health:',r.statusCode===200?'OK ✓':'FAIL ✗')).on('error',()=>console.log('API Health: UNREACHABLE'))\""
   },
   "devDependencies": {
