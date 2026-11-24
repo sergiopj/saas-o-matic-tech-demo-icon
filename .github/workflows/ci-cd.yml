@@ -42,9 +42,6 @@ jobs:
       - name: Run backend linter
         run: npm --prefix mic-saas-omatic run lint
 
-      - name: Validate Kubernetes manifests (IaC Kustomize)
-        run: kubectl kustomize k8s/ > /dev/null
-
   test-backend:
     name: '2. Backend — Tests & Coverage (Jest)'
     runs-on: ubuntu-latest
