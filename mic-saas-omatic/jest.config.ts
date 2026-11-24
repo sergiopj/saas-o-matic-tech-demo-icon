@@ -35,10 +35,10 @@ const config: Config = {
   // Equivalent to SonarQube quality gate enforcement at the CI level.
   coverageThreshold: {
     global: {
-      lines: 75,
-      functions: 75,
-      branches: 65,
-      statements: 75,
+      lines: 85,
+      functions: 85,
+      branches: 80,
+      statements: 85,
     },
   },
   testEnvironment: 'node',
