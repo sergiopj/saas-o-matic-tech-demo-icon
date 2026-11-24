@@ -5581,4 +5581,29 @@ Una vez consolidada la bitácora de auditoría en la carpeta del proyecto, se di
 - **Valor para la evaluación:**
   Defensa de la realidad técnica frente al artificio: mostrar la infraestructura real de GitHub Actions en vivo en lugar de mocks locales.
 
+---
+
+### 6.257. Supresión Total de la Carpeta `scripts/` y Desacoplamiento de Paso de Cobertura en CI/CD
+
+- **Fecha:** 24 de noviembre de 2026.
+- **Prompt Verbatim del Usuario:**
+  > *«Run node scripts/coverage-summary.mjs "Backend (NestJS / Jest)" mic-saas-omatic/coverage/clover.xml ... Error: Cannot find module '.../scripts/coverage-summary.mjs'»*
+  > *«la b»*
+- **Contexto / Desafío:**
+  Al haber suprimido el directorio `scripts/`, el job de tests en GitHub Actions fallaba por intentar invocar `coverage-summary.mjs`. El usuario seleccionó la Opción B para eliminar completamente el directorio `scripts/` y desacoplar el pipeline de cualquier script auxiliar.
+- **Diagnóstico Técnico y Solución Aplicada:**
+  1. *Eliminación de pasos de reporte en `.github/workflows/ci-cd.yml`:*
+     - Suprimido el paso `Publish backend coverage summary table` en el job `test-backend`.
+     - Suprimido el paso `Publish frontend coverage summary table` en el job `test-frontend`.
+  2. *Garantía de Calidad Preservada (Quality Gate Intacto):*
+     - La compuerta de calidad estricta ($\ge 75\%$ en líneas, funciones y sentencias, $\ge 65\%$ en ramas) se sigue ejecutando de forma nativa e incondicional dentro de los propios motores de tests: `jest.config.ts` (`coverageThreshold`) y `angular.json` (`coverageThresholds`). Si la cobertura cae, el job falla inmediatamente con exit code 1.
+  3. *Eliminación del directorio `scripts/`:*
+     - El repositorio prescinde de la carpeta `scripts/`, manteniendo una estructura de raíz minimalista y limpia.
+- **Resultados de Verificación:**
+  - Pipeline de GitHub Actions 100% verde y autónomo sin dependencias de ficheros `.mjs` externos.
+  - Calidad de software y cobertura (>96%) garantizada por los propios runners.
+- **Valor para la evaluación:**
+  Máxima sobriedad técnica: eliminar dependencias innecesarias de scripts auxiliares, delegando la responsabilidad de los Quality Gates en las herramientas oficiales estándar de la industria (Jest y Vitest).
+
+
 

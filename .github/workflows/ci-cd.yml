@@ -62,10 +62,6 @@ jobs:
       - name: Run backend unit tests with coverage
         run: npm --prefix mic-saas-omatic test -- --ci --coverage --forceExit
 
-      - name: Publish backend coverage summary table
-        if: always()
-        run: node scripts/coverage-summary.mjs "Backend (NestJS / Jest)" mic-saas-omatic/coverage/clover.xml
-
       - name: Upload backend coverage report artifact
         uses: actions/upload-artifact@v4
         if: always()
@@ -189,10 +185,6 @@ jobs:
         run: npm --prefix spa-saas-omatic run test:coverage
         env:
           NO_COLOR: '1'
-
-      - name: Publish frontend coverage summary table
-        if: always()
-        run: node scripts/coverage-summary.mjs "Frontend (Angular / Vitest)" spa-saas-omatic/coverage/dashboard/coverage-summary.json
 
       - name: Upload frontend coverage report artifact
         uses: actions/upload-artifact@v4
