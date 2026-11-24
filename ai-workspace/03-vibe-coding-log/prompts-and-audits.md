@@ -5605,5 +5605,35 @@ Una vez consolidada la bitácora de auditoría en la carpeta del proyecto, se di
 - **Valor para la evaluación:**
   Máxima sobriedad técnica: eliminar dependencias innecesarias de scripts auxiliares, delegando la responsabilidad de los Quality Gates en las herramientas oficiales estándar de la industria (Jest y Vitest).
 
+---
+
+### 6.258. Elevación de Umbrales del Quality Gate de Cobertura a Nivel Enterprise (85% Líneas/Funciones / 80% Ramas)
+
+- **Fecha:** 24 de noviembre de 2026.
+- **Prompts Verbatim del Usuario:**
+  > *«tenemos cobfigurado el sonnar o lo que necesitemos para que te tire el gate de cd ci de coverage si no l legas al 85% o 90%?»*
+  > *«si subelo»*
+- **Contexto / Desafío:**
+  Fortalecer los Quality Gates nativos en Jest y Vitest para situar los umbrales de aceptación en estándares de máxima exigencia empresarial (nivel banca/seguros), garantizando que ningún commit o pull request pueda degradar la cobertura por debajo del 85% sin provocar el fallo estricto de la integración continua.
+- **Decisión de Arquitectura y Solución Aplicada:**
+  1. *Actualización en Backend (`mic-saas-omatic/jest.config.ts`):*
+     - `lines`: elevado de 75 a **85%**.
+     - `functions`: elevado de 75 a **85%**.
+     - `statements`: elevado de 75 a **85%**.
+     - `branches`: elevado de 65 a **80%** (cobertura real: 83.06%).
+  2. *Actualización en Frontend (`spa-saas-omatic/angular.json`):*
+     - `lines`: elevado de 75 a **85%**.
+     - `functions`: elevado de 75 a **85%**.
+     - `statements`: elevado de 75 a **85%**.
+     - `branches`: elevado de 65 a **80%** (cobertura real: 88.78%).
+  3. *Actualización de Gobernanza (`AGENTS.md`):*
+     - Reflejados los nuevos mínimos obligatorios en la sección 4 de las directrices universales de agentes.
+- **Resultados de Verificación:**
+  - Ambas suites de tests pasan el Quality Gate al 100% holgadamente (coberturas reales $>96\%$ en líneas y funciones, $>83\%$ en ramas).
+  - Si un desarrollo futuro baja de estos límites, el test runner falla con exit code 1 y bloquea el pipeline de CI/CD.
+- **Valor para la evaluación:**
+  Convierte el proyecto en un referente de disciplina técnica: los Quality Gates no son testimoniales ni permisivos, sino muros de calidad rigurosos (85%/80%) que garantizan la excelencia del código en cada iteración.
+
+
 
 

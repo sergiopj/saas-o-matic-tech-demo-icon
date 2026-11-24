@@ -95,9 +95,9 @@ Whenever you operate in this repository, you MUST strictly adhere to the followi
 ## 4. Code Quality, Coverage Thresholds & CI/CD
 - **Oxlint Compliance**: Run `oxlint --type-aware src/` and ensure zero warnings and zero errors across both frontend and backend.
 - **Strict Coverage Thresholds (SonarQube-Equivalent Quality Gates)**: Enforce code coverage minimums in both test runners (`coverageThreshold` in Jest and `coverageThresholds` in Angular CLI/Vitest):
-  - Statements / Lines: $\ge 75\%$ (Current: $>96\%$)
-  - Functions / Methods: $\ge 75\%$ (Current: $>96\%$)
-  - Branches / Conditions: $\ge 65\%$ (Current: $>83\%$)
+  - Statements / Lines: $\ge 85\%$ (Current: $>96\%$)
+  - Functions / Methods: $\ge 85\%$ (Current: $>96\%$)
+  - Branches / Conditions: $\ge 80\%$ (Current: $>83\%$)
   - If any commit or pull request drops coverage below these thresholds, the test runner must exit with code 1 and abort the pipeline.
 - **Decoupled CI/CD Pipeline (8 Parallel Jobs)**: The repository maintains an 8-job decoupled GitHub Actions workflow (`.github/workflows/ci-cd.yml`) with independent execution tracks for Backend (Lint $\to$ Test $\to$ Build $\to$ Deploy) and Frontend (Lint $\to$ Test $\to$ Build $\to$ Deploy), publishing live coverage Markdown tables directly into `$GITHUB_STEP_SUMMARY`.
 - **Docker & Deployment Hygiene**:
